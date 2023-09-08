@@ -71,11 +71,11 @@ function Scoring() {
     if (skillIndex < -1) players[i].ca = (players[i].bonus!*skillIndex)/10
     else players[i].ca = 0
 
-    if (players[i].score > 99999) players[i].multiplier = matchData.match_i + 0.6
-    else if (players[i].score > 49999) players[i].multiplier = matchData.match_i + 0.3
-    else players[i].multiplier = matchData.match_i
+    if (players[i].score > 99999) players[i].multiplier = matchData.rule_i + 0.6
+    else if (players[i].score > 49999) players[i].multiplier = matchData.rule_i + 0.3
+    else players[i].multiplier = matchData.rule_i
 
-    players[i].rankPoint = Math.round((players[i].basePoint!*players[i].multiplier!) + (players[i].bonus!*matchData.match_i) + (players[i].ca!*matchData.match_i))
+    players[i].rankPoint = Math.round((players[i].basePoint!*players[i].multiplier!) + (players[i].bonus!*matchData.rule_i) + (players[i].ca!*matchData.rule_i))
     // if (draw == 0){
     // } else if (draw == 1) {
 
