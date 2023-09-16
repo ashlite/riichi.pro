@@ -1,16 +1,27 @@
 <script>
-  import "../app.css";
+  import "../app.css"
+  import { onMount } from 'svelte';
+  import TopNavbar from 'organism/topNavbar.svelte'
+  import { themeChange } from 'theme-change'
+  import ToastAlert from 'molecule/toastAlert.svelte'
+  import Modal from 'organism/modal.svelte'
+  import Footer from "organism/footer.svelte";
+  
+  onMount(() => {
+    themeChange(false)
+  })
 </script>
 
-<div class="navbar bg-primary">
-  <div class="flex-1">
-    <a class="btn btn-ghost normal-case text-xl text-primary-content" href="/">IRROS</a>
-  </div>
-  <div class="flex-none text-primary-content">
-    <ul class="menu menu-horizontal px-1">
-      <li><a href="/simulasi">Simulasi Score</a></li>
-      <li><a href="/doc">Documentation</a></li>
-    </ul>
-  </div>
+<svelte:head>
+  <title>Kazeryu</title>
+</svelte:head>
+
+<ToastAlert />
+<Modal />
+<TopNavbar />
+
+<div class="p-0 m-0 min-h-screen">
+  <slot />
 </div>
-<slot />
+
+<Footer />
