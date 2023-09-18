@@ -1,0 +1,251 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model RefHelper {
+  ///general reference table
+  id        Int      @id
+  name      String
+  notes     String?
+  group     String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  roleList      ClubMember[]
+  rankTitleList RankTittle[]
+  userList      User[]
+
+  @@map("reference_helper")
+}
+
+model User {
+  // for general profile user
+  id            String   @id @default(uuid()) @db.Uuid
+  firstName     String   @map("first_name")
+  lastName      String   @map("last_name")
+  email         String   @unique
+  countryName   String   @map("country_name")
+  countryISO2   String   @map("country_iso2")
+  district      String?
+  disctrictCode String?  @map("district_code")
+  joinedAt      DateTime @default(now()) @map("joined_at")
+  roleId        Int      @map("role_id")
+
+  playerData        Player?
+  transactionCCList TransactionCC[]
+  roleData          RefHelper       @relation(fields: [roleId], references: [id])
+
+  @@map("user")
+}
+
+model Player {
+  id          Int      @id @default(autoincrement())
+  alias       String   @unique
+  userId      String   @unique @map("user_id") @db.Uuid
+  totalMatch  Int      @default(0) @map("total_match")
+  totalChombo Int      @default(0) @map("total_chombo")
+  currentRP   Int      @default(0) @map("current_rp")
+  currentMP   Int      @default(0) @map("current_mp")
+  avgRon      Float    @default(0.0) @map("avg_ron")
+  avgTsumo    Float    @default(0.0) @map("avg_tsumo")
+  avgDealIn   Float    @default(0.0) @map("avg_deal_in")
+  rtName      String   @map("rank_title_name")
+  rankedAt    DateTime @default(now()) @map("ranked_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  userData              User                @relation(fields: [userId], references: [id])
+  rtData                RankTittle          @relation(fields: [rtName], references: [name])
+  clubList              ClubMember[]
+  participantList       MatchParticipant[]
+  clubUmaStandingList   ClubUmaStanding[]
+  globalUmaStandingList GlobalUmaStanding[]
+
+  @@map("player")
+}
+
+model RankTittle {
+  name        String  @id
+  groupRefId  Int     @map("group_ref_id")
+  skillIndex  Int
+  first       Int
+  second      Int
+  third       Int
+  fourth      Int
+  baseRP      Int     @map("base_rp")
+  promotionRP Int     @map("promotion_rp")
+  demotion    Boolean
+  thresholdMP Int     @map("threshold_mp")
+
+  playerList      Player[]
+  participantList MatchParticipant[]
+  group           RefHelper          @relation(fields: [groupRefId], references: [id])
+  newRTList       TransactionRP[]    @relation("newRT")
+  oldRTList       TransactionRP[]    @relation("oldRT")
+
+  @@map("rank_title")
+}
+
+model Club {
+  id              String   @id @default(uuid()) @db.Uuid
+  name            String
+  emblemPic       String?
+  coverPic        String?
+  description     String?
+  countryName     String   @map("country_name")
+  countryISO2     String   @map("country_iso2")
+  totalMember     Int      @default(0) @map("total_member")
+  totalMainMember Int      @default(0) @map("total_main_member")
+  maxAdmin        Int      @default(3) @map("max_admin")
+  district        String?
+  address         String?
+  emailContact    String?  @map("email_contact")
+  currentCC       Int      @default(0)
+  spendCC         Int      @default(0)
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  memberList      ClubMember[]
+  transactionList TransactionCC[]
+  matchList       Match[]
+
+  @@map("club")
+}
+
+model ClubMember {
+  id        Int       @id @default(autoincrement())
+  playerId  Int       @map("player_id")
+  clubId    String    @map("club_id") @db.Uuid
+  roleId    Int       @map("role_id")
+  createdAt DateTime  @default(now()) @map("created_at")
+  expiredAt DateTime? @map("expired_at")
+  active    Boolean   @default(true)
+
+  clubData     Club      @relation(fields: [clubId], references: [id])
+  playerData   Player    @relation(fields: [playerId], references: [id])
+  roleData     RefHelper @relation(fields: [roleId], references: [id])
+  matchInputed Match[]
+
+  @@map("club_member")
+}
+
+model ClubUmaStanding {
+  id         String   @id @default(uuid()) @db.Uuid
+  playerId   Int    @map("player_id")
+  totalUma   Int @map("total_uma")
+  totalMatch Int      @default(0) @map("total_match")
+  periode    DateTime
+
+  playerData Player @relation(fields: [playerId], references: [id])
+
+  @@map("club_uma_standing")
+}
+
+model GlobalUmaStanding {
+  id         String   @id @default(uuid())
+  playerId   Int    @map("player_id")
+  totalUma   Int @map("total_uma")
+  totalMatch Int      @default(0) @map("total_match")
+  periode    DateTime
+
+  playerData Player @relation(fields: [playerId], references: [id])
+
+  @@map("global_uma_standing")
+}
+
+model TransactionCC {
+  id        String   @id @default(uuid()) @db.Uuid
+  clubId    String   @map("club_id") @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  ccBefore  Int      @map("cc_before")
+  ccMove    Int      @map("cc_move")
+  ccAfter   Int      @map("cc_after")
+  createdAt DateTime @default(now()) @map("created_at")
+  type      Int
+  note      String
+
+  clubData Club @relation(fields: [clubId], references: [id])
+  userData User @relation(fields: [userId], references: [id])
+
+  @@map("transaction_cc")
+}
+
+model TransactionRP {
+  id           String   @id @default(uuid()) @db.Uuid
+  matchId      String?  @db.Uuid
+  note         String?
+  rpBefore     Int      @map("rp_before")
+  rpMove       Int      @map("rp_move")
+  rpAfter      Int      @map("rp_after")
+  rtChange     Boolean  @default(false) @map("rt_change")
+  rtBeforeName String?
+  rtAfterName  String?
+  createdAt    DateTime
+
+  rtBeforeData RankTittle? @relation("oldRT", fields: [rtBeforeName], references: [name])
+  rtAfterData  RankTittle? @relation("newRT", fields: [rtAfterName], references: [name])
+  matchData    Match?      @relation(fields: [matchId], references: [id])
+}
+
+model TransactionMP {
+  id        String   @id @default(uuid()) @db.Uuid
+  matchId   String?  @db.Uuid
+  note      String?
+  mpBefore  Int      @map("mp_before")
+  mpMove    Int      @map("mp_move")
+  mpAfter   Int      @map("mp_after")
+  createdAt DateTime
+
+  matchData Match? @relation(fields: [matchId], references: [id])
+}
+
+model Match {
+  id              String   @id @default(uuid()) @db.Uuid
+  createdAt       DateTime @default(now()) @map("created_at")
+  matchAt         DateTime @map("match_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+  type            Int
+  officialRule    Boolean  @map("official_rule")
+  clubId          String?  @map("club_id") @db.Uuid
+  creatorMemberId Int?     @map("creator_member_id")
+  costCC          Int      @map("cost_cc")
+  note            String?
+
+  participantList   MatchParticipant[]
+  transactionRPList TransactionRP[]
+  transactionMPList TransactionMP[]
+  clubData          Club?              @relation(fields: [clubId], references: [id])
+  creatorMemberData ClubMember?        @relation(fields: [creatorMemberId], references: [id])
+
+  @@map("match")
+}
+
+model MatchParticipant {
+  playerId      Int    @map("player_id")
+  matchId       String @map("rank_id") @db.Uuid
+  score         Int
+  position      Int
+  playerRtName  String @map("player_rt_name")
+  avgMatchSkill Float  @map("avg_match_skill")
+  chombo        Int    @default(0)
+  ron           Int?
+  tsumo         Int?
+  dealIn        Int?   @map("deal_in")
+  gainUma       Int @map("gain_uma")
+
+  playerData Player     @relation(fields: [playerId], references: [id])
+  matchData  Match      @relation(fields: [matchId], references: [id])
+  matchRt    RankTittle @relation(fields: [playerRtName], references: [name])
+
+  @@unique([playerId, matchId])
+  @@map("match_participant")
+}

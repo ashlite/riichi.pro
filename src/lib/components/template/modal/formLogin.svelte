@@ -4,6 +4,7 @@
   import Button from "atom/button.svelte";
 	import globalModal from "store/modal";
   import { goto } from "$app/navigation";
+  import toastAlert from "store/toast";
 
   let emailInput: string
   let password: string
@@ -15,15 +16,14 @@
 </script>
 
 <form>
-  <div class="divider">Email - Password</div>
   <div class="flex flex-col gap-2">
     <TextInput labelTL="Login Email" bind:value={emailInput} />
     <PassInput labelTL="Login Password" bind:value={password} />
     <div class="flex flex-row-reverse">
-      <Button text="Login" color="success" />
+      <Button text="Login" color="primary" />
     </div>
   </div>
-  <div class="divider">Social Login</div>
+  <!-- <div class="divider">Social Login</div>
   <div class="flex flex-row gap-4 justify-center">
     <div class="tooltip" data-tip="Google">
       <Button icon="ph:google-logo-bold" square color="primary" />
@@ -37,7 +37,10 @@
     <div class="tooltip" data-tip="Discord">
       <Button icon="ph:discord-logo-bold" square color="primary" />
     </div>
-  </div>
+  </div> -->
   <div class="divider"></div>
-  <Button full text="REGISTER" color="accent" on:click={registerUser} />
+  <div class="grid grid-cols-2 gap-4">
+    <Button full text="REGISTER" color="accent" on:click={registerUser} />
+    <Button full text="Help Me Login" color="secondary" on:click={() => toastAlert.warning('work in progress feature')} />
+  </div>
 </form>

@@ -1,6 +1,6 @@
 import { writable, derived } from 'svelte/store'
 import type { Readable, Writable } from 'svelte/store'
-import type { fetchResponse } from 'helper/api'
+import type { fetchResponse } from 'service/api'
 
 interface iToast {
   message: string,
@@ -11,7 +11,7 @@ interface iToast {
 function createToast(){
   const _toast = writable<iToast[]>([])
 
-  function send (message: string, type: string, duration = 1800){
+  function send (message: string, type: string, duration = 3000){
     _toast.update(state => {
       return [...state, {message, type, duration}]
     })
