@@ -33,12 +33,11 @@ model User {
   firstName     String   @map("first_name")
   lastName      String   @map("last_name")
   email         String   @unique
-  countryName   String   @map("country_name")
-  countryISO2   String   @map("country_iso2")
+  countryCode   String   @map("country_code")
   district      String?
-  disctrictCode String?  @map("district_code")
   joinedAt      DateTime @default(now()) @map("joined_at")
-  roleId        Int      @map("role_id")
+  roleId        Int      @map("role_id") @default(101)
+  firebaseId    String      @map("firebase_id")
 
   playerData        Player?
   transactionCCList TransactionCC[]
@@ -140,8 +139,8 @@ model ClubMember {
 
 model ClubUmaStanding {
   id         String   @id @default(uuid()) @db.Uuid
-  playerId   Int    @map("player_id")
-  totalUma   Int @map("total_uma")
+  playerId   Int      @map("player_id")
+  totalUma   Int      @map("total_uma")
   totalMatch Int      @default(0) @map("total_match")
   periode    DateTime
 
@@ -152,8 +151,8 @@ model ClubUmaStanding {
 
 model GlobalUmaStanding {
   id         String   @id @default(uuid())
-  playerId   Int    @map("player_id")
-  totalUma   Int @map("total_uma")
+  playerId   Int      @map("player_id")
+  totalUma   Int      @map("total_uma")
   totalMatch Int      @default(0) @map("total_match")
   periode    DateTime
 
@@ -194,6 +193,8 @@ model TransactionRP {
   rtBeforeData RankTittle? @relation("oldRT", fields: [rtBeforeName], references: [name])
   rtAfterData  RankTittle? @relation("newRT", fields: [rtAfterName], references: [name])
   matchData    Match?      @relation(fields: [matchId], references: [id])
+
+  @@map("transaction_rp")
 }
 
 model TransactionMP {
@@ -206,19 +207,22 @@ model TransactionMP {
   createdAt DateTime
 
   matchData Match? @relation(fields: [matchId], references: [id])
+
+  @@map("transaction_mp")
 }
 
 model Match {
-  id              String   @id @default(uuid()) @db.Uuid
-  createdAt       DateTime @default(now()) @map("created_at")
-  matchAt         DateTime @map("match_at")
-  updatedAt       DateTime @updatedAt @map("updated_at")
-  type            Int
-  officialRule    Boolean  @map("official_rule")
-  clubId          String?  @map("club_id") @db.Uuid
-  creatorMemberId Int?     @map("creator_member_id")
-  costCC          Int      @map("cost_cc")
-  note            String?
+  id               String   @id @default(uuid()) @db.Uuid
+  createdAt        DateTime @default(now()) @map("created_at")
+  matchAt          DateTime @map("match_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+  type             Int
+  officialRule     Boolean  @map("official_rule")
+  clubId           String?  @map("club_id") @db.Uuid
+  creatorMemberId  Int?     @map("creator_member_id")
+  costCC           Int      @map("cost_cc")
+  playerUniqueCode String   @map("player_unique_code")
+  note             String?
 
   participantList   MatchParticipant[]
   transactionRPList TransactionRP[]
@@ -240,7 +244,7 @@ model MatchParticipant {
   ron           Int?
   tsumo         Int?
   dealIn        Int?   @map("deal_in")
-  gainUma       Int @map("gain_uma")
+  gainUma       Int    @map("gain_uma")
 
   playerData Player     @relation(fields: [playerId], references: [id])
   matchData  Match      @relation(fields: [matchId], references: [id])

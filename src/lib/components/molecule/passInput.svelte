@@ -42,6 +42,6 @@
         tabindex={skipFocus ? -1 : 0}
         required={required}/>
     {/if}
-    <button class="btn join-item" on:click={() => peek = !peek}><Icon icon={peek ? "ph:eye-slash": "ph:eye"} /></button>
+    <button class="btn join-item" on:click|preventDefault={() => peek = !peek}><Icon icon={peek ? "ph:eye-slash": "ph:eye"} /></button>
   </div>
 </div>

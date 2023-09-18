@@ -15,14 +15,14 @@
   }
 </script>
 
-<form>
-  <div class="flex flex-col gap-2">
+<div>
+  <form class="flex flex-col gap-2">
     <TextInput labelTL="Login Email" bind:value={emailInput} />
     <PassInput labelTL="Login Password" bind:value={password} />
     <div class="flex flex-row-reverse">
       <Button text="Login" color="primary" />
     </div>
-  </div>
+  </form>
   <!-- <div class="divider">Social Login</div>
   <div class="flex flex-row gap-4 justify-center">
     <div class="tooltip" data-tip="Google">
@@ -43,4 +43,4 @@
     <Button full text="REGISTER" color="accent" on:click={registerUser} />
     <Button full text="Help Me Login" color="secondary" on:click={() => toastAlert.warning('work in progress feature')} />
   </div>
-</form>
+</div>

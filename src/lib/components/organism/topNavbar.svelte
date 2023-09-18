@@ -24,17 +24,6 @@
           <Button color="ghost" text="Login/Register" on:click={() => globalModal.loginForm()} />
         </li>
       {/if}
-      <li class="flex flex-row items-center">
-        <label class="swap swap-rotate btn btn-square self-center">
-          <input type="checkbox" data-toggle-theme="winter,night" data-act-class="ACTIVECLASS" />
-          <div class="swap-off fill-current">
-            <Icon icon="ph:moon-bold" />
-          </div>
-          <div class="swap-on fill-current">
-            <Icon icon="ph:sun-bold" />
-          </div>
-        </label>
-      </li>
     </ul>
   </div>
 </div>

@@ -1,7 +1,5 @@
 <script lang="ts">
-  import Icon from "@iconify/svelte";
   export let userName: string = "David Santoso"
-  export let alias: string = "PedasMampus"
 
   let dropState = false
 
@@ -34,6 +32,7 @@
     <ul class="shadow menu menu-sm bg-base-300 text-base-content w-48">
       <li><a>Profile</a></li>
       <li><a>Administrator</a></li>
+      <li><a>Official</a></li>
       <li><a>Logout</a></li>
     </ul>
   </div>

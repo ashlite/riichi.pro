@@ -6,7 +6,7 @@
   import ToastAlert from 'molecule/toastAlert.svelte'
   import Modal from 'organism/modal.svelte'
   import Footer from "organism/footer.svelte";
-  
+
   onMount(() => {
     themeChange(false)
   })
