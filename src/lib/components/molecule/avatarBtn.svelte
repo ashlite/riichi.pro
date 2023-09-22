@@ -30,10 +30,11 @@
   {#if dropState}
   <div class="absolute top-16">
     <ul class="shadow menu menu-sm bg-base-300 text-base-content w-48">
-      <li><a>Profile</a></li>
-      <li><a>Administrator</a></li>
-      <li><a>Official</a></li>
-      <li><a>Logout</a></li>
+      <li><a href="/">Player Profile</a></li>
+      <li><a href="/">Club Admin</a></li>
+      <li><a href="/">Official</a></li>
+      <li><a href="/">Developer</a></li>
+      <li><a href="/">Logout</a></li>
     </ul>
   </div>
   {/if}

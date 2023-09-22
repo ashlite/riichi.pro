@@ -1,19 +1,30 @@
-export interface iWebUser {
-  name: string
-  email: string
-  avatar: string
-  level: number
+export interface iRegisterData {
+  firstName: string,
+  lastName: string,
+  countryISO2: string,
+  email: string,
+  pass1: string,
+  pass2: string,
+  firebaseId?: string
+  firebaseIdToken?: string
 }
 
-export interface iBaseUser {
+interface iPlayer {
+  id: number
+  alias?: string
+  currentRP: number
+  currentMP: number
+  rtName: string
+}
+
+export interface iUser {
   id: string
-  first_name: string
-  last_name: string
-  email: string
-}
-
-export interface iBaseUserComplex extends iBaseUser{
-  user_level: number
-  registered_at: Date
-  user_access: any
+  firstName: string,
+  lastName: string,
+  countryISO2: string,
+  email: string,
+  emailVerified: boolean,
+  firebaseId: string,
+  roleId: number
+  playerData?: iPlayer
 }

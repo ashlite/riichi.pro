@@ -34,3 +34,12 @@ export interface iUSBDevice {
   serialNumber?: string
   vendorId?: number | string
 }
+
+interface header {
+  ok: boolean
+  error?: string
+}
+export interface iGlobalResponse {
+  header: header
+  data: any
+}

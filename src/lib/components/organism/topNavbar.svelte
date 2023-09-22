@@ -13,15 +13,15 @@
   </div>
   <div class="flex-none">
     <ul class="menu menu-horizontal menu-lg gap-4 p-0 items-center">
+      <li><Button color="ghost" text="Players" icon="ph:users-four" href="/players" /></li>
+      <li><Button color="ghost" text="Club" icon="ph:buildings" href="/club" /></li>
+      <li><Button color="ghost" text="Tournament" icon="ph:trophy" href="/tournament"/></li>
+      <li><Button color="ghost" text="Match" icon="ph:handshake" href="/match"/></li>
       {#if login}
-        <li><Button color="ghost" text="Players" icon="ph:users-four" href="/players" /></li>
-        <li><Button color="ghost" text="Match" icon="ph:handshake" href="/match"/></li>
-        <li><Button color="ghost" text="Club" icon="ph:buildings" href="/club" /></li>
-        <li><Button color="ghost" text="Tournament" icon="ph:trophy" href="/tournament"/></li>
         <AvatarBtn />
       {:else}
         <li id="Login">
-          <Button color="ghost" text="Login/Register" on:click={() => globalModal.loginForm()} />
+          <Button color="ghost" text="Login/Register" icon="ph:user" on:click={() => globalModal.loginForm()} />
         </li>
       {/if}
     </ul>

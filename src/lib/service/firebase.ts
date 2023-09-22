@@ -18,14 +18,14 @@ const firebaseConfig = {
   appId: PUBLIC_FIREBASE_APP_ID
 };
 
-// Initialize Firebase
-let firebaseApp;
+function makeApp() {
+  const apps = getApps();
+  if (apps.length > 0) {
+    return apps[0]!;
+  }
 
-if (!getApps().length) {
-  firebaseApp = initializeApp(firebaseConfig);
+  return initializeApp(firebaseConfig);
 }
 
-// Auth
-const firebaseAuth = getAuth(firebaseApp);
-
-export { firebaseApp, firebaseAuth };
+export const firebaseApp = makeApp();
+export const firebaseAuth = getAuth(firebaseApp);

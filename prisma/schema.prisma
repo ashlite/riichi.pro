@@ -33,11 +33,12 @@ model User {
   firstName     String   @map("first_name")
   lastName      String   @map("last_name")
   email         String   @unique
+  emailVerified Boolean  @default(false)
   countryCode   String   @map("country_code")
   district      String?
   joinedAt      DateTime @default(now()) @map("joined_at")
-  roleId        Int      @map("role_id") @default(101)
-  firebaseId    String      @map("firebase_id")
+  roleId        Int      @default(101) @map("role_id")
+  firebaseId    String   @unique @map("firebase_id")
 
   playerData        Player?
   transactionCCList TransactionCC[]
@@ -48,7 +49,7 @@ model User {
 
 model Player {
   id          Int      @id @default(autoincrement())
-  alias       String   @unique
+  alias       String?  @unique
   userId      String   @unique @map("user_id") @db.Uuid
   totalMatch  Int      @default(0) @map("total_match")
   totalChombo Int      @default(0) @map("total_chombo")
@@ -57,13 +58,13 @@ model Player {
   avgRon      Float    @default(0.0) @map("avg_ron")
   avgTsumo    Float    @default(0.0) @map("avg_tsumo")
   avgDealIn   Float    @default(0.0) @map("avg_deal_in")
-  rtName      String   @map("rank_title_name")
+  rtId        Int      @map("rt_id")
   rankedAt    DateTime @default(now()) @map("ranked_at")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
   userData              User                @relation(fields: [userId], references: [id])
-  rtData                RankTittle          @relation(fields: [rtName], references: [name])
+  rtData                RankTittle          @relation(fields: [rtId], references: [id])
   clubList              ClubMember[]
   participantList       MatchParticipant[]
   clubUmaStandingList   ClubUmaStanding[]
@@ -73,7 +74,8 @@ model Player {
 }
 
 model RankTittle {
-  name        String  @id
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
   groupRefId  Int     @map("group_ref_id")
   skillIndex  Int
   first       Int
@@ -179,19 +181,19 @@ model TransactionCC {
 }
 
 model TransactionRP {
-  id           String   @id @default(uuid()) @db.Uuid
-  matchId      String?  @db.Uuid
-  note         String?
-  rpBefore     Int      @map("rp_before")
-  rpMove       Int      @map("rp_move")
-  rpAfter      Int      @map("rp_after")
-  rtChange     Boolean  @default(false) @map("rt_change")
-  rtBeforeName String?
-  rtAfterName  String?
-  createdAt    DateTime
+  id         String   @id @default(uuid()) @db.Uuid
+  matchId    String?  @db.Uuid
+  note       String?
+  rpBefore   Int      @map("rp_before")
+  rpMove     Int      @map("rp_move")
+  rpAfter    Int      @map("rp_after")
+  rtChange   Boolean  @default(false) @map("rt_change")
+  rtIdBefore Int?     @map("rt_id_before")
+  rtIdAfter  Int?     @map("rt_id_after")
+  createdAt  DateTime
 
-  rtBeforeData RankTittle? @relation("oldRT", fields: [rtBeforeName], references: [name])
-  rtAfterData  RankTittle? @relation("newRT", fields: [rtAfterName], references: [name])
+  rtBeforeData RankTittle? @relation("oldRT", fields: [rtIdBefore], references: [id])
+  rtAfterData  RankTittle? @relation("newRT", fields: [rtIdAfter], references: [id])
   matchData    Match?      @relation(fields: [matchId], references: [id])
 
   @@map("transaction_rp")
@@ -238,7 +240,7 @@ model MatchParticipant {
   matchId       String @map("rank_id") @db.Uuid
   score         Int
   position      Int
-  playerRtName  String @map("player_rt_name")
+  playerRtId    Int    @map("player_rt_id")
   avgMatchSkill Float  @map("avg_match_skill")
   chombo        Int    @default(0)
   ron           Int?
@@ -248,7 +250,7 @@ model MatchParticipant {
 
   playerData Player     @relation(fields: [playerId], references: [id])
   matchData  Match      @relation(fields: [matchId], references: [id])
-  matchRt    RankTittle @relation(fields: [playerRtName], references: [name])
+  matchRt    RankTittle @relation(fields: [playerRtId], references: [id])
 
   @@unique([playerId, matchId])
   @@map("match_participant")

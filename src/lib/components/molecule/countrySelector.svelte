@@ -1,5 +1,6 @@
 <script lang="ts">
-import { listCountries} from 'countries-ts';
+// import { listCountries} from 'countries-ts';
+import { arrCountries } from 'service/country';
 
 export let labelTR: string | null = null
 export let labelTL: string | null = null 
@@ -9,7 +10,6 @@ export let disabled = false
 export let value: string | undefined
 export let name: string | null = null
 
-const listCountry = listCountries()
 </script>
 
 <div class="form-control w-full">
@@ -20,8 +20,8 @@ const listCountry = listCountries()
     </label>
   {/if}
   <select class={`select text-base-content select-${selectStyle} select-${size}`} name={name} disabled={disabled} bind:value={value}>
-    {#each listCountry as country}
-      <option value={country.countryCode}>{country.label}</option>
+    {#each arrCountries as country}
+      <option value={country.code}>{country.name}</option>
     {/each}
   </select>
 </div>
