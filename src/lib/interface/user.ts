@@ -9,22 +9,25 @@ export interface iRegisterData {
   firebaseIdToken?: string
 }
 
-interface iPlayer {
-  id: number
-  alias?: string
-  currentRP: number
-  currentMP: number
-  rtName: string
+interface iRtData {
+  name: string
 }
 
-export interface iUser {
+interface iPlayer {
+  id: number
+  alias: string | null
+  currentRP: number
+  currentMP: number
+  rtData: iRtData
+}
+
+export interface iUserLocal {
   id: string
   firstName: string,
   lastName: string,
-  countryISO2: string,
+  countryCode: string,
   email: string,
   emailVerified: boolean,
-  firebaseId: string,
   roleId: number
-  playerData?: iPlayer
+  playerData: iPlayer | null
 }

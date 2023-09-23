@@ -1,43 +1,52 @@
 <script lang="ts">
-  import TextInput from "molecule/textInput.svelte";
+  import EmailInput from "molecule/emailInput.svelte";
   import PassInput from "molecule/passInput.svelte";
   import Button from "atom/button.svelte";
 	import globalModal from "store/modal";
-  import { goto } from "$app/navigation";
+  import { goto, invalidateAll } from "$app/navigation";
   import toastAlert from "store/toast";
+  import { signInWithEmailAndPassword } from "firebase/auth";
+  import { firebaseAuth } from "service/firebase";
 
   let emailInput: string
   let password: string
+  let processing = false
 
   function registerUser() {
     goto("/register")
     globalModal.close()
   }
+
+  async function loginUser() {
+    processing = true
+    const result = await signInWithEmailAndPassword(firebaseAuth, emailInput, password)
+    const idToken = await result.user.getIdToken()
+    const loginApp = await fetch('/login', {
+      method: 'POST',
+      body: idToken
+    })
+    const loginResult = await loginApp.json()
+    if (loginResult.ok) {
+      toastAlert.success('Login Success')
+      invalidateAll()
+      globalModal.close()
+    }
+    processing = false
+  }
 </script>
 
 <div>
-  <form class="flex flex-col gap-2">
-    <TextInput labelTL="Login Email" bind:value={emailInput} />
-    <PassInput labelTL="Login Password" bind:value={password} />
+  <form class="flex flex-col gap-2" on:submit|preventDefault={loginUser}>
+    <EmailInput labelTL="Login Email" bind:value={emailInput} required />
+    <PassInput labelTL="Login Password" bind:value={password} required />
     <div class="flex flex-row-reverse">
-      <Button text="Login" color="primary" />
+      {#if processing}
+        <span class="loading loading-ring loading-lg"></span>
+      {:else}
+        <Button text="Login" color="primary" type="submit" />
+      {/if}
     </div>
   </form>
-  <!-- <div class="divider">Social Login</div>
-  <div class="flex flex-row gap-4 justify-center">
-    <div class="tooltip" data-tip="Google">
-      <Button icon="ph:google-logo-bold" square color="primary" />
-    </div>
-    <div class="tooltip" data-tip="Facebook">
-      <Button icon="ph:facebook-logo-bold" square color="primary" />
-    </div>
-    <div class="tooltip" data-tip="Twitch">
-      <Button icon="ph:twitch-logo-bold" square color="primary" />
-    </div>
-    <div class="tooltip" data-tip="Discord">
-      <Button icon="ph:discord-logo-bold" square color="primary" />
-    </div>
-  </div> -->
   <div class="divider"></div>
   <div class="grid grid-cols-2 gap-4">
     <Button full text="REGISTER" color="accent" on:click={registerUser} />

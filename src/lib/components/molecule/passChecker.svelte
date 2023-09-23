@@ -20,7 +20,7 @@
     <div class={data.min8 ? "text-success" : "text-error"}>
       <Icon icon={data.min8 ? 'ph:check-circle' : 'ph:x-circle'} width={20} height={20} />
     </div>
-    Password minimal 8 characters
+    Password must contain 8-32 total characters
   </div>
   <div class="flex flex-row items-center gap-4">
     <div class={data.number ? 'text-success' : 'text-error'}>

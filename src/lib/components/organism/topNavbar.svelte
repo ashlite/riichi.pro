@@ -3,8 +3,9 @@
   import Button from 'atom/button.svelte';
   import globalModal from 'store/modal';
   import AvatarBtn from 'molecule/avatarBtn.svelte';
+  import type { iUserLocal } from 'interface/user';
 
-  const login: boolean = false
+  export let user: iUserLocal | undefined
 </script>
 
 <div class="navbar fixed top-0 bg-primary z-50 px-4 text-primary-content h-16">
@@ -17,8 +18,8 @@
       <li><Button color="ghost" text="Club" icon="ph:buildings" href="/club" /></li>
       <li><Button color="ghost" text="Tournament" icon="ph:trophy" href="/tournament"/></li>
       <li><Button color="ghost" text="Match" icon="ph:handshake" href="/match"/></li>
-      {#if login}
-        <AvatarBtn />
+      {#if user}
+        <AvatarBtn user={user} />
       {:else}
         <li id="Login">
           <Button color="ghost" text="Login/Register" icon="ph:user" on:click={() => globalModal.loginForm()} />

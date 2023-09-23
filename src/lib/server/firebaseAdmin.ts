@@ -31,10 +31,14 @@ export const firestore = getFirestore()
 
 export async function firebaseValidation(cookie: Cookies): Promise<DecodedIdToken> {
   //validate request
-  const token = cookie.get("kaze_token")
-  const firebaseCheck = token ? await firebaseAuth.verifyIdToken(token) : null;
-  if (!firebaseCheck) {
-    throw error(404, 'Firebase auth not match')
-  } 
-  return firebaseCheck
+  const token = cookie.get("firebase_session")
+  if (token) {
+    const firebaseData = firebaseAuth.verifySessionCookie(token, true)
+    if (!firebaseData) {
+      throw error(404, 'Firebase auth not match')
+    } 
+    return firebaseData
+  } else {
+    throw error(401, 'Authentication failed, please login first')
+  }
 }

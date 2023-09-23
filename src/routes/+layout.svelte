@@ -1,11 +1,14 @@
-<script>
+<script lang="ts">
   import "../app.css"
   import { onMount } from 'svelte';
   import TopNavbar from 'organism/topNavbar.svelte'
   import { themeChange } from 'theme-change'
   import ToastAlert from 'molecule/toastAlert.svelte'
   import Modal from 'organism/modal.svelte'
-  import Footer from "organism/footer.svelte";
+  import Footer from "organism/footer.svelte"
+  import type { LayoutData } from "./$types";
+
+  export let data: LayoutData
 
   onMount(() => {
     themeChange(false)
@@ -13,12 +16,12 @@
 </script>
 
 <svelte:head>
-  <title>Kazeryu</title>
+  <title>Riichi Pro</title>
 </svelte:head>
 
 <ToastAlert />
 <Modal />
-<TopNavbar />
+<TopNavbar user={data.user}  />
 
 <div class="p-0 m-0 min-h-screen">
   <slot />

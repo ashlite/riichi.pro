@@ -39,7 +39,7 @@
       required={required} />
     <label for="" class="label">
       <span class="label-text"></span>
-      <span class="label-text-alt">{`${remainingLimit}/${limit}`}</span>
+      <span class="label-text-alt">{`${remainingLimit ?? limit}/${limit}`}</span>
     </label>
   {:else}
     <input
