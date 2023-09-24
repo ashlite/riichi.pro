@@ -29,16 +29,26 @@ model RefHelper {
 
 model User {
   // for general profile user
-  id            String   @id @default(uuid()) @db.Uuid
-  firstName     String   @map("first_name")
-  lastName      String   @map("last_name")
-  email         String   @unique
-  emailVerified Boolean  @default(false)
-  countryCode   String   @map("country_code")
+  id            String    @id @default(uuid()) @db.Uuid
+  firstName     String    @map("first_name")
+  lastName      String    @map("last_name")
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  countryCode   String    @map("country_code")
   district      String?
-  joinedAt      DateTime @default(now()) @map("joined_at")
-  roleId        Int      @default(101) @map("role_id")
-  firebaseId    String   @unique @map("firebase_id")
+  address       String?
+  phoneCountry  String?   @map("phone_country")
+  phone         String?
+  realId        String?   @map("real_id")
+  sourceRealId      String?   @map("source_real_id")
+  joinedAt      DateTime  @default(now()) @map("joined_at")
+  roleId        Int       @default(101) @map("role_id")
+  firebaseId    String    @unique @map("firebase_id")
+  tncAgreement  Boolean?  @default(true) @map("tnc_agreement")
+  banStatus     Boolean   @default(false) @map("ban_status")
+  banReason     String?   @map("ban_reason")
+  banedAt       DateTime? @map("baned_at")
+  banExpiration DateTime? @map("ban_expiration")
 
   playerData        Player?
   transactionCCList TransactionCC[]
@@ -58,7 +68,7 @@ model Player {
   avgRon      Float    @default(0.0) @map("avg_ron")
   avgTsumo    Float    @default(0.0) @map("avg_tsumo")
   avgDealIn   Float    @default(0.0) @map("avg_deal_in")
-  rtId        Int      @map("rt_id")
+  rtId        Int      @map("rt_id") @default(1)
   rankedAt    DateTime @default(now()) @map("ranked_at")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
@@ -86,6 +96,7 @@ model RankTittle {
   promotionRP Int     @map("promotion_rp")
   demotion    Boolean
   thresholdMP Int     @map("threshold_mp")
+  clubLimit Int @default(1) @map("club_limit")
 
   playerList      Player[]
   participantList MatchParticipant[]

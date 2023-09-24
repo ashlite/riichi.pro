@@ -9,6 +9,8 @@ export let size: 'lg' | 'md' | 'sm' | 'xs' = 'md'
 export let disabled = false
 export let value: string | undefined
 export let name: string | null = null
+export let textType: 'code' | 'phone' | 'symbol' | 'name' = 'name'
+export let valueType: 'code' | 'phone' | 'symbol' | 'name' = 'code'
 
 </script>
 
@@ -21,7 +23,7 @@ export let name: string | null = null
   {/if}
   <select class={`select text-base-content select-${selectStyle} select-${size}`} name={name} disabled={disabled} bind:value={value}>
     {#each arrCountries as country}
-      <option value={country.code}>{country.name}</option>
+      <option value={country[valueType]}>{country[textType]}</option>
     {/each}
   </select>
 </div>

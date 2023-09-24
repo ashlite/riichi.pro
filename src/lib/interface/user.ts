@@ -31,3 +31,12 @@ export interface iUserLocal {
   roleId: number
   playerData: iPlayer | null
 }
+
+export interface iRegisterPlayer {
+  address: string
+  district: string
+  phoneCountry: string
+  phone: string
+  realId: string
+  sourceRealId: string
+}

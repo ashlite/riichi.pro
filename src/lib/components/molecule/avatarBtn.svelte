@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { iUserLocal } from "interface/user";
+  import globalModal from "store/modal";
 
   export let user: iUserLocal
 
@@ -37,7 +38,7 @@
     <ul class="menu menu-sm bg-base-300 text-base-content w-56 shadow">
       <li><a href="/">Account</a></li>
       {#if !user.playerData}
-        <li><a href="/app/becomeplayer">Be a Player</a></li>
+        <li><button on:click={() => globalModal.playerEditor()}>Be a Player</button></li>
         <li><a href="/app/createclub">Create a Club</a></li>
       {:else}
         <li><a href="/">Player</a></li>

@@ -1,13 +1,14 @@
 <script lang='ts'>
   import FormLogin from 'template/modal/formLogin.svelte';
+  import FormPlayerEditor from 'template/modal/formPlayerEditor.svelte';
 
   import globalModal from 'store/modal'
   import shortcut from '$lib/service/shortcut'
 </script>
 
 <input type="checkbox" id="global-modal" class="modal-toggle" checked={$globalModal ? true : false}/>
-<div class="modal z-[99]" id="global-modal">
-  <div class={`modal-box max-w-${$globalModal?.size}`}>
+<dialog class="modal z-[99]" id="global-modal">
+  <div class={`modal-box max-w-full ${$globalModal?.size}`}>
     <div id="modal-header" class="flex justify-between border-bottom border-b-2 border-accent mb-4">
       {#if $globalModal?.title}
         <h3 class="font-bold text-4xl">{$globalModal?.title}</h3>
@@ -18,7 +19,9 @@
     <div id="modal-body">
       {#if $globalModal?.template == 'loginForm'}
         <FormLogin />
+      {:else if $globalModal?.template == 'playerEditor'}
+        <FormPlayerEditor />
       {/if} 
     </div>
   </div>
-</div>
+</dialog>

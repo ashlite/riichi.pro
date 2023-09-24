@@ -10,6 +10,8 @@
   import { createUserWithEmailAndPassword } from 'firebase/auth';
   import { firebaseAuth } from 'service/firebase';
 	import { goto, invalidateAll } from "$app/navigation";
+  import Icon from "@iconify/svelte";
+	import globalModal from "store/modal";
   
   let processing = false
   const regPass = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,32}$/g
@@ -82,12 +84,16 @@
     <PassInput labelTL="Repeat Password" bind:value={registerData.pass2} name="passCompare" required/>
   </div>
   <PassChecker bind:data={cekPas}/>
+  <div class="alert mt-4">
+    <Icon icon="ph:info-fill" width=30 />
+    <span>When you register, you automatically agree with our <span class="underline font-bold text-accent hover:cursor-pointer" on:click={() => globalModal.tnc()}>term and condition</span></span>
+  </div>
   <div class="mt-6">
     {#if cekPas.lower && cekPas.match && cekPas.min8 && cekPas.number && cekPas.special && cekPas.upper && !processing}
       <Button text="Submit" size="lg" full color="primary" type="submit"  />
     {:else if processing}
       <div class="w-full mx-auto">
-        <span class="loading loading-ring loading-lg"></span>
+        <div class="loading loading-ring loading-lg"></div>
       </div>
     {:else}
       <Button state="disabled" text="Submit" size="lg" full />
