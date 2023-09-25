@@ -13,6 +13,10 @@
   function close() {
     dropState = false
   }
+
+  async function logout(){
+    const result = await fetch('/api/v1/logout')
+  }
 </script>
 
 <div class="p-0" on:mouseover={open} on:focus={open} on:mouseleave={close} role="navigation">
@@ -41,16 +45,17 @@
         <li><button on:click={() => globalModal.playerEditor()}>Be a Player</button></li>
         <li><a href="/app/createclub">Create a Club</a></li>
       {:else}
-        <li><a href="/">Player</a></li>
-        <li><a href="/">Club</a></li>
+        <li><a href="/app/player">Player</a></li>
+        <li><a href="/app/club">Club</a></li>
       {/if}
       {#if user.roleId > 101}
         <li><a href="/">Official</a></li>
       {/if}
-      {#if user.roleId > 102}
-        <li><a href="/">Developer</a></li>
-      {/if}
-      <li><a href="/logout">Logout</a></li>
+      <li>
+        <form method="post" action="/logout">
+          <button>Logout</button>
+        </form>
+      </li>
     </ul>
   </div>
   {/if}

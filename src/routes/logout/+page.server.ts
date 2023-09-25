@@ -1,9 +1,10 @@
-import type { PageServerLoad } from './$types'
-import { error } from '@sveltejs/kit'
+import { redirect } from '@sveltejs/kit'
+import type { Actions } from './$types.js'
 
-export const load: PageServerLoad = (async ({locals, cookies}) => {
-  console.log('logout')
-  await cookies.delete('firebase_session')
-  locals.user = undefined
-  throw error(401, 'User Signout')
-})
+export const actions: Actions = {
+  default: async ({cookies, locals}) => {
+		cookies.delete('firebase_session')
+    locals.user = undefined
+    console.log('logout')
+	}
+}

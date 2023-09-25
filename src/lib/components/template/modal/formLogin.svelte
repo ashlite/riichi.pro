@@ -43,7 +43,9 @@
       {#if processing}
         <span class="loading loading-ring loading-lg"></span>
       {:else}
-        <Button text="Login" color="primary" type="submit" />
+        <div class="w-1/2">
+          <Button text="Login" color="primary" type="submit" full />
+        </div>
       {/if}
     </div>
   </form>
