@@ -33,6 +33,8 @@ export interface iUserLocal {
 }
 
 export interface iRegisterPlayer {
+  gender: number
+  dob: Date
   address: string
   district: string
   phoneCountry: string

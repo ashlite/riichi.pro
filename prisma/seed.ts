@@ -71,6 +71,19 @@ async function main() {
       group: 'club-roles'
     }]
   })
+  const resultGender = await prisma.refHelper.createMany({
+    data: [{
+      id: 401,
+      name: 'Male',
+      notes: 'Gender identification for user',
+      group: 'gender_user'
+    },{
+      id: 402,
+      name: 'Female',
+      notes: 'Gender identification for user',
+      group: 'gender_user'
+    }]
+  })
 
   const resultRt = await prisma.rankTittle.createMany({
     data: [{
@@ -323,7 +336,7 @@ async function main() {
     }]
   })
   
-  console.log({resultUserRoles, resultClubRole, resultRTGroup, resultRt})
+  console.log({resultUserRoles, resultClubRole, resultRTGroup, resultGender, resultRt})
 }
 
 main()

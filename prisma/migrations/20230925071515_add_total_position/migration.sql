@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "player" ADD COLUMN     "total_first" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "total_fourth" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "total_second" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "total_third" INTEGER NOT NULL DEFAULT 0;

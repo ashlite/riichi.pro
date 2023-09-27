@@ -21,7 +21,9 @@ export async function POST({request, cookies}) {
         phone: payload.phone.toString(),
         phoneCountry: payload.phoneCountry.toString(),
         realId: payload.realId.toString(),
-        sourceRealId: payload.sourceRealId
+        sourceRealId: payload.sourceRealId,
+        dob: payload.dob,
+        genderRefId: payload.gender,
       }
     })
 
