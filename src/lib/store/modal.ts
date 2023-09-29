@@ -2,7 +2,7 @@ import { writable } from "svelte/store"
 
 export interface iModal {
   title: string
-  template: 'loginForm' | 'playerEditor' | 'tnc' | 'credit'
+  template: 'loginForm' | 'playerEditor' | 'tnc' | 'credit' | 'clubEditor'
   action?: string
   data?: any
   // size: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl'
@@ -19,6 +19,7 @@ function createModal(){
     playerEditor:() => set({title: 'Be a player', template: 'playerEditor', size:'w-7/12'}),
     tnc:() => set({title: 'Term and Condition', template: 'tnc', size:'w-8/12'}),
     webCredit:() => set({title: 'Credits', template: 'credit', size:'w-5/12'}),
+    newClub:() => set({title: 'Create new club', template: 'clubEditor', size:'w-9/12'})
   }
 }
 

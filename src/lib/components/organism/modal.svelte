@@ -2,6 +2,7 @@
   import FormLogin from 'template/modal/formLogin.svelte';
   import FormPlayerEditor from 'template/modal/formPlayerEditor.svelte';
   import WebCredit from 'template/modal/webCredit.svelte';
+  import ClubEditor from 'template/modal/clubEditor.svelte';
 
   import globalModal from 'store/modal'
   import shortcut from '$lib/service/shortcut'
@@ -22,8 +23,10 @@
         <FormLogin />
       {:else if $globalModal?.template == 'playerEditor'}
         <FormPlayerEditor />
-        {:else if $globalModal?.template == 'credit'}
+      {:else if $globalModal?.template == 'credit'}
         <WebCredit />
+      {:else if $globalModal?.template == 'clubEditor'}
+        <ClubEditor />
       {/if} 
     </div>
   </div>

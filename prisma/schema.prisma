@@ -20,9 +20,11 @@ model RefHelper {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  roleList      ClubMember[]
-  rankTitleList RankTittle[]
-  userList      User[]
+  roleList       ClubMember[]
+  rankTitleList  RankTittle[]
+  userList       User[]       @relation(name: "role")
+  genderList     User[]       @relation(name: "gender")
+  clubStatusList Club[]
 
   @@map("reference_helper")
 }
@@ -36,7 +38,7 @@ model User {
   emailVerified Boolean   @default(false)
   countryCode   String    @map("country_code")
   dob           DateTime? @map("dob")
-  genderRefId   Int?       @map("gender_ref_id")
+  genderRefId   Int?      @map("gender_ref_id")
   district      String?
   address       String?
   phoneCountry  String?   @map("phone_country")
@@ -54,8 +56,10 @@ model User {
 
   playerData        Player?
   transactionCCList TransactionCC[]
-  roleData          RefHelper       @relation(fields: [roleId], references: [id])
+  roleData          RefHelper       @relation(name: "role", fields: [roleId], references: [id])
+  genderData        RefHelper?      @relation(name: "gender", fields: [genderRefId], references: [id])
 
+  @@unique([phoneCountry, phone])
   @@map("user")
 }
 
@@ -78,6 +82,8 @@ model Player {
   rankedAt    DateTime @default(now()) @map("ranked_at")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
+  username    String
+  active      Boolean   @default(true)
 
   userData              User                @relation(fields: [userId], references: [id])
   rtData                RankTittle          @relation(fields: [rtId], references: [id])
@@ -101,7 +107,6 @@ model RankTittle {
   baseRP      Int     @map("base_rp")
   promotionRP Int     @map("promotion_rp")
   demotion    Boolean
-  thresholdMP Int     @map("threshold_mp")
   clubLimit   Int     @default(1) @map("club_limit")
 
   playerList      Player[]
@@ -115,11 +120,11 @@ model RankTittle {
 
 model Club {
   id              String   @id @default(uuid()) @db.Uuid
+  slug            String   @unique
   name            String
   emblemPic       String?
   coverPic        String?
   description     String?
-  countryName     String   @map("country_name")
   countryISO2     String   @map("country_iso2")
   totalMember     Int      @default(0) @map("total_member")
   totalMainMember Int      @default(0) @map("total_main_member")
@@ -127,26 +132,57 @@ model Club {
   district        String?
   address         String?
   emailContact    String?  @map("email_contact")
+  phoneContact    String?  @map("phone_contact")
+  website         String?  @map("website")
   currentCC       Int      @default(0)
   spendCC         Int      @default(0)
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
+  clubStatusId    Int
 
   memberList      ClubMember[]
   transactionList TransactionCC[]
   matchList       Match[]
+  statusData      RefHelper       @relation(fields: [clubStatusId], references: [id])
+  clubSetting     ClubSetting?
 
   @@map("club")
 }
 
+model ClubSetting {
+  clubId             String  @unique @map("club_id") @db.Uuid
+  autoApproveMember  Boolean @default(false) @map("auto_approve_member")
+  hideContact        Boolean @default(true)
+  firstUma           Int     @default(150) @map("first_uma")
+  secondUma          Int     @default(50) @map("second_uma")
+  thirdUma           Int     @default(-50) @map("third_uma")
+  fourthUma          Int     @default(-150) @map("fourth_uma")
+  chomboPenalty      Int     @default(-300) @map("chombo_penalty")
+  chomboPenaltyOther String? @map("chombo_penalty_other")
+  yakumanBonus       Int     @default(0) @map("yakuman_bonus")
+  yakumanBonusOther  String? @map("yakuman_bonus_other")
+  acceptAutotable    Boolean @default(false) @map("accept_autotable")
+
+  clubData Club @relation(fields: [clubId], references: [id])
+
+  @@map("club_setting")
+}
+
 model ClubMember {
-  id        Int       @id @default(autoincrement())
-  playerId  Int       @map("player_id")
-  clubId    String    @map("club_id") @db.Uuid
-  roleId    Int       @map("role_id")
-  createdAt DateTime  @default(now()) @map("created_at")
-  expiredAt DateTime? @map("expired_at")
-  active    Boolean   @default(true)
+  id                  Int       @id @default(autoincrement())
+  playerId            Int       @map("player_id")
+  clubId              String    @map("club_id") @db.Uuid
+  roleId              Int       @map("role_id")
+  createdAt           DateTime  @default(now()) @map("created_at")
+  expiredAt           DateTime? @map("expired_at")
+  active              Boolean   @default(true)
+  canApproveMember    Boolean   @default(false) @map("can_approve_member")
+  canEditClubInfo     Boolean   @default(false) @map("can_edit_info")
+  canEditClubSetting  Boolean   @default(false) @map("can_edit_setting")
+  canSubmitMatch      Boolean   @default(false) @map("can_submit_match")
+  canSubmitTournament Boolean   @default(false) @map("can_submit_tournament")
+  canBuyCC            Boolean   @default(false) @map("can_buy_cc")
+  canEditAccess       Boolean   @default(false) @map("can_edit_access")
 
   clubData     Club      @relation(fields: [clubId], references: [id])
   playerData   Player    @relation(fields: [playerId], references: [id])
@@ -216,20 +252,6 @@ model TransactionRP {
   @@map("transaction_rp")
 }
 
-model TransactionMP {
-  id        String   @id @default(uuid()) @db.Uuid
-  matchId   String?  @db.Uuid
-  note      String?
-  mpBefore  Int      @map("mp_before")
-  mpMove    Int      @map("mp_move")
-  mpAfter   Int      @map("mp_after")
-  createdAt DateTime
-
-  matchData Match? @relation(fields: [matchId], references: [id])
-
-  @@map("transaction_mp")
-}
-
 model Match {
   id               String   @id @default(uuid()) @db.Uuid
   createdAt        DateTime @default(now()) @map("created_at")
@@ -245,7 +267,6 @@ model Match {
 
   participantList   MatchParticipant[]
   transactionRPList TransactionRP[]
-  transactionMPList TransactionMP[]
   clubData          Club?              @relation(fields: [clubId], references: [id])
   creatorMemberData ClubMember?        @relation(fields: [creatorMemberId], references: [id])
 

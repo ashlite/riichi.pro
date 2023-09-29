@@ -11,6 +11,10 @@ export interface iRegisterData {
 
 interface iRtData {
   name: string
+  skillIndex: number
+  baseRP: number
+  promotionRP: number
+  clubLimit: number
 }
 
 interface iPlayer {
@@ -30,6 +34,10 @@ export interface iUserLocal {
   emailVerified: boolean,
   roleId: number
   playerData: iPlayer | null
+  banStatus: boolean
+  banReason: string | null
+  banExpiration: Date | null
+  banedAt: Date | null
 }
 
 export interface iRegisterPlayer {

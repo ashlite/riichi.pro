@@ -1,5 +1,4 @@
 import { firebaseValidation } from '$lib/server/firebaseAdmin'
-import type { iUserLocal } from 'interface/user'
 import { db } from '$lib/server/db'
 
 
@@ -20,6 +19,10 @@ export async function handle({event, resolve}) {
         id: true,
         roleId: true,
         countryCode: true,
+        banStatus: true,
+        banedAt: true,
+        banExpiration: true,
+        banReason: true,
         playerData: {
           select: {
             id: true,

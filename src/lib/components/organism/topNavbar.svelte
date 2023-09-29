@@ -20,7 +20,7 @@
     <ul class="menu menu-horizontal menu-lg gap-4 p-0 items-center">
       <li><Button color="ghost text-primary" text="Players" icon="ph:users-four" href="/players" /></li>
       <li><Button color="ghost text-primary" text="Club" icon="ph:buildings" href="/club" /></li>
-      <li><Button color="ghost text-primary" text="Tournament" icon="ph:trophy" href="/tournament"/></li>
+      <!-- <li><Button color="ghost text-primary" text="Tournament" icon="ph:trophy" href="/tournament"/></li> -->
       <li><Button color="ghost text-primary" text="Match" icon="ph:handshake" href="/match"/></li>
       {#if user}
         <AvatarBtn user={user} />

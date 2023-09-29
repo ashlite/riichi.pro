@@ -30,7 +30,8 @@ export async function POST({request, cookies}) {
     //creating player
     await db.player.create({
       data: {
-        userId: user.id
+        userId: user.id,
+        username: `${user.firstName} ${user.lastName}`
       }
     })
     

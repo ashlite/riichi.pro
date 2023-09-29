@@ -40,13 +40,11 @@
       <li><a href="/app/profile">Profile</a></li>
       {#if !user.playerData}
         <li><button on:click={() => globalModal.playerEditor()}>Be a Player</button></li>
-        <li><a href="/app/createclub">Create a Club</a></li>
       {:else}
-        <li><a href="/app/player">Player</a></li>
         <li><a href="/app/club">Club</a></li>
       {/if}
       {#if user.roleId > 101}
-        <li><a href="/">Official</a></li>
+        <li><a href="/app/official">Official</a></li>
       {/if}
       <li>
         <form method="post" action="/logout">

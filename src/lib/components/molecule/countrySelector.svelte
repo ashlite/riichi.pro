@@ -10,6 +10,7 @@ export let disabled = false
 export let value: string | undefined
 export let name: string | null = null
 export let type: 'country' | 'phone' = 'country'
+export let required = false
 
 </script>
 
@@ -20,7 +21,7 @@ export let type: 'country' | 'phone' = 'country'
       <span class="label-text-alt">{labelTR ? labelTR : ''}</span>
     </label>
   {/if}
-  <select class={`select text-base-content select-${selectStyle} select-${size}`} name={name} disabled={disabled} bind:value={value}>
+  <select class={`select text-base-content select-${selectStyle} select-${size}`} name={name} required={required} disabled={disabled} bind:value={value}>
     {#each arrCountries as country}
       <option value={country.code}>{type == 'country' ? country.name : `${country.name} (+${country.phone})`}</option>
     {/each}
