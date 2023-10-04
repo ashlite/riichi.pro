@@ -4,7 +4,7 @@
   export let labelBL: string | null = null
   export let placeholder: string | null = null
   export let limit = 0
-  export let value: string | undefined
+  export let value: string | undefined = ''
   export let uppercase = false
   export let disabled = false
   export let required = false

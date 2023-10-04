@@ -1,12 +1,16 @@
 export interface iRegisterData {
-  firstName: string,
-  lastName: string,
-  countryISO2: string,
-  email: string,
-  pass1: string,
-  pass2: string,
-  firebaseId?: string
-  firebaseIdToken?: string
+  fullName: string
+  nationalityCountryCode: string
+  residenceCountryCode: string
+  dob: Date
+  genderRefId: number
+  district: string
+  address: string
+  phoneCountry: string
+  phone: string
+  realId: string
+  sourceRealId: string
+  telegramId?: string
 }
 
 interface iRtData {
@@ -26,27 +30,15 @@ interface iPlayer {
 }
 
 export interface iUserLocal {
-  id: string
-  firstName: string,
-  lastName: string,
-  countryCode: string,
-  email: string,
-  emailVerified: boolean,
+  id: number
+  uuid: string
+  fullName: string
+  email: string
   roleId: number
-  playerData: iPlayer | null
   banStatus: boolean
   banReason: string | null
   banExpiration: Date | null
   banedAt: Date | null
-}
-
-export interface iRegisterPlayer {
-  gender: number
-  dob: Date
-  address: string
-  district: string
-  phoneCountry: string
-  phone: string
-  realId: string
-  sourceRealId: string
+  currentRP: number
+  rtData: iRtData
 }

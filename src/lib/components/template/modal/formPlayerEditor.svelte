@@ -43,24 +43,24 @@ async function submitPlayer() {
   <p class="my-4">Please complete these form to become an official players. This data is kept secret and will not be shared to public.</p>
   <form on:submit|preventDefault={submitPlayer}>
     <div class="grid grid-cols-3 gap-4">
-      <Select labelTL="Gender" selectStyle="bordered" bind:value={playerData.gender}>
+      <Select labelTL="Gender*" selectStyle="bordered" bind:value={playerData.gender}>
         <SelectItem text="Male" value={401} />
         <SelectItem text="Female" value={402} />
       </Select>
       <div class="form-control">
-        <label class="label">Date of Birth</label>
+        <label class="label">Date of Birth*</label>
         <DatePicker maxDay={-2555} bind:selectedDate={playerData.dob} />
       </div>
-      <TextInput labelTL="District/State/Province of residence" required bind:value={playerData.district}/>
+      <TextInput labelTL="District/State/Province of residence*" required bind:value={playerData.district}/>
     </div>
-    <TextInput labelTL="Address of residence" required bind:value={playerData.address}/>
+    <TextInput labelTL="Address of residence*" required bind:value={playerData.address}/>
     <div class="flex flex-row gap-4">
-      <CountrySelector labelTL="Phone Code" type='phone' bind:value={playerData.phoneCountry} />
-      <TextInput labelTL="Active Phone number" labelTR="without leading 0" required bind:value={playerData.phone}/>
+      <CountrySelector labelTL="Phone Code*" type='phone' bind:value={playerData.phoneCountry} />
+      <TextInput labelTL="Active Phone number*" labelTR="without leading 0" required bind:value={playerData.phone}/>
     </div>
     <div class="flex flex-row gap-4">
-      <TextInput labelTL="National ID" required bind:value={playerData.realId}/>
-      <TextInput labelTL="National ID Source/Name" required bind:value={playerData.sourceRealId}/>
+      <TextInput labelTL="National ID*" required bind:value={playerData.realId}/>
+      <TextInput labelTL="National ID Source/Name*" required bind:value={playerData.sourceRealId}/>
     </div>
     {#if processing}
     <div class="flex flex-row-reverse">

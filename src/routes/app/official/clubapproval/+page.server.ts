@@ -9,6 +9,13 @@ export async function load() {
       memberList: {
         where: {
           roleId: 301
+        },
+        include: {
+          playerData: {
+            select: {
+              username: true
+            }
+          }
         }
       }
     }

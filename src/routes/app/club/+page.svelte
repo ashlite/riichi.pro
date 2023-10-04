@@ -1,8 +1,8 @@
 <script lang="ts">
 import ClubCard from "organism/clubCard.svelte";
-import type { PageServerData } from "./$types.js";
+import type { PageData } from "./$types.js";
 
-export let data: PageServerData
+export let data: PageData
 const listClub = data.listClub
 const clubLimit = data.clubLimit ?? 0
 let totalMain = 0

@@ -74,11 +74,6 @@ async function main() {
       name: 'Pending',
       notes: 'Club member pending to join, dont have access',
       group: 'club-roles'
-    },{
-      id: 310,
-      name: 'Inactive',
-      notes: 'Club member non-active',
-      group: 'club-roles'
     }]
   })
   const resultGender = await prisma.refHelper.createMany({
@@ -116,6 +111,39 @@ async function main() {
       notes: 'club inactive, cannot record a match and cannot accept new member',
       group: 'club_status'
     }]
+  })
+  const resultTransactionCCType = await prisma.refHelper.createMany({
+    data: [{
+      id: 601,
+      name: 'Register Bonus',
+      notes: 'for successfull approval bonus',
+      group: 'trans_cc_type'
+    },{
+      id: 602,
+      name: 'Official Bonus',
+      notes: 'for cc from official',
+      group: 'trans_cc_type'
+    },{
+      id: 603,
+      name: 'Tournament Bonus',
+      notes: 'for cc from tournament',
+      group: 'trans_cc_type'
+    },{
+      id: 604,
+      name: 'Deposit Bonus',
+      notes: 'for cc from depositing / payment',
+      group: 'trans_cc_type'
+    },{
+      id: 651,
+      name: 'Input Match',
+      notes: 'cc usage from inputing match',
+      group: 'trans_cc_type'
+    },{
+      id: 652,
+      name: 'Monthly Upkeep',
+      notes: 'cc usage from keeping upkeep',
+      group: 'trans_cc_type'
+    },]
   })
 
   const resultRt = await prisma.rankTittle.createMany({
@@ -350,7 +378,7 @@ async function main() {
     }]
   })
   
-  console.log({resultUserRoles, resultClubRole, resultRTGroup, resultGender, resultClubStatus, resultRt})
+  console.log({resultUserRoles, resultClubRole, resultRTGroup, resultGender, resultClubStatus, resultTransactionCCType, resultRt})
 }
 
 main()

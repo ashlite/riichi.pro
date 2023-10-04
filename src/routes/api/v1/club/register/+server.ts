@@ -38,6 +38,8 @@ export async function POST({request, cookies, locals}) {
         emailContact: payload.emailContact,
         phoneContact: (payload.phoneCode?.toString() ?? '-' + payload.phoneContact?.toString() ?? '-'),
         website: payload.website,
+        totalMainMember: 1,
+        totalMember: 1,
         clubSetting: {
           create: {}
         },

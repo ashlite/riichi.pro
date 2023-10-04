@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { PageServerData } from "./$types";
+  import type { PageData } from "./$types";
   import { objCountries } from "service/country";
   import { dateFormater } from "service/tools";
   import Button from "atom/button.svelte";
@@ -7,7 +7,7 @@
   import { sendEmailVerification } from "firebase/auth";
 	import toastAlert from "store/toast";
 
-  export let data: PageServerData
+  export let data: PageData
   const country = objCountries[data.profileData.countryCode as keyof typeof objCountries]
   const phoneCountry = "+"+ country.phone
   const playerData = data.profileData.playerData

@@ -25,7 +25,7 @@
       <Button text="Create new club" color="primary" on:click={() => globalModal.newClub()} />
     {:else}
       <div class="h-32 w-32 rounded-lg mx-auto">
-        <Image src={emblem ?? undefined} alt="emblem club" scaleDown maxH={32} />
+        <Image src={emblem ?? 'no'} alt="emblem club" scaleDown maxH={32} />
       </div>
       <h2 class="card-title mx-auto">{name}</h2>
       <div class="text-center">{countryName}</div>

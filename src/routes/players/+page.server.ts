@@ -1,7 +1,11 @@
 import { db } from '$lib/server/db.js';
 import type { iPagination } from 'interface/pageMeta.js';
+import { redirect } from '@sveltejs/kit';
 
-export async function load({ url }) {
+export async function load({ url, locals }) {
+  if (locals.status == 'register') {
+    throw redirect(307, '/register')
+  }
   // const rtQuery = url.searchParams.get('')
   const currentPage = Number(url.searchParams.get('page') ?? 1)
   const takeRow = Number(url.searchParams.get('take') ?? 10)

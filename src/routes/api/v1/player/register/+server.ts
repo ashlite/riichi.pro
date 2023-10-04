@@ -2,43 +2,40 @@ import { error, json } from '@sveltejs/kit';
 import type { iRegisterData } from 'interface/user';
 import { firebaseAuth } from '$lib/server/firebaseAdmin';
 import { db } from '$lib/server/db';
-import type { iRegisterPlayer } from 'interface/user';
 import { firebaseValidation } from '$lib/server/firebaseAdmin';
 
 export async function POST({request, cookies}) {
   try {
-    const decodedToken = await firebaseValidation(cookies)
-    const payload: iRegisterPlayer = await request.json()
+    const decodedIdToken = await firebaseValidation(cookies)
+    const payload: iRegisterData = await request.json()
     
-    //updating user DB
-    const user = await db.user.update({
-      where: {
-        firebaseId: decodedToken.uid
-      },
+    //creating user data
+    const user = await db.user.create({
       data: {
+        email: decodedIdToken.email!,
+        firebaseId: decodedIdToken.uid,
+        fullName: payload.fullName,
+        nationalityCountryCode: payload.nationalityCountryCode,
+        residenceCountryCode: payload.residenceCountryCode,
         address: payload.address,
         district: payload.district,
-        phone: payload.phone.toString(),
-        phoneCountry: payload.phoneCountry.toString(),
-        realId: payload.realId.toString(),
-        sourceRealId: payload.sourceRealId,
         dob: payload.dob,
-        genderRefId: payload.gender,
-      }
-    })
-
-    //creating player
-    await db.player.create({
-      data: {
-        userId: user.id,
-        username: `${user.firstName} ${user.lastName}`
+        genderRefId: payload.genderRefId,
+        phone: payload.phone,
+        phoneCountry: payload.phoneCountry,
+        realId: payload.realId,
+        sourceRealId: payload.sourceRealId,
+        telegramId: payload.telegramId,
+        metaData: {
+          create: {}
+        }
       }
     })
     
-    return json({ok: true})
+    return json({ok: true, id: user.id})
   } catch (e) {
     console.log(e)
-    throw json({ok: false, message:'e'})
+    throw json({ok: false, message: 'failed to save user data'})
   }
 
 }

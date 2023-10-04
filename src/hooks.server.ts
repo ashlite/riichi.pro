@@ -7,36 +7,43 @@ export async function handle({event, resolve}) {
   const firebaseToken = event.cookies.get('firebase_session')
   if (firebaseToken && firebaseToken != undefined){
     const decodedIdToken = await firebaseValidation(event.cookies)
-    const user = await db.user.findUniqueOrThrow({
+    const user = await db.user.findUnique({
       where: {
         firebaseId: decodedIdToken.uid
       },
       select: {
-        emailVerified: true,
         email: true,
-        firstName: true,
-        lastName: true,
+        fullName: true,
+        uuid: true,
         id: true,
         roleId: true,
-        countryCode: true,
         banStatus: true,
         banedAt: true,
         banExpiration: true,
         banReason: true,
-        playerData: {
+        rtData: {
           select: {
-            id: true,
-            alias: true,
-            currentRP: true,
-            currentMP: true,
-            rtData: true
+            name: true,
+            skillIndex: true,
+            baseRP: true,
+            promotionRP: true,
+            clubLimit: true,
           }
-        }
+        },
+        currentRP: true
       }
     })
-    event.locals.user = user
+    if (user) {
+      event.locals.user = user
+      event.locals.status = 'login'
+    } else {
+      event.locals.user = undefined
+      event.locals.status = 'register'
+    }
+    
   } else {
     event.locals.user = undefined
+    event.locals.status = undefined
   }
    
 	return await resolve(event);

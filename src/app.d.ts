@@ -6,6 +6,7 @@ declare global {
 		// interface Error {}
 		interface Locals {
       user?: iUserLocal
+      status?: 'register' | 'login'
     }
 		// interface PageData {}
 		// interface Platform {}

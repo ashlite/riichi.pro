@@ -1,102 +1,107 @@
 <script lang="ts">
+  import type { iRegisterData } from "interface/user";
   import TextInput from "molecule/textInput.svelte";
-  import EmailInput from "molecule/emailInput.svelte";
-  import PassInput from "molecule/passInput.svelte";
-  import PassChecker, {type iPassChecker} from "molecule/passChecker.svelte";
 	import Button from "atom/button.svelte";
   import CountrySelector from "molecule/countrySelector.svelte";
   import toastAlert from "store/toast";
-  import type { iRegisterData } from "interface/user";
-  import { createUserWithEmailAndPassword } from 'firebase/auth';
-  import { firebaseAuth } from 'service/firebase';
 	import { goto, invalidateAll } from "$app/navigation";
   import Icon from "@iconify/svelte";
 	import globalModal from "store/modal";
+  import Select from "molecule/select.svelte";
+  import SelectItem from "atom/selectItem.svelte";
+  import DatePicker from "organism/datePicker.svelte";
   
   let processing = false
-  const regPass = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,32}$/g
-  const regNumber = /(?=.*\d)/g
-  const regSpecial = /(?=.*[@$!%*#?&])/g
-  const regLower = /(?=.*[a-z])/g
-  const regUpper = /(?=.*[A-Z])/g
-  let registerData: iRegisterData = {
-    pass1:'',
-    pass2:'',
-    countryISO2:'',
-    firstName:'',
-    lastName:'',
-    email:'',
-  }
-  let cekPas: iPassChecker = {lower: false, match: false, min8: false, number: false, special: false, upper: false}
-
-  $: validatePass(registerData.pass1, registerData.pass2)
-
-  function validatePass(passCore: string, passRepeat: string) {
-    cekPas.min8 = passCore.length >= 8 && passCore.length <= 32
-    cekPas.number = regNumber.test(passCore)
-    cekPas.special = regSpecial.test(passCore)
-    cekPas.lower = regLower.test(passCore)
-    cekPas.upper = regUpper.test(passCore)
-    cekPas.match = passCore == passRepeat && passCore.length > 0
+  const registerData: iRegisterData = {
+    fullName: '',
+    genderRefId: 0,
+    address:'',
+    residenceCountryCode:'',
+    nationalityCountryCode:'',
+    district:'',
+    dob: new Date(),
+    phone: '',
+    phoneCountry: '',
+    realId:'',
+    sourceRealId:''
   }
 
-  async function registerEmailPass() {
+  async function registerUser() {
     processing = true
-    //test password againt
-    if (registerData.pass1 != registerData.pass2) {toastAlert.error("password doesn't match")}
-    else if (regPass.test(registerData.pass1)) {toastAlert.error("wrong password format")}
-    else {
-      try {
-        const result = await createUserWithEmailAndPassword(firebaseAuth, registerData.email, registerData.pass1)
-        registerData.firebaseId = result.user.uid
-        registerData.firebaseIdToken = await result.user.getIdToken()
-        const response = await fetch('/register', {
-          method: 'POST',
-          body: JSON.stringify(registerData)
-        })
-        const registerResult = await response.json()
-        if (registerResult.ok) {
-          invalidateAll()
-          await goto("/")
-          toastAlert.success("Register success")
-        }
-      } catch (e) {
-        toastAlert.error(`Registration failed. Reason: ${e}`)
+    try {
+      const responseInput = await fetch('/api/v1/player/register', {
+        method: 'POST',
+        body: JSON.stringify(registerData)
+      })
+      const resultInput = await responseInput.json()
+      if(resultInput.ok) {
+        toastAlert.success('Register sukses')
+        invalidateAll()
+        goto('/')
+      } else {
+        toastAlert.error(resultInput.message)
         processing = false
-      } 
-    }
+      }
+    } catch (e) {
+      toastAlert.error(`Registration failed. Reason: ${e}`)
+      processing = false
+    } 
   }
 </script>
 
-<form class="mx-auto w-3/5 mt-8" on:submit|preventDefault={registerEmailPass}>
-  <h1 class="text-primary font-bold text-3xl">Register New User</h1>
+<div class="w-3/5 mt-8 mx-auto">
+  <h1 class="text-primary font-bold text-3xl">Register New Player</h1>
   <div class="divider"></div>
-  <div class="flex flex-row gap-4">
-    <TextInput labelTL="First Name" bind:value={registerData.firstName} name="firstName" required limit={100} />
-    <TextInput labelTL="Last Name" bind:value={registerData.lastName} name="lastName" required limit={100} />
-  </div>
-  <div class="flex flex-row gap-4">
-    <CountrySelector labelTL="Nationality" bind:value={registerData.countryISO2} name="country"/>
-    <EmailInput labelTL="Email Login" name="email" required limit={300} bind:value={registerData.email}/>
-  </div>
-  <div class="flex flex-row gap-4">
-    <PassInput labelTL="Input Password" bind:value={registerData.pass1} name="pass" required />
-    <PassInput labelTL="Repeat Password" bind:value={registerData.pass2} name="passCompare" required/>
-  </div>
-  <PassChecker bind:data={cekPas}/>
-  <div class="alert mt-4">
-    <Icon icon="ph:info-fill" width=30 />
-    <span>When you register, you automatically agree with our <span class="underline font-bold text-accent hover:cursor-pointer" on:click={() => globalModal.tnc()}>term and condition</span></span>
-  </div>
-  <div class="mt-6">
-    {#if cekPas.lower && cekPas.match && cekPas.min8 && cekPas.number && cekPas.special && cekPas.upper && !processing}
-      <Button text="Submit" size="lg" full color="primary" type="submit"  />
-    {:else if processing}
-      <div class="w-full mx-auto">
-        <div class="loading loading-ring loading-lg"></div>
+  <form class="mx-auto" on:submit|preventDefault={registerUser}>
+    <div class="flex flex-row gap-4">
+      <TextInput labelTL="Full Name" labelTR="Please use your real name" bind:value={registerData.fullName} name="firstName" required />
+      <Select labelTL="Gender*" selectStyle="bordered" bind:value={registerData.genderRefId}>
+        <SelectItem text="Male" value={401} />
+        <SelectItem text="Female" value={402} />
+      </Select>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <CountrySelector labelTL="Nationality" bind:value={registerData.nationalityCountryCode} name="country"/>
+      <div class="form-control">
+        <label class="label">Date of Birth*</label>
+        <DatePicker maxDay={-2555} bind:selectedDate={registerData.dob} />
+      </div>
+    </div>
+    <div class="grid grid-cols-4 gap-4">
+      <CountrySelector labelTL="Country of residence" bind:value={registerData.residenceCountryCode} name="country"/>
+      <TextInput labelTL="District/Province of residence*" required bind:value={registerData.district}/>
+      <div class="col-span-2">
+        <TextInput labelTL="Address of residence*" required bind:value={registerData.address}/>
+      </div>
+    </div>
+    <div class="flex flex-row gap-4">
+      <CountrySelector labelTL="Phone Code*" type='phone' bind:value={registerData.phoneCountry} />
+      <TextInput labelTL="Active Phone number*" labelTR="without leading 0" required bind:value={registerData.phone}/>
+    </div>
+    <div class="flex flex-row gap-4">
+      <TextInput labelTL="National ID" bind:value={registerData.realId}/>
+      <TextInput labelTL="National ID Source/Name" bind:value={registerData.sourceRealId}/>
+      <TextInput labelTL="Telegram username" bind:value={registerData.telegramId}/>
+    </div>
+    <div class="alert mt-4">
+      <Icon icon="ph:info-fill" width=30 />
+      <span>When you register, you automatically agree with our <span class="underline font-bold text-accent hover:cursor-pointer" on:click={() => globalModal.tnc()}>term and condition</span></span>
+    </div>
+    <div class="mt-6">
+    {#if processing}
+      <div class="flex flex-row-reverse">
+        <span class="loading loading-dots loading-lg"></span>
       </div>
     {:else}
-      <Button state="disabled" text="Submit" size="lg" full />
+      <div class="flex flex-row-reverse gap-4">
+        <div class="w-1/5">
+          <Button text="Submit" type="submit" size="lg" color="success" full />
+        </div>
+        <div class="w-1/5">
+          <Button text="Reset" type="reset" size="lg" color="warning" full />
+        </div>
+      </div>
     {/if}
-  </div>
-</form>
+    </div>
+  </form>
+</div>
