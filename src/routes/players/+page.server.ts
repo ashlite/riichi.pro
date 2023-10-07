@@ -11,23 +11,22 @@ export async function load({ url, locals }) {
   const takeRow = Number(url.searchParams.get('take') ?? 10)
   const filterRT = url.searchParams.get('rt') ?? 'mix'
   
-  const players = await db.player.findMany({
+  const players = await db.user.findMany({
     where: {
-      userData: {
-        banStatus: false,
-      },
+      banStatus: false,
       rtId: {
         notIn: (filterRT == 'pro' ? [1,2,3,4,5,6,7,8,9,10] : filterRT == 'ama' ? [1,11,12,13,14,15,16,17,18,19] : [1])
       }
     },
     select: {
-      userId: true,
-      currentMP: true,
+      id: true,
+      uuid: true,
+      nationalityCountryCode: true,
+      fullName: true,
+      currentTP: true,
       currentRP: true,
-      totalChombo: true,
-      totalMatch: true,
-      userData: true,
       rtData: true,
+      metaData: true,
       clubList: {
         where: {
           roleId: {
@@ -44,11 +43,9 @@ export async function load({ url, locals }) {
     skip: (takeRow * (currentPage - 1)),
   })
 
-  const totalPlayer = await db.player.count({
+  const totalPlayer = await db.user.count({
     where: {
-      userData: {
-        banStatus: false,
-      },
+      banStatus: false,
       rtId: {
         notIn: (filterRT == 'pro' ? [1,2,3,4,5,6,7,8,9,10] : filterRT == 'ama' ? [1,11,12,13,14,15,16,17,18,19] : [1])
       }

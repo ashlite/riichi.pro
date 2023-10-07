@@ -4,19 +4,20 @@ import type { LayoutServerLoadEvent } from "./$types";
 import { db } from "$lib/server/db";
 
 export async function load({ locals, params }: LayoutServerLoadEvent) {
-  if (!locals.user || locals.user.roleId < 102) throw redirect(307, "/")
+  if (!locals.user || locals.user.roleId < 102) { throw redirect(307, "/") }
 
   try {
     //check user and throw if needed
-    const userData = await db.clubMember.findFirstOrThrow({
+    const userMemberData = await db.clubMember.findFirstOrThrow({
       where: {
-        playerId: locals.user.playerData?.id,
+        userId: locals.user.id,
         active: true,
         clubData: {
           slug: params.slug
         }
       },
       select: {
+        id: true,
         roleId: true,
         canApproveMember: true,
         canBuyCC: true,
@@ -27,7 +28,7 @@ export async function load({ locals, params }: LayoutServerLoadEvent) {
         canSubmitTournament: true,
         clubData: {
           include: {
-            clubSetting: true
+            clubSetting: true,
           }
         }
       }
@@ -41,9 +42,9 @@ export async function load({ locals, params }: LayoutServerLoadEvent) {
         }
       }
     })
-  
+
     return {
-      userData,
+      userMemberData,
       totalPendingJoin
     }
     

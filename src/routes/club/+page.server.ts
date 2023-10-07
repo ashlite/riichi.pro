@@ -12,7 +12,6 @@ export async function load({ url, locals }) {
   const currentPage = Number(url.searchParams.get('page') ?? 1)
   const takeRow = Number(url.searchParams.get('take') ?? 10)
   const country = url.searchParams.get('country') ?? 'global'
-  const isPlayer = !!locals.user?.playerData
   const listUserClub: string[] = []
   let whereInput: Prisma.ClubWhereInput
 
@@ -34,7 +33,7 @@ export async function load({ url, locals }) {
     select: {
       id: true,
       name: true,
-      emblemPic: true,
+      emblemFile: true,
       totalMember: true,
       totalMainMember: true,
       countryISO2: true,
@@ -46,20 +45,18 @@ export async function load({ url, locals }) {
     where: whereInput
   })
 
-  if (isPlayer) {
-    const userClubs = await db.clubMember.findMany({
-      where: {
-        playerId: locals.user?.playerData?.id,
-        active: true
-      },
-      select: {
-        clubId: true,
-      }
-    })
-    userClubs.forEach(club => {
-      listUserClub.push(club.clubId)
-    })
-  } 
+  const userClubs = await db.clubMember.findMany({
+    where: {
+      userId: locals.user?.id,
+      active: true
+    },
+    select: {
+      clubId: true,
+    }
+  })
+  userClubs.forEach(club => {
+    listUserClub.push(club.clubId)
+  })
 
   const pageMeta: iPagination = {
     currentPage: currentPage,
@@ -71,7 +68,6 @@ export async function load({ url, locals }) {
 	return {
 		listClub,
     meta: pageMeta,
-    isPlayer,
     listUserClub
 	}
 }

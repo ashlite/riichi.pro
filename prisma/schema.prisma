@@ -119,8 +119,8 @@ model Club {
   id              String   @id @default(uuid()) @db.Uuid
   slug            String   @unique
   name            String
-  emblemPic       String?  @map("emblem_pic")
-  coverPic        String?  @map("cover_pic")
+  emblemFile      String?
+  coverFile       String?
   description     String?
   countryISO2     String   @map("country_iso2")
   totalMember     Int      @default(0) @map("total_member")

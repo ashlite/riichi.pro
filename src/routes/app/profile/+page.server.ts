@@ -9,13 +9,9 @@ export async function load({locals, cookies}) {
       id: locals.user?.id
     },
     include: {
-      roleData: true,
-      playerData: {
-        include: {
-          rtData: true
-        }
-      },
+      rtData: true,
       genderData: true,
+      metaData: true,
     }
   })
 

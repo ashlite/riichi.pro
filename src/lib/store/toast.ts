@@ -1,6 +1,7 @@
 import { writable, derived } from 'svelte/store'
 import type { Readable, Writable } from 'svelte/store'
 import type { fetchResponse } from 'service/api'
+import type { iGlobalResponse } from 'interface/utils'
 
 interface iToast {
   message: string,
@@ -41,7 +42,8 @@ function createToast(){
     error: (msg: string, duration?: number) => send(msg, 'error', duration),
     warning: (msg: string, duration?: number) => send(msg, 'warning', duration),
     success: (msg: string, duration?: number) => send(msg, 'success', duration),
-    fetchError: (obj: fetchResponse) => send(`${obj.status}. ${obj.status_text}`, 'error', 8000)
+    fetchError: (obj: fetchResponse) => send(`${obj.status}. ${obj.status_text}`, 'error', 10000),
+    responseError: (obj: iGlobalResponse) => send(`${obj.header.error}`, 'error', 10000)
   }
 }
 

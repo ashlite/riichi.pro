@@ -26,21 +26,21 @@ export let data: PageData
             <tr class="hover:bg-base-200">
               <td class="hover:cursor-pointer hover:bg-base-300">
                 <div class="flex flex-row items-center gap-4">
-                  <Avatar seed={player.userId} />
+                  <Avatar seed={player.uuid} />
                   <div class="flex flex-col">
                     <div class="text-ellipsis">
-                      {player.userData.firstName} {player.userData.lastName}
+                      {player.fullName}
                     </div>
                     <div class="flex flex-row gap-4">
-                      <div class="font-bold">{player.userData.countryCode}</div>
+                      <div class="font-bold">{player.nationalityCountryCode}</div>
                       <div class="font-bold text-primary">{player.rtData.name}</div>
                     </div>
                   </div>
                 </div>
               </td>
               <td>{player.currentRP}</td>
-              <td>{player.currentMP}</td>
-              <td>{player.totalMatch} / {player.totalChombo} ({(player.totalChombo/player.totalMatch)*100}%)</td>
+              <td>{player.currentTP}</td>
+              <td>{player.metaData?.totalMatch} / {player.metaData?.totalChombo} ({(player.metaData.totalChombo/player.metaData.totalMatch)*100}%)</td>
               <td class="hover:cursor-pointer hover:bg-base-300">
                 {#if player.clubList.length > 0}
                   {#each player.clubList as club}

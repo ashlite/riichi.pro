@@ -4,7 +4,7 @@
   import { page } from '$app/stores'
 
   export let data: LayoutServerData
-  const userData = data.userData
+  const userData = data.userMemberData
 
 </script>
 

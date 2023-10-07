@@ -513,3 +513,11 @@ export const arrCountries = [
 export const countryNameFromCode = (code: string): string => {
   return objCountries[code as keyof typeof objCountries].name
 }
+
+export const countryPhoneFromCode = (code: string): string => {
+  return objCountries[code as keyof typeof objCountries].phone.toString()
+}
+
+export const kursFromCode = (code: string): string => {
+  return objCountries[code as keyof typeof objCountries].symbol
+}

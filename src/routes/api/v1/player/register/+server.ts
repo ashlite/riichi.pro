@@ -3,8 +3,11 @@ import type { iRegisterData } from 'interface/user';
 import { firebaseAuth } from '$lib/server/firebaseAdmin';
 import { db } from '$lib/server/db';
 import { firebaseValidation } from '$lib/server/firebaseAdmin';
+import type { iGlobalResponse } from 'interface/utils.js';
+import { Prisma } from "@prisma/client";
 
 export async function POST({request, cookies}) {
+  const response = {} as iGlobalResponse
   try {
     const decodedIdToken = await firebaseValidation(cookies)
     const payload: iRegisterData = await request.json()
@@ -32,10 +35,16 @@ export async function POST({request, cookies}) {
       }
     })
     
-    return json({ok: true, id: user.id})
+    response.header.ok = true
+    response.data.id = user.id
   } catch (e) {
-    console.log(e)
-    throw json({ok: false, message: 'failed to save user data'})
+    response.header.ok = false
+    if (e instanceof Prisma.PrismaClientKnownRequestError || e instanceof Prisma.PrismaClientKnownRequestError || e instanceof Prisma.PrismaClientValidationError) {
+      response.header.error = e.message    
+    } else {
+      response.header.error = e as string
+    }
   }
-
+  return json(response)
+  
 }

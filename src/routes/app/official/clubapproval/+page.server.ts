@@ -11,9 +11,9 @@ export async function load() {
           roleId: 301
         },
         include: {
-          playerData: {
+          userData: {
             select: {
-              username: true
+              fullName: true
             }
           }
         }

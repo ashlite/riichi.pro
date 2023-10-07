@@ -4,9 +4,10 @@ import CountrySelector from "molecule/countrySelector.svelte";
 import EmailInput from "molecule/emailInput.svelte";
 import ModalSubmit from "molecule/modalSubmit.svelte";
 import type { iRegisterClub } from "interface/club";
-	import toastAlert from "store/toast";
-	import globalModal from "store/modal";
-	import { invalidateAll } from "$app/navigation";
+import type { iGlobalResponse } from "interface/utils";
+import toastAlert from "store/toast";
+import globalModal from "store/modal";
+import { invalidateAll } from "$app/navigation";
 
 let processing = false
 const dataClub: iRegisterClub = {name:'', slug:'', countryISO2:'', address:'', district:'' }
@@ -22,13 +23,13 @@ async function submitForm() {
       method:'POST',
       body: JSON.stringify(dataClub)
     })
-    const result = await response.json()
-    if (result.ok) {
+    const result: iGlobalResponse = await response.json()
+    if (result.header.ok) {
+      invalidateAll()
       toastAlert.success("Club creation is in request")
       globalModal.close()
-      invalidateAll()
     } else {
-      toastAlert.error(`${result.message}`)
+      toastAlert.responseError(result)
     }
   }
   processing = false

@@ -21,14 +21,6 @@ interface iRtData {
   clubLimit: number
 }
 
-interface iPlayer {
-  id: number
-  alias: string | null
-  currentRP: number
-  currentMP: number
-  rtData: iRtData
-}
-
 export interface iUserLocal {
   id: number
   uuid: string
@@ -41,4 +33,17 @@ export interface iUserLocal {
   banedAt: Date | null
   currentRP: number
   rtData: iRtData
+}
+
+export interface iMemberRoles {
+  
+  id: number
+  roleId: number
+  canApproveMember: boolean
+  canBuyCC: boolean
+  canEditAccess: boolean
+  canEditClubInfo: boolean
+  canEditClubSetting: boolean
+  canSubmitMatch: boolean
+  canSubmitTournament: boolean
 }

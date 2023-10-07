@@ -1,31 +1,35 @@
 import type { iRegisterClub } from "interface/club";
+import type { iGlobalResponse } from "interface/utils.js";
+import { Prisma } from "@prisma/client";
 import { error, json } from "@sveltejs/kit";
 import { firebaseValidation } from "$lib/server/firebaseAdmin";
 import { db } from "$lib/server/db.js";
+import { countryPhoneFromCode } from "service/country.js";
 
 export async function POST({request, cookies, locals}) {
+  const response = {header:{}, data:{}} as iGlobalResponse
   try {
-    if (!locals.user?.playerData || locals.user?.banStatus) {
-      throw error(403, 'You must an active player to create a club')
+    if (!locals.user || locals.user?.banStatus) {
+      throw 'Unauthorized or banned user'
     }
 
     //check cookie
     await firebaseValidation(cookies)
     const clubList = await db.clubMember.findMany({
       where: {
-        playerId: locals.user.playerData.id,
+        userId: locals.user.id,
         active: true
       }
     })
     
     clubList.forEach(club => {
       if (club.roleId < 304) {
-        throw error(403, 'You must not become any main member to any club')
+        throw 'You must not become any main member to any club'
       }
     })
 
-    if (locals.user.playerData.rtData.clubLimit == clubList.length) {
-      throw error(403, 'You cannot exceed your club limit')
+    if (locals.user.rtData.clubLimit <= clubList.length) {
+      throw 'You cannot exceed your club limit'
     }
 
     const payload: iRegisterClub = await request.json()
@@ -34,9 +38,10 @@ export async function POST({request, cookies, locals}) {
         countryISO2: payload.countryISO2,
         name: payload.name,
         slug: payload.slug,
+        district: payload.district,
         address: payload.address,
         emailContact: payload.emailContact,
-        phoneContact: (payload.phoneCode?.toString() ?? '-' + payload.phoneContact?.toString() ?? '-'),
+        phoneContact: (countryPhoneFromCode(payload.phoneCode!.toString()) ?? '-' + payload.phoneContact?.toString() ?? '-'),
         website: payload.website,
         totalMainMember: 1,
         totalMember: 1,
@@ -50,18 +55,24 @@ export async function POST({request, cookies, locals}) {
         },
         memberList: {
           create: {
-            playerId: locals.user.playerData.id,
+            userId: locals.user.id,
             roleId: 301,
           }
         }
       }
     })
 
-    return json({ok: true})
+    response.header.ok = true
 
   } catch (e) {
-    console.log(e)
-    return json({ok: false, message:JSON.stringify(e)})
+    response.header.ok = false
+    if (e instanceof Prisma.PrismaClientKnownRequestError || e instanceof Prisma.PrismaClientKnownRequestError || e instanceof Prisma.PrismaClientValidationError) {
+      response.header.error = e.message    
+    } else {
+      response.header.error = e as string
+    }    
   }
+
+  return json(response)
 
 }

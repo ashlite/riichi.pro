@@ -4,6 +4,8 @@
   import Image from "atom/image.svelte";
   import { countryNameFromCode } from "service/country.js";
   import Button from "atom/button.svelte";
+  import {env} from '$env/dynamic/public'
+  import Icon from "@iconify/svelte";
   
   export let data: PageData
   const listClub = data.listClub
@@ -29,7 +31,7 @@
                 <td class="">
                   <div class="flex flex-row items-center gap-4">
                     <div class="h-16 w-16 rounded-lg">
-                      <Image src={club.emblemPic ?? 's'} alt="club emblem" objectContain />
+                      <Image src={env.PUBLIC_TEBI_CLUB_EMBLEM + club.emblemFile} alt="club emblem" objectContain />
                     </div>
                     <div class="flex flex-col">
                       <div class="text-ellipsis">
@@ -43,13 +45,15 @@
                 </td>
                 <td>{club.totalMember} / {club.totalMainMember}</td>
                 {#if club.website}
-                  <td><Button href={club.website} color="accent" icon="ph:link-bold" text="go to website" /></td>
+                  <td>
+                    <a href={'//'+ club.website} rel="external" target="_blank" class="btn btn-accent"><Icon icon="ph:link-bold" width={30}/>go to website</a>
+                  </td>
                 {:else}
                   <td>none</td>
                 {/if}
                 <td class="flex flex-row gap-4 items-center">
                   <Button icon="ph:info" color="info" text="info" />
-                  {#if data.isPlayer && !data.listUserClub?.includes(club.id) }
+                  {#if !data.listUserClub?.includes(club.id) }
                     <Button icon="ph:person" text="join" color="success btn-success" />
                   {/if}
                 </td>

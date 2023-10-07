@@ -9,3 +9,8 @@ export interface iRegisterClub {
   phoneCode?: string
   website?: string
 }
+
+export interface iMemberAction {
+  action: 'rejectPending' | 'approvePending' | 'quit' | 'kick' | 'applyMain' | 'approveMain' | 'rejectMain' | 'becomeAdmin' | 'kickAdmin' | 'transferOwnership'
+  targetId: number
+}

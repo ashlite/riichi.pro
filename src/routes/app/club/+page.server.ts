@@ -7,14 +7,14 @@ export async function load({locals, cookies}) {
   const listClub = await db.clubMember.findMany({
     where: {
       active: true,
-      playerId: locals.user?.playerData?.id
+      userId: locals.user?.id
     },
     select: {
       id: true,
       clubData: {
         select: {
           name: true,
-          emblemPic: true,
+          emblemFile: true,
           countryISO2: true,
           slug: true,
           clubStatusId: true,
@@ -31,6 +31,6 @@ export async function load({locals, cookies}) {
 
   return {
     listClub,
-    clubLimit: locals.user?.playerData?.rtData.clubLimit
+    clubLimit: locals.user?.rtData.clubLimit
   }
 }

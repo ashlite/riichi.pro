@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { iRegisterData } from "interface/user";
+  import type { iGlobalResponse } from "interface/utils";
   import TextInput from "molecule/textInput.svelte";
 	import Button from "atom/button.svelte";
   import CountrySelector from "molecule/countrySelector.svelte";
@@ -33,13 +34,13 @@
         method: 'POST',
         body: JSON.stringify(registerData)
       })
-      const resultInput = await responseInput.json()
-      if(resultInput.ok) {
+      const resultInput: iGlobalResponse = await responseInput.json()
+      if(resultInput.header.ok) {
         toastAlert.success('Register sukses')
         invalidateAll()
         goto('/')
       } else {
-        toastAlert.error(resultInput.message)
+        toastAlert.responseError(resultInput)
         processing = false
       }
     } catch (e) {

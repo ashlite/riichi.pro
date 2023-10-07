@@ -66,8 +66,8 @@ async function main() {
       group: 'club-roles'
     },{
       id: 305,
-      name: 'Guest',
-      notes: 'Club guest member, have guest privilage but with expiration date, when expired become inactive',
+      name: 'Basic',
+      notes: 'Real function is for placeholder status for user who request to become main member',
       group: 'club-roles'
     },{
       id: 306,

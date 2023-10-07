@@ -19,7 +19,7 @@ listClub.forEach(club => {
       <ClubCard newClub />
     {/if}
     {#each listClub as club}
-      <ClubCard name={club.clubData.name} emblem={club.clubData.emblemPic} country={club.clubData.countryISO2} role={club.roleData.name} slug={club.clubData.slug} status={club.clubData.clubStatusId} />
+      <ClubCard name={club.clubData.name} emblem={club.clubData.emblemFile} country={club.clubData.countryISO2} role={club.roleData.name} slug={club.clubData.slug} status={club.clubData.clubStatusId} />
     {/each}
   </div>
 </div>
