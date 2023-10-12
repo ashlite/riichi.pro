@@ -22,7 +22,7 @@
   <div class="absolute left-60 top-64 text-4xl font-bold">{clubData.name}</div>
 </div>
 {#if clubData.description}
-  <p class="text-center px-12">{clubData.description}</p>
+  <p class="text-justify whitespace-pre-wrap px-12">{clubData.description}</p>
 {/if}
 <div class="mt-8 flex flex-row gap-4 mb-8">
   <div class="card w-1/3 bg-primary text-primary-content shadow-xl">

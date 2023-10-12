@@ -173,7 +173,6 @@ model ClubMember {
   roleId              Int       @map("role_id")
   createdAt           DateTime  @default(now()) @map("created_at")
   expiredAt           DateTime? @map("expired_at")
-  active              Boolean   @default(true)
   canApproveMember    Boolean   @default(false) @map("can_approve_member")
   canEditClubInfo     Boolean   @default(false) @map("can_edit_info")
   canEditClubSetting  Boolean   @default(false) @map("can_edit_setting")

@@ -5,7 +5,7 @@
   export let value = 0
   export let disabled = false
   export let required = false
-  export let decimal = false
+  export let step: number = 1
   export let min = 0
   export let max: number | 'infinite' = 'infinite'
   export let skipFocus = false
@@ -36,7 +36,7 @@
     class={`input input-bordered w-full ${disabled && 'btn-disabled'}`} 
     bind:value={value} 
     required={required} 
-    step={decimal ? .01 : 1}
+    step={step}
     min={min}
     max={max}
     tabindex={skipFocus ? -1 : 0}

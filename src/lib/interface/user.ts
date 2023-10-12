@@ -35,6 +35,16 @@ export interface iUserLocal {
   rtData: iRtData
 }
 
+export interface iUserSimple {
+  id: number
+  uuid: string
+  fullName: string
+  email: string
+  banStatus: boolean
+  rtId: number
+  rtData: iRtData
+}
+
 export interface iMemberRoles {
   
   id: number

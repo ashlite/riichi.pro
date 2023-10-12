@@ -74,6 +74,11 @@ async function main() {
       name: 'Pending',
       notes: 'Club member pending to join, dont have access',
       group: 'club-roles'
+    },{
+      id: 399,
+      name: 'Non-active',
+      notes: 'Kick/ban/nonactive member',
+      group: 'club-roles'
     }]
   })
   const resultGender = await prisma.refHelper.createMany({

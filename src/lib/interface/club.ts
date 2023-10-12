@@ -1,3 +1,5 @@
+import type { iUserSimple } from "./user"
+
 export interface iRegisterClub {
   name: string
   slug: string
@@ -8,6 +10,11 @@ export interface iRegisterClub {
   phoneContact?: string
   phoneCode?: string
   website?: string
+}
+
+export interface iMemberPicker {
+  id: number
+  userData: iUserSimple
 }
 
 export interface iMemberAction {

@@ -9,6 +9,7 @@
   import type { LayoutData } from "./$types";
 
   export let data: LayoutData
+  let appVersion = data.appVersion
 
   onMount(() => {
     themeChange(false)
@@ -27,4 +28,4 @@
   <slot />
 </div>
 
-<Footer />
+<Footer {appVersion} />

@@ -19,6 +19,7 @@
       {#if userData.roleId == 301 || (userData.roleId == 302 && userData.canSubmitMatch)}
         <li><a href={`/app/club/${$page.params.slug}/match`}>Record a Match</a></li>
       {/if}
+      <li><a href={`/app/club/${$page.params.slug}/standing`}>Monthly Standing</a></li>
       <li><a href={`/app/club/${$page.params.slug}/pastmatch`}>Match History</a></li>
       {#if userData.roleId == 301 || (userData.roleId == 302 && userData.canEditClubInfo)}
         <li><a href={`/app/club/${$page.params.slug}/changeinfo`}>Change Club Info</a></li>

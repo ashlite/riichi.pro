@@ -31,6 +31,9 @@
           </td>
           <td>{dateFormater(member.createdAt, 'date')}</td>
           <td class="font-bold text-accent">{member.roleData.name}</td>
+          <td class="flex flex-row">
+
+          </td>
         </tr>
       {/each}
     </tbody>
