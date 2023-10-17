@@ -41,12 +41,16 @@
       on:mouseleave={() => showPhone = false}>
         {showPhone ? `+${countryPhoneFromCode(profile.phoneCountry ?? 'ID')} ${profile.phone}` : `--hover to reveal--`}
     </div>
-    <div class="text-secondary text-right">{profile.sourceRealId} :</div>
-    <div class="" 
-      on:mouseover={() => showId = true}
-      on:mouseleave={() => showId = false}>
-        {showId ? `${profile.realId}` : `--hover to reveal--`}
-    </div>
+    {#if profile.realId && profile.sourceRealId}
+      <div class="text-secondary text-right">{profile.sourceRealId} :</div>
+      <div class="" 
+        on:mouseover={() => showId = true}
+        on:mouseleave={() => showId = false}>
+          {showId ? `${profile.realId}` : `--hover to reveal--`}
+      </div>
+    {:else}
+      <div class="text-warning text-center col-span-2">No Real ID inputed</div>
+    {/if}
     <div class="text-secondary text-right">Email :</div>
     <div class="">{profile.email}</div>
     <div class="text-secondary text-right">Joined at :</div>

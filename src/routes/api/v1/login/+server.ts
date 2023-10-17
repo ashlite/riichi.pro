@@ -1,8 +1,10 @@
-import { error, json } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
 import { firebaseAuth } from '$lib/server/firebaseAdmin';
-import { db } from '$lib/server/db';
+import { db } from '$lib/server/db.js';
+import type { iGlobalResponse } from 'interface/utils.js';
 
 export async function POST({request, cookies}) {
+  const response = {header:{}, data:{}} as iGlobalResponse
   try {
     const idToken = await request.text()
     const resultFirebase = await firebaseAuth.verifyIdToken(idToken)
@@ -15,13 +17,15 @@ export async function POST({request, cookies}) {
       const sessionCookie = await firebaseAuth.createSessionCookie(idToken, {expiresIn})
       cookies.set('firebase_session', sessionCookie, options)
       
-      return json({ok: true})
+      response.header.ok = true
     }
-    throw error(500, 'firebase Error')
+    response.header.ok = false
+    response.header.error = 'Firebase error'
     
   } catch (e) {
-    console.log(e)
-    throw error(500, 'login failed')
+    response.header.ok = false
+    response.header.error = 'Login failed'
   }
-
+  
+  return json(response)
 }

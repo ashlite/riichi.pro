@@ -22,9 +22,10 @@ model RefHelper {
 
   roleList       ClubMember[]
   rankTitleList  RankTittle[]
-  userList       User[]       @relation(name: "role")
-  genderList     User[]       @relation(name: "gender")
+  userList       User[]             @relation(name: "role")
+  genderList     User[]             @relation(name: "gender")
   clubStatusList Club[]
+  seatDataList   MatchParticipant[]
 
   @@map("reference_helper")
 }
@@ -271,21 +272,24 @@ model Match {
 }
 
 model MatchParticipant {
-  userId        Int    @map("player_id")
-  matchId       String @map("rank_id") @db.Uuid
+  userId        Int     @map("player_id")
+  matchId       String  @map("rank_id") @db.Uuid
   score         Int
   position      Int
-  playerRtId    Int    @map("player_rt_id")
-  avgMatchSkill Float  @map("avg_match_skill")
-  chombo        Int    @default(0)
+  draw          Boolean
+  seatRefId     Int
+  playerRtId    Int     @map("player_rt_id")
+  avgMatchSkill Float   @map("avg_match_skill")
+  chombo        Int     @default(0)
   ron           Int?
   tsumo         Int?
-  dealIn        Int?   @map("deal_in")
-  gainUma       Int    @map("gain_uma")
+  dealIn        Int?    @map("deal_in")
+  gainUma       Int     @map("gain_uma")
 
-  userData  User       @relation(fields: [userId], references: [id])
-  matchData Match      @relation(fields: [matchId], references: [id])
-  matchRt   RankTittle @relation(fields: [playerRtId], references: [id])
+  userData    User       @relation(fields: [userId], references: [id])
+  matchData   Match      @relation(fields: [matchId], references: [id])
+  matchRt     RankTittle @relation(fields: [playerRtId], references: [id])
+  seatRefData RefHelper  @relation(fields: [seatRefId], references: [id])
 
   @@unique([userId, matchId])
   @@map("match_participant")

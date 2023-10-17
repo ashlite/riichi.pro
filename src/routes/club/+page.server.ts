@@ -12,7 +12,8 @@ export async function load({ url, locals }) {
   const currentPage = Number(url.searchParams.get('page') ?? 1)
   const takeRow = Number(url.searchParams.get('take') ?? 10)
   const country = url.searchParams.get('country') ?? 'global'
-  const listUserClub: string[] = []
+  const listJoinClub: string[] = []
+  const listPendingClub: string[] = []
   let whereInput: Prisma.ClubWhereInput
 
   if (country == 'global') {
@@ -48,14 +49,21 @@ export async function load({ url, locals }) {
   const userClubs = await db.clubMember.findMany({
     where: {
       userId: locals.user?.id,
-      active: true
+      roleId: {
+        notIn: [399]
+      }
     },
     select: {
       clubId: true,
+      roleId: true
     }
   })
   userClubs.forEach(club => {
-    listUserClub.push(club.clubId)
+    if (club.roleId == 306) {
+      listPendingClub.push(club.clubId)
+    } else {
+      listJoinClub.push(club.clubId)
+    }
   })
 
   const pageMeta: iPagination = {
@@ -68,6 +76,7 @@ export async function load({ url, locals }) {
 	return {
 		listClub,
     meta: pageMeta,
-    listUserClub
+    listJoinClub,
+    listPendingClub
 	}
 }

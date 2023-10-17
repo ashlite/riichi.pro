@@ -11,7 +11,9 @@ export async function load({ locals, params }: LayoutServerLoadEvent) {
     const userMemberData = await db.clubMember.findFirstOrThrow({
       where: {
         userId: locals.user.id,
-        active: true,
+        roleId: {
+          notIn: [399, 306]
+        },
         clubData: {
           slug: params.slug
         }
@@ -36,7 +38,9 @@ export async function load({ locals, params }: LayoutServerLoadEvent) {
 
     const totalPendingJoin = await db.clubMember.count({
       where: {
-        roleId: 306,
+        roleId: {
+          in: [305, 306]
+        },
         clubData: {
           slug: params.slug
         }

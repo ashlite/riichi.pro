@@ -14,7 +14,6 @@
   import toastAlert from "store/toast";
 
   export let data: PageData
-  const clubData = data.clubInfo
   const baseEmblemUrl = env.PUBLIC_TEBI_CLUB_EMBLEM
   const baseCoverUrl = env.PUBLIC_TEBI_CLUB_COVER
   let emblemInput: HTMLInputElement
@@ -23,10 +22,9 @@
 
   async function updateInfo() {
     processing = true
-    console.log(clubData)
-    const response = await fetch(`/api/v1/club/${clubData.slug}/info`, {
+    const response = await fetch(`/api/v1/club/${data.clubInfo.slug}/info`, {
       method: 'PATCH',
-      body: JSON.stringify(clubData)
+      body: JSON.stringify(data.clubInfo)
     })
 
     const result: iGlobalResponse = await response.json()
@@ -42,7 +40,7 @@
   async function uploadImage(e: Event, targetUrl: 'cover' | 'emblem') {
     processing = true
     const formData = new FormData()
-    const allowedExtension =  /(\.jpg|\.jpeg|\.png|\.gif)$/i
+    const allowedExtension =  /(\.jpg|\.jpeg|\.png|\.gif|\.webp)$/i
     if (e.target) {
       const fileData = (e.target as HTMLInputElement).files![0]
       if (!fileData ) {
@@ -50,16 +48,16 @@
       } else if (fileData.size > 5000000) {
         toastAlert.error('5mb maximum file size')
       } else if (!allowedExtension.exec(fileData.name)) {
-        toastAlert.error('Only accept jpg, jpeg, png, gif type files')
+        toastAlert.error('Only accept jpg, jpeg, png, gif, webp type files')
       } else {
         formData.append("image", fileData)
-        const response = await fetch(`/api/v1/club/${clubData.slug}/${targetUrl}`, {
+        const response = await fetch(`/api/v1/club/${data.clubInfo.slug}/${targetUrl}`, {
           method: 'POST',
           body: formData
         })
         const result: iGlobalResponse = await response.json()
         if (result.header.ok) {
-          invalidateAll()
+          await invalidateAll()
           toastAlert.success('Success uploading file')
         } else {
           toastAlert.responseError(result)
@@ -76,7 +74,7 @@
   <div class="grid grid-cols-3 gap-4">
     <div class="card bg-base-200 shadow-xl">
       <figure class="h-3/5">
-        <Image src={baseEmblemUrl + clubData.emblemFile} alt="Club emblem" objectCover errorSrc="https://placehold.co/400x400?text=No+Img,+recomended+square+ratio" />
+        <Image src={baseEmblemUrl + data.clubInfo.emblemFile} alt="Club emblem" objectCover errorSrc="https://placehold.co/400x400?text=No+Img,+recomended+square+ratio" />
       </figure>
       <div class="card-body">
         <h2 class="card-title justify-center">Club Emblem</h2>
@@ -92,7 +90,7 @@
     </div>
     <div class="col-span-2 card bg-base-200 shadow-xl">
       <figure class="h-3/5">
-        <Image src={baseCoverUrl + clubData.coverFile} alt="Club emblem" objectCover errorSrc="https://placehold.co/2000x400?text=No+Img,+recomended+ratio+5:1+px" />
+        <Image src={baseCoverUrl + data.clubInfo.coverFile} alt="Club emblem" objectCover errorSrc="https://placehold.co/2000x400?text=No+Img,+recomended+ratio+5:1+px" />
       </figure>
       <div class="card-body">
         <h2 class="card-title justify-center">Club Cover</h2>
@@ -110,29 +108,29 @@
   <div class="divider mt-20">Club Data</div>
   <form class="grid grid-cols-5 gap-4" on:submit|preventDefault={updateInfo}>
     <div>
-      <Select labelTL="Country" bind:value={clubData.countryISO2}>
+      <Select labelTL="Country" bind:value={data.clubInfo.countryISO2}>
         {#each arrCountries as country}
           <SelectItem text={country.name} value={country.code} />
         {/each}
       </Select>
     </div>
     <div>
-      <TextInput bind:value={clubData.district} labelTL="District" />
+      <TextInput bind:value={data.clubInfo.district} labelTL="District" />
     </div>
     <div class="col-span-3">
-      <TextInput bind:value={clubData.address} labelTL="Address" />
+      <TextInput bind:value={data.clubInfo.address} labelTL="Address" />
     </div>
     <div class="col-span-2">
-      <EmailInput bind:value={clubData.emailContact} labelTL="Club Email" />
+      <EmailInput bind:value={data.clubInfo.emailContact} labelTL="Club Email" />
     </div>
     <div class="col-span-3 row-span-3">
-      <TextArea labelTL="Description" bind:value={clubData.description} h={40} />
+      <TextArea labelTL="Description" bind:value={data.clubInfo.description} h={40} />
     </div>
     <div>
-      <TextInput bind:value={clubData.phoneContact} labelTL="Club Phone" />
+      <TextInput bind:value={data.clubInfo.phoneContact} labelTL="Club Phone" />
     </div>
     <div>
-      <TextInput bind:value={clubData.website} labelTL="Club Website" />
+      <TextInput bind:value={data.clubInfo.website} labelTL="Club Website" />
     </div>
     <div class="col-start-5">
       {#if processing}

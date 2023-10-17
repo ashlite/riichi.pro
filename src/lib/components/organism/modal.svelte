@@ -3,6 +3,9 @@
   import FormPlayerEditor from 'template/modal/formPlayerEditor.svelte';
   import WebCredit from 'template/modal/webCredit.svelte';
   import ClubEditor from 'template/modal/clubEditor.svelte';
+  import QuitConfirmation from 'template/modal/quitConfirmation.svelte';
+  import Tnc from 'template/modal/tnc.svelte';
+  import KickConfirmation from 'template/modal/kickConfirmation.svelte';
 
   import globalModal from 'store/modal'
   import shortcut from '$lib/service/shortcut'
@@ -27,6 +30,12 @@
         <WebCredit />
       {:else if $globalModal?.template == 'clubEditor'}
         <ClubEditor />
+      {:else if $globalModal?.template == 'quitClubConfirmation'}
+        <QuitConfirmation clubName={$globalModal.data.club} memberId={$globalModal.data.memberId} slug={$globalModal.data.slug} />
+      {:else if $globalModal?.template == 'tnc'}
+        <Tnc />
+      {:else if $globalModal?.template == 'kickClubConfirmation'}
+        <KickConfirmation memberId={$globalModal.data.memberId} name={$globalModal.data.name} slug={$globalModal.data.slug}/>
       {/if} 
     </div>
   </div>

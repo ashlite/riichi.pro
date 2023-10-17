@@ -21,7 +21,11 @@ export async function GET({cookies, locals, params, url}) {
     const searchID = url.searchParams.get('id')
     if (searchName) {
       whereInput = {
-        active: true,
+        roleData: {
+          id: {
+            notIn: [399, 306]
+          }
+        },
         clubData: {
           slug: slug
         },
@@ -37,7 +41,11 @@ export async function GET({cookies, locals, params, url}) {
       }
     } else if (searchID) {
       whereInput = {
-        active: true,
+        roleData: {
+          id: {
+            notIn: [399, 306]
+          }
+        },
         clubData: {
           slug: slug
         },
@@ -50,7 +58,11 @@ export async function GET({cookies, locals, params, url}) {
       }
     } else {
       whereInput = {
-        active: true,
+        roleData: {
+          id: {
+            notIn: [399, 306]
+          }
+        },
         clubData: {
           slug: slug
         },
@@ -75,7 +87,52 @@ export async function GET({cookies, locals, params, url}) {
     response.data = result
     
   } catch (e) {
-    console.log(e)
+    response.header.ok = false
+    if (e instanceof Prisma.PrismaClientKnownRequestError || e instanceof Prisma.PrismaClientKnownRequestError || e instanceof Prisma.PrismaClientValidationError) {
+      response.header.error = e.message    
+    } else {
+      response.header.error = e as string
+    }
+  }
+
+  return json(response)
+}
+
+export async function PATCH({cookies, locals, params, request}) {
+  const response = {header:{}, data:{}} as iGlobalResponse
+  const { slug } = params
+
+  try {
+    if (!locals.user) {
+      throw 'You must login to continue'
+    }
+    //check cookie
+    await firebaseValidation(cookies)
+
+    const payload = await request.json()
+
+    switch (payload.type) {
+      case 'access':
+        await db.clubMember.update({
+          where: {
+            id: payload.targetId,
+          },
+          data: {
+            canApproveMember: payload.canApproveMember,
+            canEditClubInfo: payload.canEditClubInfo,
+            canEditClubSetting: payload.canEditClubSetting,
+            canSubmitMatch: payload.canSubmitMatch,
+            canEditAccess: payload.canEditAccess,
+            canSubmitTournament: payload.canSubmitTournament,
+            canBuyCC: payload.canBuyCC,
+          }
+        })
+        break
+    }
+        
+    response.header.ok = true
+     
+  } catch (e) {
     response.header.ok = false
     if (e instanceof Prisma.PrismaClientKnownRequestError || e instanceof Prisma.PrismaClientKnownRequestError || e instanceof Prisma.PrismaClientValidationError) {
       response.header.error = e.message    

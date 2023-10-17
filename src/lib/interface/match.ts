@@ -2,10 +2,11 @@ interface iParticipant {
   userId: number
   fullName: string
   score: number
-  position: number
   playerRtId: number
   playerRtName: string
   chombo: number
+  draw: boolean
+  position?: number
   ron?: number
   tsumo?: number
   dealIn?: number

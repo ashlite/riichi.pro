@@ -1,9 +1,9 @@
 import { PrismaClient } from '@prisma/client'
-import { Prisma } from '@prisma/client'
+import type { Prisma } from '@prisma/client'
 const prisma = new PrismaClient()
 
 async function main() {
-  const clubId = 'b14294cf-c3f9-4e41-bcc7-ce9bb836c089'
+  const clubId = 'daed9f05-9974-44af-8b7b-eef7316c350f'
   const userInput: Prisma.UserCreateInput[] = [{
     fullName: 'test 1',
     email: 'test-1@mail.com',

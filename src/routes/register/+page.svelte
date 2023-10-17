@@ -80,9 +80,9 @@
       <TextInput labelTL="Active Phone number*" labelTR="without leading 0" required bind:value={registerData.phone}/>
     </div>
     <div class="flex flex-row gap-4">
-      <TextInput labelTL="National ID" bind:value={registerData.realId}/>
-      <TextInput labelTL="National ID Source/Name" bind:value={registerData.sourceRealId}/>
-      <TextInput labelTL="Telegram username" bind:value={registerData.telegramId}/>
+      <TextInput labelTL="National ID" labelTR="Optional" bind:value={registerData.realId}/>
+      <TextInput labelTL="National ID Source/Name" labelTR="Optional" bind:value={registerData.sourceRealId}/>
+      <!-- <TextInput labelTL="Telegram username" bind:value={registerData.telegramId}/> -->
     </div>
     <div class="alert mt-4">
       <Icon icon="ph:info-fill" width=30 />

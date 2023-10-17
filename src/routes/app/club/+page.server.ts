@@ -6,7 +6,9 @@ export async function load({locals, cookies}) {
 
   const listClub = await db.clubMember.findMany({
     where: {
-      active: true,
+      roleId: {
+        not: 399
+      },
       userId: locals.user?.id
     },
     select: {

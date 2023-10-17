@@ -5,11 +5,32 @@
 	import { countryNameFromCode } from "service/country";
   import { dateFormater } from "service/tools";
   import {env} from '$env/dynamic/public'
+  import Button from "atom/button.svelte";
+	import type { iMemberAction } from "interface/club";
+	import type { iGlobalResponse } from "interface/utils";
+	import toastAlert from "store/toast";
+	import { goto } from "$app/navigation";
+	import globalModal from "store/modal";
 
   export let data: PageData
   const clubData = data.userMemberData.clubData
   const baseEmblemUrl = env.PUBLIC_TEBI_CLUB_EMBLEM
   const baseCoverUrl = env.PUBLIC_TEBI_CLUB_COVER
+
+  async function applyMain() {
+    toastAlert.warning('Applying to become main member')
+    const payload: iMemberAction = {action: 'applyMain', targetId: data.userMemberData.id}
+    const response = await fetch(`/api/v1/club/${data.userMemberData.clubData.slug}/actionmember`, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    })
+    const result = await response.json() as iGlobalResponse
+    if (result.header.ok) {
+      toastAlert.success('Success applying member')
+    } else {
+      toastAlert.responseError(result)
+    }
+  }
 </script>
 
 <div class="w-full relative h-80">
@@ -116,4 +137,12 @@
     </div>
   </div>
 </div>
-
+<div class="divider">ACTION</div>
+<div class="flex flex-row mb-8 gap-4">
+  {#if data.userMemberData.roleId != 301}
+    <Button text="Quit Club" color="info" on:click={() => globalModal.quitClub(data.userMemberData.clubData.name, data.userMemberData.id, data.userMemberData.clubData.slug)} />
+  {/if}
+  {#if data.userMemberData.roleId == 304}
+    <Button text="Apply Main Member" color="info" on:click={applyMain} />
+  {/if}
+</div>

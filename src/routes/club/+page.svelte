@@ -9,6 +9,8 @@
   
   export let data: PageData
   const listClub = data.listClub
+  const listJoinedClub = data.listJoinClub
+  const listPendingClub = data.listPendingClub
   </script>
   
   <div class="mt-8 mx-8">
@@ -53,16 +55,20 @@
                 {/if}
                 <td class="flex flex-row gap-4 items-center">
                   <Button icon="ph:info" color="info" text="info" />
-                  {#if !data.listUserClub?.includes(club.id) }
-                    <Button icon="ph:person" text="join" color="success btn-success" />
+                  {#if listJoinedClub.includes(club.id) }
+                    <Button icon="ph:person" text="Enter" color="disabled" />
+                  {:else if listPendingClub.includes(club.id)}
+                    <Button icon="ph:person" text="pending" color="disabled" />
+                  {:else}
+                    <Button icon="ph:person" text="join" color="success" />
                   {/if}
                 </td>
               </tr>
             {/each}
           {:else}
             <tr>
-              <td colspan={5}>
-                <h1>No player in this category</h1>
+              <td colspan={4}>
+                <h1>No club in this category</h1>
               </td>
             </tr>
           {/if}

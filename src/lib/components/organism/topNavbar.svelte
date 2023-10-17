@@ -1,8 +1,8 @@
 <script lang="ts">
   import Button from 'atom/button.svelte';
-  import globalModal from 'store/modal';
   import AvatarBtn from 'molecule/avatarBtn.svelte';
   import type { iUserLocal } from 'interface/user';
+  import type { iGlobalResponse } from 'interface/utils';
   import { env } from '$env/dynamic/public'
   import { goto, invalidateAll } from '$app/navigation';
   import { signInWithPopup, GoogleAuthProvider, signInWithCredential } from "firebase/auth";
@@ -19,21 +19,22 @@
       const credential = GoogleAuthProvider.credentialFromResult(result)
       signInWithCredential(firebaseAuth, credential!)
       .then( async (result) => {
-        const loginApp = await fetch('/login', {
+        const loginApp = await fetch('/api/v1/login', {
           method: 'POST',
           body: await result.user.getIdToken()
         })
-        const loginResult = await loginApp.json()
-        if (loginResult.ok) {
+        const loginResult = await loginApp.json() as iGlobalResponse
+        if (loginResult.header.ok) {
           toastAlert.success('Login Success')
           invalidateAll()
+        } else {
+          toastAlert.responseError(loginResult)
         }
       })
       .catch((error) => {
-        // Handle Errors here.
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      toastAlert.error(`ERROR ${errorCode}, ${errorMessage}`)
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        toastAlert.error(`ERROR ${errorCode}, ${errorMessage}`)
       })
     }).catch((error) => {
       // Handle Errors here.

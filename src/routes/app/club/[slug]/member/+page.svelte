@@ -2,9 +2,10 @@
   import type { PageData } from "./$types";
   import Avatar from "atom/avatar.svelte";
   import { dateFormater } from "service/tools";
+  import Button from "atom/button.svelte";
+	import globalModal from "store/modal";
 
   export let data: PageData
-  let listMember = data.listMember
 </script>
 
 <div class="overflow-x-auto mb-8">
@@ -18,7 +19,7 @@
       </tr>
     </thead>
     <tbody>
-      {#each listMember as member}
+      {#each data.listMember as member}
         <tr>
           <td>
             <div class="flex flex-row gap-4">
@@ -30,9 +31,23 @@
             </div>
           </td>
           <td>{dateFormater(member.createdAt, 'date')}</td>
-          <td class="font-bold text-accent">{member.roleData.name}</td>
+          <td class="font-bold">
+            {#if member.roleData.id == 301}
+              <span class="text-primary">{member.roleData.name}</span>
+            {:else if member.roleData.id == 302}
+              <span class="text-secondary">{member.roleData.name}</span>
+            {:else if member.roleData.id == 303}
+              <span class="text-warning">{member.roleData.name}</span>
+            {:else}
+              <span class="text-accent">{member.roleData.name}</span>
+            {/if}
+          </td>
           <td class="flex flex-row">
-
+            {#if member.id != data.user?.id}
+              <div>
+                <Button text="kick" color="error" size="sm" icon="ph:gavel" on:click={() => globalModal.kickMember(member.id, member.userData.fullName, data.userMemberData.clubData.slug)}/>
+              </div>  
+            {/if}
           </td>
         </tr>
       {/each}

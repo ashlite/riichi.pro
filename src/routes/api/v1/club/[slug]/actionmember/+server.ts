@@ -1,7 +1,7 @@
 import type { iMemberAction } from "interface/club";
 import type { iGlobalResponse } from "interface/utils.js";
 import { Prisma } from "@prisma/client";
-import { error, json } from "@sveltejs/kit";
+import { json } from "@sveltejs/kit";
 import { firebaseValidation } from "$lib/server/firebaseAdmin";
 import { db } from "$lib/server/db.js";
 
@@ -22,6 +22,13 @@ export async function POST({request, cookies, locals, params}) {
         clubData: {
           slug: slug
         }
+      },
+      include: {
+        clubData: {
+          select: {
+            maxAdmin: true
+          }
+        }
       }
     })
 
@@ -34,7 +41,7 @@ export async function POST({request, cookies, locals, params}) {
               roleId: 306
             },
             data: {
-              active: false
+              roleId: 399
             }
           })
           break
@@ -42,11 +49,10 @@ export async function POST({request, cookies, locals, params}) {
           await db.clubMember.update({
             where: {
               id: payload.targetId,
-              roleId: 306,
-              active: true
+              roleId: 306
             },
             data: {
-              roleId: 304,
+              roleId: 304
             }
           })
 
@@ -65,8 +71,7 @@ export async function POST({request, cookies, locals, params}) {
           await db.clubMember.update({
             where: {
               id: payload.targetId,
-              roleId: 305,
-              active: true
+              roleId: 305
             },
             data: {
               roleId: 303
@@ -88,8 +93,7 @@ export async function POST({request, cookies, locals, params}) {
           await db.clubMember.update({
             where: {
               id: payload.targetId,
-              roleId: 305,
-              active: true
+              roleId: 305
             },
             data: {
               roleId: 304
@@ -125,11 +129,24 @@ export async function POST({request, cookies, locals, params}) {
       response.header.ok = true
     } else if (['becomeAdmin', 'kickAdmin', 'kick'].includes(payload.action) && userMember.roleId <= 302 || (userMember.roleId == 302 && userMember.canEditAccess)) {
       switch(payload.action) {
-        case 'becomeAdmin':
+        case 'becomeAdmin': {
+          //check total admin
+          const totalAdmin = await db.clubMember.count({
+            where: {
+              roleId: 302,
+              clubData: {
+                slug: slug
+              }
+            }
+          })
+
+          if (totalAdmin >= userMember.clubData.maxAdmin) {
+            throw `Maximum total admin is ${userMember.clubData.maxAdmin}`
+          }
+
           await db.clubMember.update({
             where: {
               id: payload.targetId,
-              clubId: userMember.clubId,
               roleId: 303,
             },
             data: {
@@ -137,11 +154,11 @@ export async function POST({request, cookies, locals, params}) {
             }
           })
           break
+        }
         case 'kickAdmin':
           await db.clubMember.update({
             where: {
               id: payload.targetId,
-              clubId: userMember.clubId,
               roleId: 302,
             },
             data: {
@@ -153,14 +170,12 @@ export async function POST({request, cookies, locals, params}) {
           const kickedUser = await db.clubMember.update({
             where: {
               id: payload.targetId,
-              clubId: userMember.clubId,
-              active: true,
               roleId: {
-                not: 301
+                in: [302, 303, 304, 305]
               }
             },
             data: {
-              active: false
+              roleId: 399
             }
           })
 
@@ -189,10 +204,12 @@ export async function POST({request, cookies, locals, params}) {
             where: {
               id: userMember.id,
               clubId: userMember.clubId,
-              active: true,
+              roleId: {
+                notIn: [301, 399]
+              },
             },
             data: {
-              active: false
+              roleId: 399
             }
           })
 
@@ -211,18 +228,31 @@ export async function POST({request, cookies, locals, params}) {
             }
           })
           break
-        case 'applyMain':
+        case 'applyMain':{
+          //check total main member
+          const totalMain = await db.clubMember.count({
+            where: {
+              id: userMember.id,
+              roleId: {
+                in: [301, 302, 303, 305]
+              }
+            }
+          })
+          
+          if (totalMain > 0) {
+            throw 'You can only apply and become main member to one club'
+          }
+
           await db.clubMember.update({
             where: {
               id: userMember.id,
-              clubId: userMember.clubId,
-              active: true,
               roleId: 304
             },
             data: {
               roleId: 305
             }
           })
+        }
       }
       response.header.ok = true
     } else {

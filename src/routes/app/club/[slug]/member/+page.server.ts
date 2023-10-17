@@ -5,7 +5,9 @@ export async function load({locals, params}) {
   const slug = params.slug
   const listMember = await db.clubMember.findMany({
     where: {
-      active: true,
+      roleId: {
+        notIn: [399, 306]
+      },
       clubData: {
         slug: slug
       }

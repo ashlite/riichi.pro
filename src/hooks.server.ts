@@ -6,6 +6,8 @@ import { db } from '$lib/server/db'
 export async function handle({event, resolve}) {
   //set user based on appCookie
   const firebaseToken = event.cookies.get('firebase_session')
+  const janshiProToken = event.cookies.get('janshiProToken')
+  
   if (firebaseToken && firebaseToken != undefined){
     try {
       const decodedIdToken = await firebaseValidation(event.cookies)

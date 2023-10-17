@@ -7,7 +7,7 @@ import type { iGlobalResponse } from 'interface/utils.js';
 import { Prisma } from "@prisma/client";
 
 export async function POST({request, cookies}) {
-  const response = {} as iGlobalResponse
+  const response = {header:{}, data:{}} as iGlobalResponse
   try {
     const decodedIdToken = await firebaseValidation(cookies)
     const payload: iRegisterData = await request.json()

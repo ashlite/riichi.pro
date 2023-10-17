@@ -9,38 +9,20 @@
   import { invalidateAll } from "$app/navigation";
 
   export let data: PageData
-  let listPending = data.listPending
 
-  async function approvePending(id: number) {
+
+  async function applyAction(id: number, action: 'approvePending' | 'rejectPending' | 'approveMain' | 'rejectMain') {
     const payload: iMemberAction = {
-      action: 'approvePending',
+      action: action,
       targetId: id
     }
-    const response = await fetch('/api/v1/club/actionmember', {
+    const response = await fetch(`/api/v1/club/${data.userMemberData.clubData.slug}/actionmember`, {
       method: 'POST',
       body: JSON.stringify(payload)
     })
     const result: iGlobalResponse = await response.json()
     if (result.header.ok) {
-      toastAlert.success('Success accepting member')
-      invalidateAll()
-    } else {
-      toastAlert.responseError(result)
-    }
-  }
-
-  async function rejectPending(id: number) {
-    const payload: iMemberAction = {
-      action: 'rejectPending',
-      targetId: id
-    }
-    const response = await fetch('/api/v1/club/actionmember', {
-      method: 'POST',
-      body: JSON.stringify(payload)
-    })
-    const result: iGlobalResponse = await response.json()
-    if (result.header.ok) {
-      toastAlert.success('Success rejecting member')
+      toastAlert.success('Success applying action')
       invalidateAll()
     } else {
       toastAlert.responseError(result)
@@ -54,12 +36,12 @@
       <tr>
         <th>User Data</th>
         <th>Join Date</th>
-        <th>Roles</th>
+        <th>Status</th>
         <th>Action</th>
       </tr>
     </thead>
     <tbody>
-      {#each listPending as member}
+      {#each data.listPending as member}
         <tr>
           <td>
             <div class="flex flex-row gap-4">
@@ -71,10 +53,21 @@
             </div>
           </td>
           <td>{dateFormater(member.createdAt, 'date')}</td>
-          <td class="font-bold text-accent">{member.roleData.name}</td>
+          <td class="font-bold">
+            {#if member.roleId == 306}
+              <span class="text-accent">Applying BASIC member</span>
+            {:else if member.roleId == 305}
+              <span class="text-warning">Applying MAIN member</span>
+            {/if}
+          </td>
           <td>
-            <Button text="Approve" color="success" on:click={() => approvePending(member.id)} />
-            <Button text="Reject" color="error" on:click={() => rejectPending(member.id)} />
+            {#if member.roleId == 306}
+              <Button text="Approve" color="success btn-success" on:click={() => applyAction(member.id, 'approvePending')} />
+              <Button text="Reject" color="error" on:click={() => applyAction(member.id, "approvePending")} />
+            {:else if member.roleId == 305}
+              <Button text="Approve" color="success btn-success" on:click={() => applyAction(member.id, 'approveMain')} />
+              <Button text="Reject" color="error" on:click={() => applyAction(member.id, 'rejectMain')} />
+            {/if}
           </td>
         </tr>
       {/each}
@@ -84,7 +77,7 @@
       <tr>
         <th>User Data</th>
         <th>Join Date</th>
-        <th>Roles</th>
+        <th>Status</th>
         <th>Action</th>
       </tr>
     </tfoot>

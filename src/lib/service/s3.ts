@@ -23,7 +23,7 @@ export async function uploadImage(bucket: string, key: string, file: Buffer, for
 
   const result = await s3Client.send(command)
   
-  if (result.$metadata.httpStatusCode! >= 200 && result.$metadata.httpStatusCode! <= 200) {
+  if (result.$metadata.httpStatusCode! >= 200 && result.$metadata.httpStatusCode! <= 299) {
     return `${key}.${format}`
   } else {
     return null
@@ -36,7 +36,7 @@ export async function deleteImage(bucket: string, name: string): Promise<boolean
     Key: name
   })
   const result = await s3Client.send(command)
-  if (result.$metadata.httpStatusCode! >= 200 && result.$metadata.httpStatusCode! <= 200) {
+  if (result.$metadata.httpStatusCode! >= 200 && result.$metadata.httpStatusCode! <= 299) {
     return true
   } else {
     return false

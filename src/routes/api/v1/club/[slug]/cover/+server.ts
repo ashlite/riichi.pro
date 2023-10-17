@@ -6,14 +6,15 @@ import { firebaseValidation } from "$lib/server/firebaseAdmin";
 import { db } from "$lib/server/db.js";
 import { uploadImage, deleteImage } from "service/s3.js";
 import { env } from '$env/dynamic/public'
+import sharp from "sharp";
 
 export async function POST({request, cookies, locals, params}) {
   const response = {header:{}, data:{}} as iGlobalResponse
   const { slug } = params
-  const allowedExtension =  /(\.jpg|\.jpeg|\.png|\.gif)$/i
+  const allowedExtension =  /(\.jpg|\.jpeg|\.png|\.gif|\.webp)$/i
   try {
     if (!locals.user) {
-      throw 'You must login to continue'
+      throw {code: 'You must login to continue'}
     }
     //check cookie
     await firebaseValidation(cookies)
@@ -22,11 +23,11 @@ export async function POST({request, cookies, locals, params}) {
     const payload = await request.formData()
     const imageFile = payload.get('image') as File
     if (!imageFile) {
-      throw 'File data not supplied'
+      throw {code: 'File data not supplied'}
     } else if (imageFile.size > 5000000) {
-      throw 'Maximum file size is 5mb'
+      throw {code: 'Maximum file size is 5mb'}
     } else if (!allowedExtension.exec(imageFile.name)) {
-      throw 'Only accept jpg, jpeg, png, gif type files'
+      throw {code: 'Only accept jpg, jpeg, png, gif type files'}
     }
 
     const userMember = await db.clubMember.findFirstOrThrow({
@@ -51,16 +52,16 @@ export async function POST({request, cookies, locals, params}) {
     if (userMember.roleId <= 302 || (userMember.roleId == 302 && userMember.canEditClubInfo)) {
       //delete previous file if any
       if (userMember.clubData.coverFile) {
-        const deleteResult = await deleteImage(env.PUBLIC_TEBI_BUCKET_CLUB_EMBLEM, userMember.clubData.coverFile)
+        const deleteResult = await deleteImage(env.PUBLIC_TEBI_BUCKET_CLUB_COVER, userMember.clubData.coverFile)
         if (!deleteResult) {
           throw 'Failed to remove old data, please contact developer'
         }
       }
+
       const fileBuffer = await imageFile.arrayBuffer()
       const buffer = Buffer.from(fileBuffer)
-      const nameSplit = imageFile.name.split('.')
-      const fileFormat = nameSplit[nameSplit.length - 1]
-      const result = await uploadImage(env.PUBLIC_TEBI_BUCKET_CLUB_COVER, userMember.clubData.id.toString(), buffer, fileFormat)
+      const processFile = await sharp(buffer).resize(2000,400).webp({quality: 50}).toBuffer()
+      const result = await uploadImage(env.PUBLIC_TEBI_BUCKET_CLUB_COVER, userMember.clubData.id.toString(), processFile, 'webp')
       if (result) {
         await db.club.update({
           where: {

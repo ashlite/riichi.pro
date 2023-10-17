@@ -31,8 +31,7 @@ export async function load({ url, locals }) {
         where: {
           roleId: {
             in: [301, 302, 303]
-          },
-          active: true
+          }
         },
         select: {
           clubData: true

@@ -6,7 +6,7 @@ import { firebaseValidation } from "$lib/server/firebaseAdmin";
 import { db } from "$lib/server/db.js";
 
 export async function POST({cookies, locals, params}) {
-  const response = {} as iGlobalResponse
+  const response = {header:{}, data:{}} as iGlobalResponse
   
   if (locals.user?.roleId && locals.user.roleId < 102) {
     response.header.ok = false

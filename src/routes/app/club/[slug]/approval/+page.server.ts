@@ -10,8 +10,9 @@ export async function load({params, parent}) {
   
   const listPending = await db.clubMember.findMany({
     where: {
-      active: true,
-      roleId: 306,
+      roleId: {
+        in: [305, 306]
+      },
       clubData: {
         slug: slug
       }

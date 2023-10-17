@@ -150,6 +150,29 @@ async function main() {
       group: 'trans_cc_type'
     },]
   })
+  const matchSeat = await prisma.refHelper.createMany({
+    data: [{
+      id: 701,
+      name: 'East',
+      notes: 'For player sitting at east',
+      group: 'match_seat'
+    },{
+      id: 702,
+      name: 'South',
+      notes: 'For player sitting at east',
+      group: 'match_seat'
+    },{
+      id: 703,
+      name: 'West',
+      notes: 'For player sitting at east',
+      group: 'match_seat'
+    },{
+      id: 704,
+      name: 'North',
+      notes: 'For player sitting at east',
+      group: 'match_seat'
+    }]
+  })
 
   const resultRt = await prisma.rankTittle.createMany({
     data: [{

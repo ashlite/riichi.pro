@@ -49,7 +49,10 @@ async function approveClub(uuid: string) {
               <div>website: {club.website ?? '-none-'}</div>
             </div>
           </td>
-          <td>{club.memberList[0].userData.fullName}</td>
+          <td class="flex flex-col">
+            <div class="font-bold">{club.memberList[0].userData.fullName}</div>
+            <div>member ID: {club.memberList[0].id}</div>
+          </td>
           <td>
             <Button text="Approve" color="success bg-success text-success-content hover:bg-success" icon="ph:check" on:click={() => approveClub(club.id)} />
             <Button text="Reject" color="error" icon="ph:x" on:click={() => toastAlert.warning('Work In Progress')}/>

@@ -18,7 +18,9 @@ export async function POST({request, cookies, locals}) {
     const clubList = await db.clubMember.findMany({
       where: {
         userId: locals.user.id,
-        active: true
+        roleId: {
+          not: 399
+        }
       }
     })
     
@@ -41,7 +43,7 @@ export async function POST({request, cookies, locals}) {
         district: payload.district,
         address: payload.address,
         emailContact: payload.emailContact,
-        phoneContact: (countryPhoneFromCode(payload.phoneCode!.toString()) ?? '-' + payload.phoneContact?.toString() ?? '-'),
+        phoneContact: (countryPhoneFromCode(payload.phoneCode!.toString()) + payload.phoneContact?.toString()),
         website: payload.website,
         totalMainMember: 1,
         totalMember: 1,
