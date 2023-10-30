@@ -1,4 +1,4 @@
-interface iParticipant {
+export interface iParticipant {
   userId: number
   fullName: string
   score: number

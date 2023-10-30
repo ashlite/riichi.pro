@@ -14,7 +14,8 @@
       <!-- <li><a>Player Reported <span class="badge">0</span></a></li>
       <li><a>Player Management</a></li>
       <li><a>Match Reported <span class="badge">0</span></a></li> -->
-      <li><a data-sveltekit-preload-data href="/app/official/clubapproval" class={$page.url.pathname.includes('/clubapproval') ? "text-primary" : ""}>Club Approval <BadgeNotification total={data.totalPendingClub} /></a></li>
+      <li><a data-sveltekit-preload-data href="/app/official/clubapproval" class={$page.url.pathname.includes('/official/clubapproval') ? "text-primary" : ""}>Club Approval <BadgeNotification total={data.totalPendingClub} /></a></li>
+      <!-- <li><a data-sveltekit-preload-data href="/app/official/rulesetting" class={$page.url.pathname.includes('/official/rulesetting') ? "text-primary" : ""}>Rule Setting</a></li> -->
       <!-- <li><a>Club Reported <span class="badge">0</span></a></li>
       <li><a>Club Management</a></li>
       <li><a>Tournament Ongoing <span class="badge">0</span></a></li>

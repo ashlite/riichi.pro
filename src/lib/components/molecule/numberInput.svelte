@@ -1,4 +1,5 @@
 <script lang="ts">
+
   export let labelTR: string | null = null
   export let labelTL: string | null = null
   export let placeholder=''
@@ -40,6 +41,7 @@
     min={min}
     max={max}
     tabindex={skipFocus ? -1 : 0}
+    on:change
   />
   {#if labelSum}
     <label for="" class="label">
