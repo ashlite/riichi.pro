@@ -255,7 +255,8 @@ model Match {
   createdAt        DateTime @default(now()) @map("created_at")
   matchAt          DateTime @map("match_at")
   updatedAt        DateTime @updatedAt @map("updated_at")
-  type             Int
+  typeId           Int      @map("type_id")
+  deposit          Int      @default(0)
   officialRule     Boolean  @map("official_rule")
   clubId           String?  @map("club_id") @db.Uuid
   creatorMemberId  Int?     @map("creator_member_id")
@@ -267,8 +268,31 @@ model Match {
   transactionRPList TransactionRP[]
   clubData          Club?              @relation(fields: [clubId], references: [id])
   creatorMemberData ClubMember?        @relation(fields: [creatorMemberId], references: [id])
+  typeData          MatchType          @relation(fields: [typeId], references: [id])
 
   @@map("match")
+}
+
+model MatchType {
+  id                    Int      @id @default(autoincrement())
+  name                  String
+  defaultRankMultiplier Float    @map("default_rank_multiplier")
+  modRankMultiplier     Float    @map("mod_rank_multiplier")
+  modStartDate          DateTime @map("mod_start_date")
+  modEndDate            DateTime @map("mod_end_date")
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+  official              Boolean  @default(false) @map("official")
+  clubId                String?  @map("club_id") @db.Uuid
+  ccBase                Float    @map("cc_base")
+  ccNovice              Float    @map("cc_novice")
+  ccAmateur             Float    @map("cc_amateur")
+  ccPro                 Float    @map("cc_pro")
+  totalScore            Int      @default(120000)
+
+  matchList Match[]
+
+  @@map("match_type")
 }
 
 model MatchParticipant {

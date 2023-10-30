@@ -406,7 +406,7 @@ async function main() {
     }]
   })
   
-  console.log({resultUserRoles, resultClubRole, resultRTGroup, resultGender, resultClubStatus, resultTransactionCCType, resultRt})
+  console.log({resultUserRoles, resultClubRole, resultRTGroup, resultGender, resultClubStatus, resultTransactionCCType, matchSeat, resultRt})
 }
 
 main()
