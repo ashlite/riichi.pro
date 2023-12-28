@@ -52,7 +52,7 @@ export async function get(path: string, token: string | null = null) {
   if (getResult.ok) {
     return getResult.data
   } else {
-    throw error(getResult.status, `${getResult.status_text}. PATH: ${getResult.path}` )
+    error(getResult.status, `${getResult.status_text}. PATH: ${getResult.path}` );
   }
 }
 
@@ -61,7 +61,7 @@ export async function getWithoutCredential(path: string) {
   if (getResult.ok) {
     return getResult.data
   } else {
-    throw error(getResult.status, `${getResult.status_text}. PATH: ${getResult.path}` )
+    error(getResult.status, `${getResult.status_text}. PATH: ${getResult.path}` );
   }
 }
 

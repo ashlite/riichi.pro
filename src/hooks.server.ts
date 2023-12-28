@@ -47,7 +47,7 @@ export async function handle({event, resolve}) {
     } catch (e) {
       event.locals.user = undefined
       event.locals.status = undefined
-      event.cookies.delete('firebase_session')
+      /* @migration task: add path argument */ event.cookies.delete('firebase_session')
     }
     
   } else {

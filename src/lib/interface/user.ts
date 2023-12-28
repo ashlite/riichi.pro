@@ -19,6 +19,7 @@ interface iRtData {
   baseRP: number
   promotionRP: number
   clubLimit: number
+  groupRefId: number
 }
 
 export interface iUserLocal {

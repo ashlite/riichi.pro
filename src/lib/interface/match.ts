@@ -4,19 +4,24 @@ export interface iParticipant {
   score: number
   playerRtId: number
   playerRtName: string
+  playerRtGroup: number
+  playerSkillIndex: number
   chombo: number
-  draw: boolean
-  position?: number
+  yakuman: number
+  draw: number
+  position: number
   ron?: number
   tsumo?: number
   dealIn?: number
+  gainUma?: number
 }
 
 export interface iMatchInput {
   matchAt: Date
   type: number
-  officialRule: boolean
+  matchRuleId: number
   playerUniqueCode: string
   note?: string
   participantList: iParticipant[]
+  deposit: number
 }

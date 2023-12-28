@@ -144,6 +144,7 @@ model Club {
   matchList       Match[]
   statusData      RefHelper       @relation(fields: [clubStatusId], references: [id])
   clubSetting     ClubSetting?
+  clubMatchType   MatchType[]
 
   @@map("club")
 }
@@ -191,26 +192,28 @@ model ClubMember {
 }
 
 model ClubUmaStanding {
-  id         String   @id @default(uuid()) @db.Uuid
-  playerId   Int      @map("player_id")
-  totalUma   Int      @map("total_uma")
-  totalMatch Int      @default(0) @map("total_match")
-  periode    DateTime
+  playerId    Int    @map("player_id")
+  totalUma    Int    @map("total_uma")
+  totalMatch  Int    @default(0) @map("total_match")
+  periodMonth Int
+  periodYear  Int
 
   userData User @relation(fields: [playerId], references: [id])
 
+  @@unique([playerId, periodMonth, periodYear])
   @@map("club_uma_standing")
 }
 
 model GlobalUmaStanding {
-  id         String   @id @default(uuid())
-  playerId   Int      @map("player_id")
-  totalUma   Int      @map("total_uma")
-  totalMatch Int      @default(0) @map("total_match")
-  periode    DateTime
+  playerId    Int    @map("player_id")
+  totalUma    Int    @map("total_uma")
+  totalMatch  Int    @default(0) @map("total_match")
+  periodMonth Int
+  periodYear  Int
 
   playerData User @relation(fields: [playerId], references: [id])
 
+  @@unique([playerId, periodMonth, periodYear])
   @@map("global_uma_standing")
 }
 
@@ -241,7 +244,7 @@ model TransactionRP {
   rtChange   Boolean  @default(false) @map("rt_change")
   rtIdBefore Int?     @map("rt_id_before")
   rtIdAfter  Int?     @map("rt_id_after")
-  createdAt  DateTime
+  createdAt  DateTime @default(now()) @map("created_at")
 
   rtBeforeData RankTittle? @relation("oldRT", fields: [rtIdBefore], references: [id])
   rtAfterData  RankTittle? @relation("newRT", fields: [rtIdAfter], references: [id])
@@ -257,7 +260,6 @@ model Match {
   updatedAt        DateTime @updatedAt @map("updated_at")
   typeId           Int      @map("type_id")
   deposit          Int      @default(0)
-  officialRule     Boolean  @map("official_rule")
   clubId           String?  @map("club_id") @db.Uuid
   creatorMemberId  Int?     @map("creator_member_id")
   costCC           Int      @map("cost_cc")
@@ -276,8 +278,8 @@ model Match {
 model MatchType {
   id                    Int      @id @default(autoincrement())
   name                  String
-  defaultRankMultiplier Float    @map("default_rank_multiplier")
-  modRankMultiplier     Float    @map("mod_rank_multiplier")
+  defaultRankMultiplier Int      @map("default_rank_multiplier")
+  modRankMultiplier     Int      @map("mod_rank_multiplier")
   modStartDate          DateTime @map("mod_start_date")
   modEndDate            DateTime @map("mod_end_date")
   createdAt             DateTime @default(now()) @map("created_at")
@@ -291,6 +293,7 @@ model MatchType {
   totalScore            Int      @default(120000)
 
   matchList Match[]
+  clubData  Club?   @relation(fields: [clubId], references: [id])
 
   @@map("match_type")
 }

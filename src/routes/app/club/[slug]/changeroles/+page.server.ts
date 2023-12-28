@@ -6,7 +6,7 @@ export async function load({params, parent}) {
   const { slug } = params
   
   if (userMemberData.roleId > 302 || (userMemberData.roleId == 302 && !userMemberData.canEditAccess)) {
-    throw redirect(307, `/app/club/${slug}/`)
+    redirect(307, `/app/club/${slug}/`);
   }
 
   const listMember = await db.clubMember.findMany({

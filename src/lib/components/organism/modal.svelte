@@ -6,7 +6,7 @@
   import QuitConfirmation from 'template/modal/quitConfirmation.svelte';
   import Tnc from 'template/modal/tnc.svelte';
   import KickConfirmation from 'template/modal/kickConfirmation.svelte';
-
+  
   import globalModal from 'store/modal'
   import shortcut from '$lib/service/shortcut'
 </script>

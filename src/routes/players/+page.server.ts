@@ -4,7 +4,7 @@ import { redirect } from '@sveltejs/kit';
 
 export async function load({ url, locals }) {
   if (locals.status == 'register') {
-    throw redirect(307, '/register')
+    redirect(307, '/register');
   }
   // const rtQuery = url.searchParams.get('')
   const currentPage = Number(url.searchParams.get('page') ?? 1)

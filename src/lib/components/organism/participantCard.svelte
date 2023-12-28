@@ -25,11 +25,14 @@ function changeScore(e: Event) {
     </div>
     <div class="divider my-0"></div>
     <div class="grid grid-cols-3 gap-2">
-      <div class="col-span-2">
+      <div >
         <NumberInput labelTL="Game Score*" step={100} min={-500000} labelTR="in thousand" bind:value={data.score} on:change={changeScore} />
       </div>
-      <div>
+      <div >
         <NumberInput labelTL="Chombo*" step={1} bind:value={data.chombo} />
+      </div>
+      <div>
+        <NumberInput labelTL="Yakuman*" step={1} bind:value={data.yakuman} />
       </div>
       <div>
         <NumberInput labelTL="Total Ron" bind:value={data.ron} />

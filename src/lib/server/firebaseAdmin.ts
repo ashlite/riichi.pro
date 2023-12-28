@@ -35,10 +35,10 @@ export async function firebaseValidation(cookie: Cookies): Promise<DecodedIdToke
   if (token) {
     const firebaseData = firebaseAuth.verifySessionCookie(token, true)
     if (!firebaseData) {
-      throw error(404, 'Firebase auth not match')
+      error(404, 'Firebase auth not match');
     } 
     return firebaseData
   } else {
-    throw error(401, 'Authentication failed, please login first')
+    error(401, 'Authentication failed, please login first');
   }
 }

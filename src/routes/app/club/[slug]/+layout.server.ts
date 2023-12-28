@@ -4,7 +4,7 @@ import type { LayoutServerLoadEvent } from "./$types";
 import { db } from "$lib/server/db";
 
 export async function load({ locals, params }: LayoutServerLoadEvent) {
-  if (!locals.user || locals.user.roleId < 102) { throw redirect(307, "/") }
+  if (!locals.user || locals.user.roleId < 102) { redirect(307, "/"); }
 
   try {
     //check user and throw if needed
@@ -53,7 +53,7 @@ export async function load({ locals, params }: LayoutServerLoadEvent) {
     }
     
   } catch (e) {
-    throw error(403, 'You must join the club to access this page.')
+    error(403, 'You must join the club to access this page.');
   }
   
 }

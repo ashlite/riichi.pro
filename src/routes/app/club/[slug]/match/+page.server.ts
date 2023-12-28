@@ -6,7 +6,7 @@ export async function load({ params, parent}) {
   const { slug } = params
   
   if (userMemberData.roleId > 302 || (userMemberData.roleId == 302 && !userMemberData.canSubmitMatch)) {
-    throw redirect(307, `/app/club/${slug}/`)
+    redirect(307, `/app/club/${slug}/`);
   }
 
   const listMember = await db.clubMember.findMany({
@@ -31,7 +31,20 @@ export async function load({ params, parent}) {
     }
   })
 
+  const listMatchType = await db.matchType.findMany({
+    where: {
+      OR: [{
+        official: true,
+      }, {
+        clubData: {
+          slug: slug
+        }
+      }]
+    }
+  })
+
   return {
     listMember,
+    listMatchType
   }
 }

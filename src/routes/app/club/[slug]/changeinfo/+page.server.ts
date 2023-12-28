@@ -7,7 +7,7 @@ export async function load({params, parent}) {
   const { userMemberData } = await parent()
 
   if (userMemberData.roleId > 302 || (userMemberData.roleId == 302 && !userMemberData.canEditClubInfo)) {
-    throw redirect(307, `/app/club/${slug}/`)
+    redirect(307, `/app/club/${slug}/`);
   }
   
   try {
@@ -20,6 +20,6 @@ export async function load({params, parent}) {
       clubInfo
     }
   } catch (e) {
-    throw error(404, 'club not found')
+    error(404, 'club not found');
   }
 }

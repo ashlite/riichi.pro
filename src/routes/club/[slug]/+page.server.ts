@@ -5,6 +5,6 @@ import type { Prisma } from '@prisma/client';
 
 export async function load({ url, locals }) {
   if (locals.status == 'register') {
-    throw redirect(307, '/register')
+    redirect(307, '/register');
   }
 }

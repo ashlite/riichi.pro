@@ -5,6 +5,6 @@ export const ssr = false
 
 export const load: PageServerLoad = async ({ locals }) => {
   if (locals.status == 'register') {
-    throw redirect(307, '/register')
+    redirect(307, '/register');
   }
 }

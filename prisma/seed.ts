@@ -173,6 +173,33 @@ async function main() {
       group: 'match_seat'
     }]
   })
+  const matchType = await prisma.matchType.createMany({
+    data: [{
+      name: 'Official Hanchan 120k/0 red five',
+      defaultRankMultiplier: 100,
+      modRankMultiplier: 100,
+      modStartDate: new Date(),
+      modEndDate: new Date(),
+      official: true,
+      ccBase: 6,
+      ccNovice: 1,
+      ccAmateur: 2,
+      ccPro: 3,
+      totalScore: 120000
+    },{
+      name: 'Official Hanchan 120k/3 red fives',
+      defaultRankMultiplier: 90,
+      modRankMultiplier: 90,
+      modStartDate: new Date(),
+      modEndDate: new Date(),
+      official: true,
+      ccBase: 5,
+      ccNovice: 1,
+      ccAmateur: 2,
+      ccPro: 3,
+      totalScore: 120000
+    }]
+  })
 
   const resultRt = await prisma.rankTittle.createMany({
     data: [{
