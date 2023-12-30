@@ -1,3 +1,5 @@
+import { Prisma } from "@prisma/client"
+
 export interface iParticipant {
   userId: number
   fullName: string
@@ -5,15 +7,11 @@ export interface iParticipant {
   playerRtId: number
   playerRtName: string
   playerRtGroup: number
-  playerSkillIndex: number
   chombo: number
   yakuman: number
-  draw: number
-  position: number
   ron?: number
   tsumo?: number
   dealIn?: number
-  gainUma?: number
 }
 
 export interface iMatchInput {
@@ -23,5 +21,43 @@ export interface iMatchInput {
   playerUniqueCode: string
   note?: string
   participantList: iParticipant[]
+  participantIdList: number[]
   deposit: number
+}
+
+export interface iRTList {
+  [key: number]: Prisma.RankTittleGetPayload<{
+    select:{
+      id: true,
+      groupRefId: true,
+      skillIndex: true,
+      first: true,
+      second: true,
+      third: true,
+      fourth: true,
+      promotionRP: true,
+      demotion: true,
+      baseRP: true,
+    }
+  }>
+}
+
+export interface iPlayerData {
+  [key: number]: Prisma.UserGetPayload<{
+    select: {
+      id: true,
+      roleId: true,
+      currentRP: true,
+      rtId: true,
+      rankedAt: true,
+    }
+  }>
+}
+
+export interface iUpdateManyPlayerData {
+  [key: number]: Prisma.UserUpdateArgs
+}
+
+export interface iUpsertUmaStandingInput {
+  [key: number]: Prisma.ClubUmaStandingUpsertArgs
 }

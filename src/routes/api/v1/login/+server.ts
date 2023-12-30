@@ -11,11 +11,11 @@ export async function POST({request, cookies}) {
 
     if (resultFirebase) {
       const expiresIn = 60 * 60 * 24 * 7 * 1000;
-      const options = { maxAge: expiresIn, httpOnly: true, secure: true, path:'/' };
+      const options = { maxAge: expiresIn/1000, httpOnly: true, secure: true, path:'/' };
       
       //firebaseCookie
       const sessionCookie = await firebaseAuth.createSessionCookie(idToken, {expiresIn})
-      cookies.set('firebase_session', sessionCookie, options)
+      cookies.set('janshi_token', sessionCookie, options)
       
       response.header.ok = true
     } else {
@@ -24,6 +24,7 @@ export async function POST({request, cookies}) {
     }
     
   } catch (e) {
+    console.log(e)
     response.header.ok = false
     response.header.error = 'Login failed'
   }

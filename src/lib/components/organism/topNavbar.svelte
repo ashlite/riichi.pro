@@ -25,8 +25,8 @@
         })
         const loginResult = await loginApp.json() as iGlobalResponse
         if (loginResult.header.ok) {
+          await invalidateAll()
           toastAlert.success('Login Success')
-          invalidateAll()
         } else {
           toastAlert.responseError(loginResult)
         }
@@ -61,7 +61,7 @@
         <AvatarBtn user={user} />
       {:else if status == 'register'}
         <li id="Login">
-          <Button color="ghost" text="Register Player" icon="ph:user" href="/register" />
+          <Button color="ghost" text="Complete Registration" icon="ph:user" href="/register" />
         </li>
       {:else}
         <li id="Login">

@@ -5,7 +5,7 @@ import { db } from '$lib/server/db'
 
 export async function handle({event, resolve}) {
   //set user based on appCookie
-  const firebaseToken = event.cookies.get('firebase_session')
+  const firebaseToken = event.cookies.get('janshi_token')
   // const janshiProToken = event.cookies.get('janshiProToken')
   
   if (firebaseToken && firebaseToken != undefined){
@@ -32,6 +32,7 @@ export async function handle({event, resolve}) {
               baseRP: true,
               promotionRP: true,
               clubLimit: true,
+              groupRefId: true,
             }
           },
           currentRP: true
@@ -47,7 +48,7 @@ export async function handle({event, resolve}) {
     } catch (e) {
       event.locals.user = undefined
       event.locals.status = undefined
-      /* @migration task: add path argument */ event.cookies.delete('firebase_session')
+      event.cookies.delete('janshi_token', {path: ''})
     }
     
   } else {

@@ -38,6 +38,7 @@
     <ul class="menu menu-sm bg-base-200 text-base-content w-56 shadow">
       <li><a href="/app/profile">Profile</a></li>
       <li><a href="/app/club">Club</a></li>
+      <li class="disabled"><a href="#">My Match (WIP)</a></li>
       {#if user.roleId > 101}
         <li><a href="/app/official/dashboard">Official</a></li>
       {/if}

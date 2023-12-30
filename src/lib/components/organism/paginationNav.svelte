@@ -10,8 +10,6 @@
   let totalPages = pagination.totalPage
   let rowPerPage = pagination.rowPerPage
 
-  
-
   function nextPage(){
     if (currentPage < totalPages) {
       const url = new URL($page.url)
@@ -42,6 +40,7 @@
       <option value={10}>10</option>
       <option value={25}>25</option>
       <option value={50}>50</option>
+      <option value={100}>100</option>
     </select>
   </div>
   <div class="col-start-4 col-span-7">

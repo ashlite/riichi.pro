@@ -1,4 +1,4 @@
-import { credential } from 'firebase-admin';
+import firebaseAdmin  from 'firebase-admin';
 import { initializeApp, getApps } from 'firebase-admin/app';
 import { getFirestore } from "firebase-admin/firestore";
 import { getAuth, type DecodedIdToken } from 'firebase-admin/auth';
@@ -16,7 +16,7 @@ function makeApp() {
   }
 
   return initializeApp({
-    credential: credential.cert({
+    credential: firebaseAdmin.credential.cert({
       privateKey: FIREBASE_ADMIN_PRIVATE_KEY,
       clientEmail: FIREBASE_ADMIN_CLIENT_EMAIL,
       projectId: PUBLIC_FIREBASE_PROJECT_ID,
@@ -31,7 +31,7 @@ export const firestore = getFirestore()
 
 export async function firebaseValidation(cookie: Cookies): Promise<DecodedIdToken> {
   //validate request
-  const token = cookie.get("firebase_session")
+  const token = cookie.get("janshi_token")
   if (token) {
     const firebaseData = firebaseAuth.verifySessionCookie(token, true)
     if (!firebaseData) {

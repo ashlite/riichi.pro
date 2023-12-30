@@ -61,10 +61,11 @@ model User {
   rankedAt               DateTime  @default(now()) @map("ranked_at")
 
   metaData              UserMeta?
-  rtData                RankTittle          @relation(fields: [rtId], references: [id])
+  rtData                RankTittle          @relation(fields: [rtId], references: [id], onUpdate: Cascade)
   transactionCCList     TransactionCC[]
-  roleData              RefHelper           @relation(name: "role", fields: [roleId], references: [id])
-  genderData            RefHelper?          @relation(name: "gender", fields: [genderRefId], references: [id])
+  transactionRPList     TransactionRP[]
+  roleData              RefHelper           @relation(name: "role", fields: [roleId], references: [id], onUpdate: Cascade)
+  genderData            RefHelper?          @relation(name: "gender", fields: [genderRefId], references: [id], onUpdate: Cascade)
   clubList              ClubMember[]
   participantList       MatchParticipant[]
   clubUmaStandingList   ClubUmaStanding[]
@@ -88,7 +89,7 @@ model UserMeta {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  userData User @relation(fields: [userId], references: [id])
+  userData User @relation(fields: [userId], references: [id], onUpdate: Cascade)
 
   @@map("user_meta")
 }
@@ -109,7 +110,7 @@ model RankTittle {
 
   userList        User[]
   participantList MatchParticipant[]
-  group           RefHelper          @relation(fields: [groupRefId], references: [id])
+  group           RefHelper          @relation(fields: [groupRefId], references: [id], onUpdate: Cascade)
   newRTList       TransactionRP[]    @relation("newRT")
   oldRTList       TransactionRP[]    @relation("oldRT")
 
@@ -142,9 +143,10 @@ model Club {
   memberList      ClubMember[]
   transactionList TransactionCC[]
   matchList       Match[]
-  statusData      RefHelper       @relation(fields: [clubStatusId], references: [id])
+  statusData      RefHelper         @relation(fields: [clubStatusId], references: [id], onUpdate: Cascade)
   clubSetting     ClubSetting?
   clubMatchType   MatchType[]
+  umaStanding     ClubUmaStanding[]
 
   @@map("club")
 }
@@ -163,7 +165,7 @@ model ClubSetting {
   yakumanBonusOther  String? @map("yakuman_bonus_other")
   acceptAutotable    Boolean @default(false) @map("accept_autotable")
 
-  clubData Club @relation(fields: [clubId], references: [id])
+  clubData Club @relation(fields: [clubId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 
   @@map("club_setting")
 }
@@ -183,9 +185,9 @@ model ClubMember {
   canBuyCC            Boolean   @default(false) @map("can_buy_cc")
   canEditAccess       Boolean   @default(false) @map("can_edit_access")
 
-  clubData     Club      @relation(fields: [clubId], references: [id])
-  userData     User      @relation(fields: [userId], references: [id])
-  roleData     RefHelper @relation(fields: [roleId], references: [id])
+  clubData     Club      @relation(fields: [clubId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  userData     User      @relation(fields: [userId], references: [id], onUpdate: Cascade)
+  roleData     RefHelper @relation(fields: [roleId], references: [id], onUpdate: Cascade)
   matchInputed Match[]
 
   @@map("club_member")
@@ -193,21 +195,23 @@ model ClubMember {
 
 model ClubUmaStanding {
   playerId    Int    @map("player_id")
+  clubId      String  @map("club_id") @db.Uuid
   totalUma    Int    @map("total_uma")
   totalMatch  Int    @default(0) @map("total_match")
-  periodMonth Int
-  periodYear  Int
+  periodMonth Int   @map("period_month")
+  periodYear  Int   @map("period_year")
 
-  userData User @relation(fields: [playerId], references: [id])
+  userData User @relation(fields: [playerId], references: [id], onUpdate: Cascade)
+  clubData Club @relation(fields: [clubId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  @@unique([playerId, periodMonth, periodYear])
+  @@unique([playerId, clubId, periodMonth, periodYear])
   @@map("club_uma_standing")
 }
 
 model GlobalUmaStanding {
-  playerId    Int    @map("player_id")
-  totalUma    Int    @map("total_uma")
-  totalMatch  Int    @default(0) @map("total_match")
+  playerId    Int @map("player_id")
+  totalUma    Int @map("total_uma")
+  totalMatch  Int @default(0) @map("total_match")
   periodMonth Int
   periodYear  Int
 
@@ -228,14 +232,15 @@ model TransactionCC {
   type      Int
   note      String?
 
-  clubData Club @relation(fields: [clubId], references: [id])
-  userData User @relation(fields: [userId], references: [id])
+  clubData Club @relation(fields: [clubId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userData User @relation(fields: [userId], references: [id], onUpdate: Cascade)
 
   @@map("transaction_cc")
 }
 
 model TransactionRP {
   id         String   @id @default(uuid()) @db.Uuid
+  userId     Int
   matchId    String?  @db.Uuid
   note       String?
   rpBefore   Int      @map("rp_before")
@@ -248,7 +253,8 @@ model TransactionRP {
 
   rtBeforeData RankTittle? @relation("oldRT", fields: [rtIdBefore], references: [id])
   rtAfterData  RankTittle? @relation("newRT", fields: [rtIdAfter], references: [id])
-  matchData    Match?      @relation(fields: [matchId], references: [id])
+  matchData    Match?      @relation(fields: [matchId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  userData     User        @relation(fields: [userId], references: [id], onUpdate: Cascade)
 
   @@map("transaction_rp")
 }
@@ -268,9 +274,9 @@ model Match {
 
   participantList   MatchParticipant[]
   transactionRPList TransactionRP[]
-  clubData          Club?              @relation(fields: [clubId], references: [id])
-  creatorMemberData ClubMember?        @relation(fields: [creatorMemberId], references: [id])
-  typeData          MatchType          @relation(fields: [typeId], references: [id])
+  clubData          Club?              @relation(fields: [clubId], references: [id], onUpdate: Cascade, onDelete: SetNull)
+  creatorMemberData ClubMember?        @relation(fields: [creatorMemberId], references: [id], onUpdate: Cascade, onDelete: SetNull)
+  typeData          MatchType          @relation(fields: [typeId], references: [id], onUpdate: Cascade)
 
   @@map("match")
 }
@@ -293,7 +299,7 @@ model MatchType {
   totalScore            Int      @default(120000)
 
   matchList Match[]
-  clubData  Club?   @relation(fields: [clubId], references: [id])
+  clubData  Club?   @relation(fields: [clubId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
   @@map("match_type")
 }
@@ -313,10 +319,10 @@ model MatchParticipant {
   dealIn        Int?    @map("deal_in")
   gainUma       Int     @map("gain_uma")
 
-  userData    User       @relation(fields: [userId], references: [id])
-  matchData   Match      @relation(fields: [matchId], references: [id])
-  matchRt     RankTittle @relation(fields: [playerRtId], references: [id])
-  seatRefData RefHelper  @relation(fields: [seatRefId], references: [id])
+  userData    User       @relation(fields: [userId], references: [id], onUpdate: Cascade)
+  matchData   Match      @relation(fields: [matchId], references: [id], onUpdate: Cascade)
+  matchRt     RankTittle @relation(fields: [playerRtId], references: [id], onUpdate: Cascade)
+  seatRefData RefHelper  @relation(fields: [seatRefId], references: [id], onUpdate: Cascade)
 
   @@unique([userId, matchId])
   @@map("match_participant")

@@ -16,8 +16,7 @@
   import { invalidateAll } from "$app/navigation";
   
   export let data: PageData
-  const matchData = { matchAt: new Date, deposit: 0, type: 1, matchRuleId: 0,  playerUniqueCode: '', note: undefined, participantList:[] } as iMatchInput
-  let playerList: number[] = []
+  const matchData = { matchAt: new Date, deposit: 0, type: 1, matchRuleId: 0,  playerUniqueCode: '', note: undefined, participantList:[], participantIdList:[] } as iMatchInput
   let scoreList: number[] = []
   let totalNovice = 0
   let totalAmateur = 0
@@ -29,24 +28,21 @@
   
   function addPlayer(event: any) {
     const member: iMemberPicker = event.detail
-    if (!playerList.includes(member.id)) {
+    if (!matchData.participantIdList.includes(member.id)) {
       matchData.participantList = [...matchData.participantList, {
         chombo: 0,
         fullName: member.userData.fullName,
         playerRtId: member.userData.rtId,
         playerRtName: member.userData.rtData.name,
-        draw: 0,
+        playerRtGroup: member.userData.rtData.groupRefId,
         score: data.listMatchType[selectedRule].totalScore/4,
         userId: member.id,
-        playerRtGroup: member.userData.rtData.groupRefId,
-        playerSkillIndex: member.userData.rtData.skillIndex,
-        position: 4,
         yakuman: 0
       }]
+      matchData.participantIdList = [...matchData.participantIdList, member.id]
       if (member.userData.rtData.groupRefId == 201) totalNovice++
       else if (member.userData.rtData.groupRefId == 202) totalAmateur++
       else totalPro++
-      playerList = [...playerList, member.id]
       scoreList = [...scoreList, 30000]
     } else {
       toastAlert.error('Player already inputed')
@@ -60,30 +56,14 @@
     else if (matchData.participantList[index].playerRtGroup == 202) totalAmateur--
     else totalPro--
 
-    playerList = playerList.filter((v,i) => {return i != index})
     scoreList = scoreList.filter((v,i) => {return i != index})
-    matchData.participantList = matchData.participantList.filter((v,i) => {
-      return i != index
-    })
+    matchData.participantIdList = matchData.participantIdList.filter((v,i) => {return i != index})
+    matchData.participantList = matchData.participantList.filter((v,i) => {return i != index})
   }
 
   async function submitMatch() {
     processing = true
     matchData.matchRuleId = data.listMatchType[selectedRule].id
-    //adjust position
-    matchData.participantList.forEach((participant,i) => {
-      participant.position = 3
-      for (let x = 0; x < 4; x++) {
-        if (i != x) {
-          if (participant.score > matchData.participantList[x].score) {
-            participant.position--
-          } else if (participant.score == matchData.participantList[x].score) {
-            participant.position--
-            participant.draw++
-          }
-        }
-      }
-    })
 
     const response = await fetch(`/api/v1/club/${data.userMemberData.clubData.slug}/match`, {
       method: 'POST',
@@ -91,7 +71,16 @@
     })
     const result: iGlobalResponse = await response.json()
     if (result.header.ok) {
-      invalidateAll()
+      totalNovice = 0
+      totalAmateur = 0
+      totalPro = 0
+      selectedRule = 0
+      matchData.deposit = 0
+      matchData.type = 1
+      matchData.matchRuleId = 0
+      matchData.note = undefined
+      matchData.participantList = []
+      matchData.participantIdList = []
       toastAlert.success('Match Recorded')
     } else {
       toastAlert.responseError(result)
@@ -105,7 +94,7 @@
   <h1 class="text-4xl font-bold text-primary">Record a Match</h1>
   <div class="divider"></div>
   <p class="mb-4 text-secondary">Record a match for this club. Recorded match will have effect to player overall ranks and record, while it will be recorded to club standings. Please start by selecting participant player in the match. It is recomended to start inputing player in seat sequence <span class="font-bold">(EAST - SOUTH - WEST - NORTH)</span></p>
-  {#if playerList.length < 4}
+  {#if matchData.participantIdList.length < 4}
     <div class="w-3/5 mx-auto">
       <ClubMemberPicker clubSlug={data.userMemberData.clubData.slug} on:memberSelected={addPlayer} />
     </div>
@@ -143,10 +132,10 @@
     <div class="col-span-3">
       {#if processing}
         <Button color="warning" text="Processing" full />
-      {:else if playerList.length >= 4 && totalScore == data.listMatchType[selectedRule].totalScore}
+      {:else if matchData.participantIdList.length >= 4 && totalScore == data.listMatchType[selectedRule].totalScore}
         <Button color="success" text="Submit Match" full on:click={submitMatch} />
-      {:else if playerList.length < 4}
-        <Button full color="base no-animation" text={`${playerList.length}/4 players`} />
+      {:else if matchData.participantIdList.length < 4}
+        <Button full color="base no-animation" text={`${matchData.participantIdList.length}/4 players`} />
       {:else if totalScore != data.listMatchType[selectedRule].totalScore}
         <Button full color="base no-animation" text={`total score must 120.000`} />
       {/if}
