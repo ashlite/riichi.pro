@@ -4,7 +4,7 @@
   export let labelBL: string | null = null
   export let placeholder: string | null = null
   export let limit = 0
-  export let value: string = ''
+  export let value: string | null = ''
   export let uppercase = false
   export let disabled = false
   export let required = false
@@ -12,7 +12,7 @@
   export let h = 32
   let remainingLimit: number
 
-  $: if (value?.length > 0) {
+  $: if (value && value.length > 0) {
     remainingLimit = limit - value.length
   } else {
     remainingLimit = limit

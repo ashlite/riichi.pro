@@ -18,6 +18,6 @@ export async function validateUser(cookie: Cookies) {
     }
   } catch (e) {
     cookie.set("kaze_token", "", { maxAge: -1 });
-    throw error(404, "User Not found")
+    error(404, "User Not found");
   }
 }

@@ -1,39 +1,59 @@
 import { firebaseValidation } from '$lib/server/firebaseAdmin'
-import type { iUserLocal } from 'interface/user'
+import type { AuthError } from 'firebase/auth'
 import { db } from '$lib/server/db'
 
 
 export async function handle({event, resolve}) {
   //set user based on appCookie
-  const firebaseToken = event.cookies.get('firebase_session')
+  const firebaseToken = event.cookies.get('janshi_token')
+  // const janshiProToken = event.cookies.get('janshiProToken')
+  
   if (firebaseToken && firebaseToken != undefined){
-    const decodedIdToken = await firebaseValidation(event.cookies)
-    const user = await db.user.findUniqueOrThrow({
-      where: {
-        firebaseId: decodedIdToken.uid
-      },
-      select: {
-        emailVerified: true,
-        email: true,
-        firstName: true,
-        lastName: true,
-        id: true,
-        roleId: true,
-        countryCode: true,
-        playerData: {
-          select: {
-            id: true,
-            alias: true,
-            currentRP: true,
-            currentMP: true,
-            rtData: true
-          }
+    try {
+      const decodedIdToken = await firebaseValidation(event.cookies)
+      const user = await db.user.findUnique({
+        where: {
+          firebaseId: decodedIdToken.uid
+        },
+        select: {
+          email: true,
+          fullName: true,
+          uuid: true,
+          id: true,
+          roleId: true,
+          banStatus: true,
+          banedAt: true,
+          banExpiration: true,
+          banReason: true,
+          rtData: {
+            select: {
+              name: true,
+              skillIndex: true,
+              baseRP: true,
+              promotionRP: true,
+              clubLimit: true,
+              groupRefId: true,
+            }
+          },
+          currentRP: true
         }
+      })
+      if (user) {
+        event.locals.user = user
+        event.locals.status = 'login'
+      } else {
+        event.locals.user = undefined
+        event.locals.status = 'register'
       }
-    })
-    event.locals.user = user
+    } catch (e) {
+      event.locals.user = undefined
+      event.locals.status = undefined
+      event.cookies.delete('janshi_token', {path: ''})
+    }
+    
   } else {
     event.locals.user = undefined
+    event.locals.status = undefined
   }
    
 	return await resolve(event);

@@ -20,67 +20,78 @@ model RefHelper {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  roleList      ClubMember[]
-  rankTitleList RankTittle[]
-  userList      User[]
+  roleList       ClubMember[]
+  rankTitleList  RankTittle[]
+  userList       User[]             @relation(name: "role")
+  genderList     User[]             @relation(name: "gender")
+  clubStatusList Club[]
+  seatDataList   MatchParticipant[]
 
   @@map("reference_helper")
 }
 
 model User {
   // for general profile user
-  id            String    @id @default(uuid()) @db.Uuid
-  firstName     String    @map("first_name")
-  lastName      String    @map("last_name")
-  email         String    @unique
-  emailVerified Boolean   @default(false)
-  countryCode   String    @map("country_code")
-  district      String?
-  address       String?
-  phoneCountry  String?   @map("phone_country")
-  phone         String?
-  realId        String?   @map("real_id")
-  sourceRealId      String?   @map("source_real_id")
-  joinedAt      DateTime  @default(now()) @map("joined_at")
-  roleId        Int       @default(101) @map("role_id")
-  firebaseId    String    @unique @map("firebase_id")
-  tncAgreement  Boolean?  @default(true) @map("tnc_agreement")
-  banStatus     Boolean   @default(false) @map("ban_status")
-  banReason     String?   @map("ban_reason")
-  banedAt       DateTime? @map("baned_at")
-  banExpiration DateTime? @map("ban_expiration")
+  id                     Int       @id @default(autoincrement())
+  uuid                   String    @unique @default(uuid()) @db.Uuid
+  fullName               String    @map("full_name")
+  email                  String    @unique
+  nationalityCountryCode String    @map("nationality_country_code")
+  residenceCountryCode   String    @map("residence_country_code")
+  dob                    DateTime? @map("dob")
+  genderRefId            Int?      @map("gender_ref_id")
+  district               String?
+  address                String
+  phoneCountry           String?   @map("phone_country")
+  phone                  String?
+  realId                 String?   @map("real_id")
+  sourceRealId           String?   @map("source_real_id")
+  joinedAt               DateTime  @default(now()) @map("joined_at")
+  roleId                 Int       @default(101) @map("role_id")
+  firebaseId             String    @unique @map("firebase_id")
+  tncAgreement           Boolean?  @default(true) @map("tnc_agreement")
+  banStatus              Boolean   @default(false) @map("ban_status")
+  banReason              String?   @map("ban_reason")
+  banedAt                DateTime? @map("baned_at")
+  banExpiration          DateTime? @map("ban_expiration")
+  telegramId             String?
+  currentRP              Int       @default(0) @map("current_rp")
+  currentTP              Int       @default(0) @map("current_mp")
+  rtId                   Int       @default(1) @map("rt_id")
+  rankedAt               DateTime  @default(now()) @map("ranked_at")
 
-  playerData        Player?
-  transactionCCList TransactionCC[]
-  roleData          RefHelper       @relation(fields: [roleId], references: [id])
-
-  @@map("user")
-}
-
-model Player {
-  id          Int      @id @default(autoincrement())
-  alias       String?  @unique
-  userId      String   @unique @map("user_id") @db.Uuid
-  totalMatch  Int      @default(0) @map("total_match")
-  totalChombo Int      @default(0) @map("total_chombo")
-  currentRP   Int      @default(0) @map("current_rp")
-  currentMP   Int      @default(0) @map("current_mp")
-  avgRon      Float    @default(0.0) @map("avg_ron")
-  avgTsumo    Float    @default(0.0) @map("avg_tsumo")
-  avgDealIn   Float    @default(0.0) @map("avg_deal_in")
-  rtId        Int      @map("rt_id") @default(1)
-  rankedAt    DateTime @default(now()) @map("ranked_at")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-
-  userData              User                @relation(fields: [userId], references: [id])
-  rtData                RankTittle          @relation(fields: [rtId], references: [id])
+  metaData              UserMeta?
+  rtData                RankTittle          @relation(fields: [rtId], references: [id], onUpdate: Cascade)
+  transactionCCList     TransactionCC[]
+  transactionRPList     TransactionRP[]
+  roleData              RefHelper           @relation(name: "role", fields: [roleId], references: [id], onUpdate: Cascade)
+  genderData            RefHelper?          @relation(name: "gender", fields: [genderRefId], references: [id], onUpdate: Cascade)
   clubList              ClubMember[]
   participantList       MatchParticipant[]
   clubUmaStandingList   ClubUmaStanding[]
   globalUmaStandingList GlobalUmaStanding[]
 
-  @@map("player")
+  @@unique([phoneCountry, phone])
+  @@map("user")
+}
+
+model UserMeta {
+  userId      Int      @unique @map("user_id")
+  totalMatch  Int      @default(0) @map("total_match")
+  totalChombo Int      @default(0) @map("total_chombo")
+  totalFirst  Int      @default(0) @map("total_first")
+  totalSecond Int      @default(0) @map("total_second")
+  totalThird  Int      @default(0) @map("total_third")
+  totalFourth Int      @default(0) @map("total_fourth")
+  avgRon      Float    @default(0.0) @map("avg_ron")
+  avgTsumo    Float    @default(0.0) @map("avg_tsumo")
+  avgDealIn   Float    @default(0.0) @map("avg_deal_in")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  userData User @relation(fields: [userId], references: [id], onUpdate: Cascade)
+
+  @@map("user_meta")
 }
 
 model RankTittle {
@@ -95,12 +106,11 @@ model RankTittle {
   baseRP      Int     @map("base_rp")
   promotionRP Int     @map("promotion_rp")
   demotion    Boolean
-  thresholdMP Int     @map("threshold_mp")
-  clubLimit Int @default(1) @map("club_limit")
+  clubLimit   Int     @default(1) @map("club_limit")
 
-  playerList      Player[]
+  userList        User[]
   participantList MatchParticipant[]
-  group           RefHelper          @relation(fields: [groupRefId], references: [id])
+  group           RefHelper          @relation(fields: [groupRefId], references: [id], onUpdate: Cascade)
   newRTList       TransactionRP[]    @relation("newRT")
   oldRTList       TransactionRP[]    @relation("oldRT")
 
@@ -109,11 +119,11 @@ model RankTittle {
 
 model Club {
   id              String   @id @default(uuid()) @db.Uuid
+  slug            String   @unique
   name            String
-  emblemPic       String?
-  coverPic        String?
+  emblemFile      String?
+  coverFile       String?
   description     String?
-  countryName     String   @map("country_name")
   countryISO2     String   @map("country_iso2")
   totalMember     Int      @default(0) @map("total_member")
   totalMainMember Int      @default(0) @map("total_main_member")
@@ -121,78 +131,116 @@ model Club {
   district        String?
   address         String?
   emailContact    String?  @map("email_contact")
+  phoneContact    String?  @map("phone_contact")
+  website         String?  @map("website")
   currentCC       Int      @default(0)
   spendCC         Int      @default(0)
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
+  clubStatusId    Int      @map("club_status_id")
+  upkeep          Int      @default(0)
 
   memberList      ClubMember[]
   transactionList TransactionCC[]
   matchList       Match[]
+  statusData      RefHelper         @relation(fields: [clubStatusId], references: [id], onUpdate: Cascade)
+  clubSetting     ClubSetting?
+  clubMatchType   MatchType[]
+  umaStanding     ClubUmaStanding[]
 
   @@map("club")
 }
 
-model ClubMember {
-  id        Int       @id @default(autoincrement())
-  playerId  Int       @map("player_id")
-  clubId    String    @map("club_id") @db.Uuid
-  roleId    Int       @map("role_id")
-  createdAt DateTime  @default(now()) @map("created_at")
-  expiredAt DateTime? @map("expired_at")
-  active    Boolean   @default(true)
+model ClubSetting {
+  clubId             String  @unique @map("club_id") @db.Uuid
+  autoApproveMember  Boolean @default(false) @map("auto_approve_member")
+  hideContact        Boolean @default(true)
+  firstUma           Int     @default(150) @map("first_uma")
+  secondUma          Int     @default(50) @map("second_uma")
+  thirdUma           Int     @default(-50) @map("third_uma")
+  fourthUma          Int     @default(-150) @map("fourth_uma")
+  chomboPenalty      Int     @default(-300) @map("chombo_penalty")
+  chomboPenaltyOther String? @map("chombo_penalty_other")
+  yakumanBonus       Int     @default(0) @map("yakuman_bonus")
+  yakumanBonusOther  String? @map("yakuman_bonus_other")
+  acceptAutotable    Boolean @default(false) @map("accept_autotable")
 
-  clubData     Club      @relation(fields: [clubId], references: [id])
-  playerData   Player    @relation(fields: [playerId], references: [id])
-  roleData     RefHelper @relation(fields: [roleId], references: [id])
+  clubData Club @relation(fields: [clubId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  @@map("club_setting")
+}
+
+model ClubMember {
+  id                  Int       @id @default(autoincrement())
+  userId              Int       @map("player_id")
+  clubId              String    @map("club_id") @db.Uuid
+  roleId              Int       @map("role_id")
+  createdAt           DateTime  @default(now()) @map("created_at")
+  expiredAt           DateTime? @map("expired_at")
+  canApproveMember    Boolean   @default(false) @map("can_approve_member")
+  canEditClubInfo     Boolean   @default(false) @map("can_edit_info")
+  canEditClubSetting  Boolean   @default(false) @map("can_edit_setting")
+  canSubmitMatch      Boolean   @default(false) @map("can_submit_match")
+  canSubmitTournament Boolean   @default(false) @map("can_submit_tournament")
+  canBuyCC            Boolean   @default(false) @map("can_buy_cc")
+  canEditAccess       Boolean   @default(false) @map("can_edit_access")
+
+  clubData     Club      @relation(fields: [clubId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  userData     User      @relation(fields: [userId], references: [id], onUpdate: Cascade)
+  roleData     RefHelper @relation(fields: [roleId], references: [id], onUpdate: Cascade)
   matchInputed Match[]
 
   @@map("club_member")
 }
 
 model ClubUmaStanding {
-  id         String   @id @default(uuid()) @db.Uuid
-  playerId   Int      @map("player_id")
-  totalUma   Int      @map("total_uma")
-  totalMatch Int      @default(0) @map("total_match")
-  periode    DateTime
+  playerId    Int    @map("player_id")
+  clubId      String  @map("club_id") @db.Uuid
+  totalUma    Int    @map("total_uma")
+  totalMatch  Int    @default(0) @map("total_match")
+  periodMonth Int   @map("period_month")
+  periodYear  Int   @map("period_year")
 
-  playerData Player @relation(fields: [playerId], references: [id])
+  userData User @relation(fields: [playerId], references: [id], onUpdate: Cascade)
+  clubData Club @relation(fields: [clubId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
+  @@unique([playerId, clubId, periodMonth, periodYear])
   @@map("club_uma_standing")
 }
 
 model GlobalUmaStanding {
-  id         String   @id @default(uuid())
-  playerId   Int      @map("player_id")
-  totalUma   Int      @map("total_uma")
-  totalMatch Int      @default(0) @map("total_match")
-  periode    DateTime
+  playerId    Int @map("player_id")
+  totalUma    Int @map("total_uma")
+  totalMatch  Int @default(0) @map("total_match")
+  periodMonth Int
+  periodYear  Int
 
-  playerData Player @relation(fields: [playerId], references: [id])
+  playerData User @relation(fields: [playerId], references: [id])
 
+  @@unique([playerId, periodMonth, periodYear])
   @@map("global_uma_standing")
 }
 
 model TransactionCC {
   id        String   @id @default(uuid()) @db.Uuid
   clubId    String   @map("club_id") @db.Uuid
-  userId    String   @map("user_id") @db.Uuid
+  userId    Int      @map("user_id")
   ccBefore  Int      @map("cc_before")
   ccMove    Int      @map("cc_move")
   ccAfter   Int      @map("cc_after")
   createdAt DateTime @default(now()) @map("created_at")
   type      Int
-  note      String
+  note      String?
 
-  clubData Club @relation(fields: [clubId], references: [id])
-  userData User @relation(fields: [userId], references: [id])
+  clubData Club @relation(fields: [clubId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userData User @relation(fields: [userId], references: [id], onUpdate: Cascade)
 
   @@map("transaction_cc")
 }
 
 model TransactionRP {
   id         String   @id @default(uuid()) @db.Uuid
+  userId     Int
   matchId    String?  @db.Uuid
   note       String?
   rpBefore   Int      @map("rp_before")
@@ -201,27 +249,14 @@ model TransactionRP {
   rtChange   Boolean  @default(false) @map("rt_change")
   rtIdBefore Int?     @map("rt_id_before")
   rtIdAfter  Int?     @map("rt_id_after")
-  createdAt  DateTime
+  createdAt  DateTime @default(now()) @map("created_at")
 
   rtBeforeData RankTittle? @relation("oldRT", fields: [rtIdBefore], references: [id])
   rtAfterData  RankTittle? @relation("newRT", fields: [rtIdAfter], references: [id])
-  matchData    Match?      @relation(fields: [matchId], references: [id])
+  matchData    Match?      @relation(fields: [matchId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  userData     User        @relation(fields: [userId], references: [id], onUpdate: Cascade)
 
   @@map("transaction_rp")
-}
-
-model TransactionMP {
-  id        String   @id @default(uuid()) @db.Uuid
-  matchId   String?  @db.Uuid
-  note      String?
-  mpBefore  Int      @map("mp_before")
-  mpMove    Int      @map("mp_move")
-  mpAfter   Int      @map("mp_after")
-  createdAt DateTime
-
-  matchData Match? @relation(fields: [matchId], references: [id])
-
-  @@map("transaction_mp")
 }
 
 model Match {
@@ -229,8 +264,8 @@ model Match {
   createdAt        DateTime @default(now()) @map("created_at")
   matchAt          DateTime @map("match_at")
   updatedAt        DateTime @updatedAt @map("updated_at")
-  type             Int
-  officialRule     Boolean  @map("official_rule")
+  typeId           Int      @map("type_id")
+  deposit          Int      @default(0)
   clubId           String?  @map("club_id") @db.Uuid
   creatorMemberId  Int?     @map("creator_member_id")
   costCC           Int      @map("cost_cc")
@@ -239,30 +274,56 @@ model Match {
 
   participantList   MatchParticipant[]
   transactionRPList TransactionRP[]
-  transactionMPList TransactionMP[]
-  clubData          Club?              @relation(fields: [clubId], references: [id])
-  creatorMemberData ClubMember?        @relation(fields: [creatorMemberId], references: [id])
+  clubData          Club?              @relation(fields: [clubId], references: [id], onUpdate: Cascade, onDelete: SetNull)
+  creatorMemberData ClubMember?        @relation(fields: [creatorMemberId], references: [id], onUpdate: Cascade, onDelete: SetNull)
+  typeData          MatchType          @relation(fields: [typeId], references: [id], onUpdate: Cascade)
 
   @@map("match")
 }
 
+model MatchType {
+  id                    Int      @id @default(autoincrement())
+  name                  String
+  defaultRankMultiplier Int      @map("default_rank_multiplier")
+  modRankMultiplier     Int      @map("mod_rank_multiplier")
+  modStartDate          DateTime @map("mod_start_date")
+  modEndDate            DateTime @map("mod_end_date")
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+  official              Boolean  @default(false) @map("official")
+  clubId                String?  @map("club_id") @db.Uuid
+  ccBase                Float    @map("cc_base")
+  ccNovice              Float    @map("cc_novice")
+  ccAmateur             Float    @map("cc_amateur")
+  ccPro                 Float    @map("cc_pro")
+  totalScore            Int      @default(120000)
+
+  matchList Match[]
+  clubData  Club?   @relation(fields: [clubId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@map("match_type")
+}
+
 model MatchParticipant {
-  playerId      Int    @map("player_id")
-  matchId       String @map("rank_id") @db.Uuid
+  userId        Int     @map("player_id")
+  matchId       String  @map("rank_id") @db.Uuid
   score         Int
   position      Int
-  playerRtId    Int    @map("player_rt_id")
-  avgMatchSkill Float  @map("avg_match_skill")
-  chombo        Int    @default(0)
+  draw          Boolean
+  seatRefId     Int
+  playerRtId    Int     @map("player_rt_id")
+  avgMatchSkill Float   @map("avg_match_skill")
+  chombo        Int     @default(0)
   ron           Int?
   tsumo         Int?
-  dealIn        Int?   @map("deal_in")
-  gainUma       Int    @map("gain_uma")
+  dealIn        Int?    @map("deal_in")
+  gainUma       Int     @map("gain_uma")
 
-  playerData Player     @relation(fields: [playerId], references: [id])
-  matchData  Match      @relation(fields: [matchId], references: [id])
-  matchRt    RankTittle @relation(fields: [playerRtId], references: [id])
+  userData    User       @relation(fields: [userId], references: [id], onUpdate: Cascade)
+  matchData   Match      @relation(fields: [matchId], references: [id], onUpdate: Cascade)
+  matchRt     RankTittle @relation(fields: [playerRtId], references: [id], onUpdate: Cascade)
+  seatRefData RefHelper  @relation(fields: [seatRefId], references: [id], onUpdate: Cascade)
 
-  @@unique([playerId, matchId])
+  @@unique([userId, matchId])
   @@map("match_participant")
 }

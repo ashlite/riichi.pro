@@ -9,6 +9,7 @@
   import type { LayoutData } from "./$types";
 
   export let data: LayoutData
+  let appVersion = data.appVersion
 
   onMount(() => {
     themeChange(false)
@@ -16,15 +17,15 @@
 </script>
 
 <svelte:head>
-  <title>Riichi Pro</title>
+  <title>Janshi Pro</title>
 </svelte:head>
 
 <ToastAlert />
 <Modal />
-<TopNavbar user={data.user}  />
+<TopNavbar user={data.user} status={data.status}  />
 
 <div class="p-0 m-0 min-h-screen">
   <slot />
 </div>
 
-<Footer />
+<Footer {appVersion} />

@@ -7,7 +7,7 @@ import {
   PUBLIC_FIREBASE_APP_ID
 } from '$env/static/public';
 import { initializeApp, getApps } from 'firebase/app';
-import { getAuth, inMemoryPersistence } from 'firebase/auth';
+import { getAuth, inMemoryPersistence, GoogleAuthProvider } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: PUBLIC_FIREBASE_API_KEY,
@@ -29,4 +29,5 @@ function makeApp() {
 
 export const firebaseApp = makeApp();
 export const firebaseAuth = getAuth(firebaseApp);
+export const googleProvider = new GoogleAuthProvider()
 firebaseAuth.setPersistence(inMemoryPersistence);

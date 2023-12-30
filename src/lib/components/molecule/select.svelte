@@ -17,7 +17,7 @@
       <span class="label-text-alt">{labelTR ? labelTR : ''}</span>
     </label>
   {/if}
-  <select class={`select text-base-content select-${selectStyle} select-${size}`} disabled={disabled} bind:value={value}>
+  <select class={`select text-base-content select-${selectStyle} select-${size}`} disabled={disabled} bind:value={value} on:change>
     {#if placeholder}
       <option disabled selected class={`text-base-content`} value={undefined}>{placeholder}</option>
     {/if}

@@ -66,9 +66,138 @@ async function main() {
       group: 'club-roles'
     },{
       id: 305,
-      name: 'Guest',
-      notes: 'Club guest member, have guest privilage but with expiration date',
+      name: 'Basic',
+      notes: 'Real function is for placeholder status for user who request to become main member',
       group: 'club-roles'
+    },{
+      id: 306,
+      name: 'Pending',
+      notes: 'Club member pending to join, dont have access',
+      group: 'club-roles'
+    },{
+      id: 399,
+      name: 'Non-active',
+      notes: 'Kick/ban/nonactive member',
+      group: 'club-roles'
+    }]
+  })
+  const resultGender = await prisma.refHelper.createMany({
+    data: [{
+      id: 401,
+      name: 'Male',
+      notes: 'Gender identification for user',
+      group: 'gender_user'
+    },{
+      id: 402,
+      name: 'Female',
+      notes: 'Gender identification for user',
+      group: 'gender_user'
+    }]
+  })
+  const resultClubStatus = await prisma.refHelper.createMany({
+    data: [{
+      id: 501,
+      name: 'Pending',
+      notes: 'recently created club, must wait from admin to approve',
+      group: 'club_status'
+    },{
+      id: 502,
+      name: 'Active',
+      notes: 'club active, can record a match and user can join',
+      group: 'club_status'
+    },{
+      id: 503,
+      name: 'Inactive Temporary',
+      notes: 'club inactive, cannot record a match and cannot accept new member',
+      group: 'club_status'
+    },{
+      id: 504,
+      name: 'Inactive Permanent',
+      notes: 'club inactive, cannot record a match and cannot accept new member',
+      group: 'club_status'
+    }]
+  })
+  const resultTransactionCCType = await prisma.refHelper.createMany({
+    data: [{
+      id: 601,
+      name: 'Register Bonus',
+      notes: 'for successfull approval bonus',
+      group: 'trans_cc_type'
+    },{
+      id: 602,
+      name: 'Official Bonus',
+      notes: 'for cc from official',
+      group: 'trans_cc_type'
+    },{
+      id: 603,
+      name: 'Tournament Bonus',
+      notes: 'for cc from tournament',
+      group: 'trans_cc_type'
+    },{
+      id: 604,
+      name: 'Deposit Bonus',
+      notes: 'for cc from depositing / payment',
+      group: 'trans_cc_type'
+    },{
+      id: 651,
+      name: 'Input Match',
+      notes: 'cc usage from inputing match',
+      group: 'trans_cc_type'
+    },{
+      id: 652,
+      name: 'Monthly Upkeep',
+      notes: 'cc usage from keeping upkeep',
+      group: 'trans_cc_type'
+    },]
+  })
+  const matchSeat = await prisma.refHelper.createMany({
+    data: [{
+      id: 701,
+      name: 'East',
+      notes: 'For player sitting at east',
+      group: 'match_seat'
+    },{
+      id: 702,
+      name: 'South',
+      notes: 'For player sitting at east',
+      group: 'match_seat'
+    },{
+      id: 703,
+      name: 'West',
+      notes: 'For player sitting at east',
+      group: 'match_seat'
+    },{
+      id: 704,
+      name: 'North',
+      notes: 'For player sitting at east',
+      group: 'match_seat'
+    }]
+  })
+  const matchType = await prisma.matchType.createMany({
+    data: [{
+      name: 'Official Hanchan 120k/0 red five',
+      defaultRankMultiplier: 100,
+      modRankMultiplier: 100,
+      modStartDate: new Date(),
+      modEndDate: new Date(),
+      official: true,
+      ccBase: 6,
+      ccNovice: 1,
+      ccAmateur: 2,
+      ccPro: 3,
+      totalScore: 120000
+    },{
+      name: 'Official Hanchan 120k/3 red fives',
+      defaultRankMultiplier: 90,
+      modRankMultiplier: 90,
+      modStartDate: new Date(),
+      modEndDate: new Date(),
+      official: true,
+      ccBase: 5,
+      ccNovice: 1,
+      ccAmateur: 2,
+      ccPro: 3,
+      totalScore: 120000
     }]
   })
 
@@ -84,7 +213,6 @@ async function main() {
       baseRP: 0,
       promotionRP: 500,
       demotion: false,
-      thresholdMP:0,
       clubLimit: 1
     },{
       groupRefId: 202,
@@ -97,7 +225,6 @@ async function main() {
       baseRP: 0,
       promotionRP: 700,
       demotion: false,
-      thresholdMP:0,
       clubLimit: 3
     },{
       groupRefId: 202,
@@ -110,7 +237,6 @@ async function main() {
       baseRP: 0,
       promotionRP: 700,
       demotion: false,
-      thresholdMP:0,
       clubLimit: 3
     },{
       groupRefId: 202,
@@ -123,7 +249,6 @@ async function main() {
       baseRP: 0,
       promotionRP: 700,
       demotion: false,
-      thresholdMP:0,
       clubLimit: 3
     },{
       groupRefId: 202,
@@ -136,7 +261,6 @@ async function main() {
       baseRP: 0,
       promotionRP: 1000,
       demotion: false,
-      thresholdMP:0,
       clubLimit: 5
     },{
       groupRefId: 202,
@@ -149,7 +273,6 @@ async function main() {
       baseRP: 0,
       promotionRP: 1000,
       demotion: false,
-      thresholdMP:0,
       clubLimit: 5
     },{
       groupRefId: 202,
@@ -162,7 +285,6 @@ async function main() {
       baseRP: 0,
       promotionRP: 1000,
       demotion: false,
-      thresholdMP:0,
       clubLimit: 5
     },{
       groupRefId: 202,
@@ -175,7 +297,6 @@ async function main() {
       baseRP: 0,
       promotionRP: 1500,
       demotion: false,
-      thresholdMP:0,
       clubLimit: 7
     },{
       groupRefId: 202,
@@ -188,7 +309,6 @@ async function main() {
       baseRP: 0,
       promotionRP: 1500,
       demotion: false,
-      thresholdMP:0,
       clubLimit: 7
     },{
       groupRefId: 202,
@@ -201,7 +321,6 @@ async function main() {
       baseRP: 0,
       promotionRP: 1500,
       demotion: false,
-      thresholdMP:0,
       clubLimit: 7
     },{
       groupRefId: 203,
@@ -214,7 +333,6 @@ async function main() {
       baseRP: 3000,
       promotionRP: 6000,
       demotion: true,
-      thresholdMP:100,
       clubLimit: 10
     },{
       groupRefId: 203,
@@ -227,7 +345,6 @@ async function main() {
       baseRP: 6000,
       promotionRP: 12000,
       demotion: true,
-      thresholdMP:100,
       clubLimit: 13
     },{
       groupRefId: 203,
@@ -240,7 +357,6 @@ async function main() {
       baseRP: 9000,
       promotionRP: 18000,
       demotion: true,
-      thresholdMP:100,
       clubLimit: 16
     },{
       groupRefId: 203,
@@ -253,7 +369,6 @@ async function main() {
       baseRP: 12000,
       promotionRP: 24000,
       demotion: true,
-      thresholdMP:100,
       clubLimit: 19
     },{
       groupRefId: 203,
@@ -266,7 +381,6 @@ async function main() {
       baseRP: 15000,
       promotionRP: 30000,
       demotion: true,
-      thresholdMP:200,
       clubLimit: 22
     },{
       groupRefId: 203,
@@ -279,7 +393,6 @@ async function main() {
       baseRP: 18000,
       promotionRP: 36000,
       demotion: true,
-      thresholdMP:200,
       clubLimit: 25
     },{
       groupRefId: 203,
@@ -292,7 +405,6 @@ async function main() {
       baseRP: 21000,
       promotionRP: 42000,
       demotion: true,
-      thresholdMP:200,
       clubLimit: 28
     },{
       groupRefId: 203,
@@ -305,7 +417,6 @@ async function main() {
       baseRP: 24000,
       promotionRP: 48000,
       demotion: true,
-      thresholdMP:200,
       clubLimit: 31
     },{
       groupRefId: 203,
@@ -318,12 +429,11 @@ async function main() {
       baseRP: 27000,
       promotionRP: 0,
       demotion: true,
-      thresholdMP:200,
       clubLimit: 35
     }]
   })
   
-  console.log({resultUserRoles, resultClubRole, resultRTGroup, resultRt})
+  console.log({resultUserRoles, resultClubRole, resultRTGroup, resultGender, resultClubStatus, resultTransactionCCType, matchSeat, resultRt})
 }
 
 main()
