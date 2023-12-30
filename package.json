@@ -1,6 +1,6 @@
 {
 	"name": "riichi.pro",
-	"version": "0.4.2",
+	"version": "0.4.3",
 	"private": true,
 	"prisma": {
 		"seed": "ts-node --esm prisma/seed.ts"
@@ -49,6 +49,7 @@
 		"@aws-sdk/client-s3": "^3.413.0",
 		"@iconify/svelte": "^3.1.4",
 		"@prisma/client": "^5.4.2",
+		"@vercel/speed-insights": "^1.0.2",
 		"cookie": "^0.5.0",
 		"countries-ts": "^1.0.3",
 		"firebase": "^10.3.1",
