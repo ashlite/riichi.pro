@@ -7,9 +7,11 @@
   import Modal from 'organism/modal.svelte'
   import Footer from "organism/footer.svelte"
   import type { LayoutData } from "./$types";
+  import { injectSpeedInsights } from "@vercel/speed-insights/sveltekit"
 
   export let data: LayoutData
   let appVersion = data.appVersion
+  injectSpeedInsights();
 
   onMount(() => {
     themeChange(false)
