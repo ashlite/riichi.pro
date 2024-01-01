@@ -3,7 +3,7 @@ import { db } from '$lib/server/db.js';
 
 export async function load({locals, params}) {
   const slug = params.slug
-  const listMember = await db.clubMember.findMany({
+  const listMember = db.clubMember.findMany({
     where: {
       roleId: {
         notIn: [399, 306]

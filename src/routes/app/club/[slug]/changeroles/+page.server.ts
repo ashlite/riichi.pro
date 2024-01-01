@@ -4,7 +4,7 @@ import { redirect } from '@sveltejs/kit';
 export async function load({params, parent}) {
   const { slug } = params
   
-  const listMember = await db.clubMember.findMany({
+  const listMember = db.clubMember.findMany({
     where: {
       roleId: {
         in: [301, 302, 303]

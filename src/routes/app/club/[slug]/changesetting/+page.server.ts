@@ -6,7 +6,7 @@ export async function load({params, parent}) {
   const { slug } = params
   
   try {
-    const clubSetting = await db.clubSetting.findFirstOrThrow({
+    const clubSetting = db.clubSetting.findFirstOrThrow({
       where: {
         clubData: {
           slug: slug

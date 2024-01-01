@@ -6,7 +6,7 @@ export async function load({params, parent}) {
   const { slug } = params
   
   try {
-    const clubInfo = await db.club.findUniqueOrThrow({
+    const clubInfo = db.club.findUniqueOrThrow({
       where: {
         slug: slug
       },

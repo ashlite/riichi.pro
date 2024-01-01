@@ -4,7 +4,7 @@ import { db } from '$lib/server/db.js';
 export async function load({params, parent}) {
   const { slug } = params
   
-  const listPending = await db.clubMember.findMany({
+  const listPending = db.clubMember.findMany({
     where: {
       roleId: {
         in: [305, 306]
