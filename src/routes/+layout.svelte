@@ -8,6 +8,10 @@
   import Footer from "organism/footer.svelte"
   import type { LayoutData } from "./$types";
   import { injectSpeedInsights } from "@vercel/speed-insights/sveltekit"
+  import { dev } from '$app/environment';
+  import { inject } from '@vercel/analytics';
+ 
+  inject({ mode: dev ? 'development' : 'production' });
 
   export let data: LayoutData
   let appVersion = data.appVersion
