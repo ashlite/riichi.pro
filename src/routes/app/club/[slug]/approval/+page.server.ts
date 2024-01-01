@@ -3,10 +3,6 @@ import { db } from '$lib/server/db.js';
 
 export async function load({params, parent}) {
   const { slug } = params
-  const { userMemberData } = await parent()
-  if (userMemberData.roleId > 302 || (userMemberData.roleId == 302 && !userMemberData.canApproveMember)) {
-    redirect(307, `/app/club/${slug}/`);
-  }
   
   const listPending = await db.clubMember.findMany({
     where: {
@@ -29,6 +25,11 @@ export async function load({params, parent}) {
       roleId: 'asc'
     }
   })
+
+  const { userMemberData } = await parent()
+  if (userMemberData.roleId > 302 || (userMemberData.roleId == 302 && !userMemberData.canApproveMember)) {
+    redirect(307, `/app/club/${slug}/`);
+  }
 
   return {
     listPending,

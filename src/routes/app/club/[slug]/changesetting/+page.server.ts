@@ -4,11 +4,6 @@ import { error } from '@sveltejs/kit';
 
 export async function load({params, parent}) {
   const { slug } = params
-  const { userMemberData } = await parent()
-
-  if (userMemberData.roleId > 302 || (userMemberData.roleId == 302 && !userMemberData.canEditClubInfo)) {
-    redirect(307, `/app/club/${slug}/`);
-  }
   
   try {
     const clubSetting = await db.clubSetting.findFirstOrThrow({
@@ -18,6 +13,11 @@ export async function load({params, parent}) {
         }
       }
     })
+    
+    const { userMemberData } = await parent()
+    if (userMemberData.roleId > 302 || (userMemberData.roleId == 302 && !userMemberData.canEditClubInfo)) {
+      redirect(307, `/app/club/${slug}/`);
+    }
     return {
       clubSetting
     }

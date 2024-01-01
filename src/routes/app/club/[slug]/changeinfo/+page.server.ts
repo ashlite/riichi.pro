@@ -4,11 +4,6 @@ import { error } from '@sveltejs/kit';
 
 export async function load({params, parent}) {
   const { slug } = params
-  const { userMemberData } = await parent()
-
-  if (userMemberData.roleId > 302 || (userMemberData.roleId == 302 && !userMemberData.canEditClubInfo)) {
-    redirect(307, `/app/club/${slug}/`);
-  }
   
   try {
     const clubInfo = await db.club.findUniqueOrThrow({
@@ -16,6 +11,12 @@ export async function load({params, parent}) {
         slug: slug
       },
     })
+
+    const { userMemberData } = await parent()
+    if (userMemberData.roleId > 302 || (userMemberData.roleId == 302 && !userMemberData.canEditClubInfo)) {
+      redirect(307, `/app/club/${slug}/`);
+    }
+    
     return {
       clubInfo
     }
