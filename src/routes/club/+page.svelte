@@ -48,7 +48,7 @@
                 <td>{club.totalMember} / {club.totalMainMember}</td>
                 {#if club.website}
                   <td>
-                    <a href={'//'+ club.website} rel="external" target="_blank" class="btn btn-accent"><Icon icon="ph:link-bold" width={30}/>go to website</a>
+                    <a data-sveltekit-preload-data="tap" href={'//'+ club.website} rel="external" target="_blank" class="btn btn-accent"><Icon icon="ph:link-bold" width={30}/>go to website</a>
                   </td>
                 {:else}
                   <td>none</td>
