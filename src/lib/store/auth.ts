@@ -1,6 +1,6 @@
 import cookie from "cookie";
 import { browser } from "$app/environment";
-// import { GoogleAuthProvider, type User, signInWithRedirect, signInWithEmailAndPassword} from "firebase/auth";
+import { type User} from "firebase/auth";
 import { writable } from "svelte/store";
 import { firebaseAuth } from "service/firebase";
 

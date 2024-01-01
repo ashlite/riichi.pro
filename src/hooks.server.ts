@@ -16,10 +16,10 @@ export async function handle({event, resolve}) {
           firebaseId: decodedIdToken.uid
         },
         select: {
-          email: true,
-          fullName: true,
+          email: true, //
+          fullName: true, //
           uuid: true,
-          id: true,
+          id: true,//
           roleId: true,
           banStatus: true,
           banedAt: true,
