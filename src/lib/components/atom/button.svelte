@@ -38,7 +38,7 @@
 {:else}
   {#if key == undefined }
     {#if href != undefined}
-      <a href={href} class={globalClass} type={type}>
+      <a href={href} data-sveltekit-preload-data="tap" class={globalClass} type={type}>
         {#if icon}
           <Icon 
           icon={icon} 
@@ -74,6 +74,7 @@
   {:else}
     {#if href != undefined}
       <a href={href}
+        data-sveltekit-preload-data="tap"
         class={globalClass}
         type={type}
         use:shortcut={shortcutSetting}

@@ -59,7 +59,7 @@
         <h2 class="text-right font-bold">Phone :</h2>
         <p>{clubData.phoneContact}</p>
         <h2 class="text-right font-bold">Website :</h2>
-        <a href={clubData.website} target="_blank" class="underline">{clubData.website}</a>
+        <a href={clubData.website} data-sveltekit-preload-data="tap" target="_blank" class="underline">{clubData.website}</a>
       </div>
     </div>
   </div>
