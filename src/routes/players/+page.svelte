@@ -40,7 +40,11 @@ export let data: PageData
               </td>
               <td>{player.currentRP}</td>
               <td>{player.currentTP}</td>
-              <td>{player.metaData?.totalMatch} / {player.metaData?.totalChombo} ({(player.metaData.totalChombo/player.metaData.totalMatch)*100}%)</td>
+              {#if player.metaData}
+                <td>{player.metaData?.totalMatch} / {player.metaData?.totalChombo} ({(player.metaData.totalChombo/player.metaData.totalMatch)*100}%)</td>
+              {:else}
+                <td>0/0 (0%)</td>
+              {/if}
               <td class="hover:cursor-pointer hover:bg-base-300">
                 {#if player.clubList.length > 0}
                   {#each player.clubList as club}

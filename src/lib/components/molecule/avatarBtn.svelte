@@ -1,9 +1,8 @@
 <script lang="ts">
-  import type { iUserLocal } from "interface/user";
-  import globalModal from "store/modal";
+  import { getLoginUser } from "store/user";
   import Avatar from "atom/avatar.svelte";
 
-  export let user: iUserLocal
+  const user = getLoginUser()
 
   let dropState = false
 
@@ -15,9 +14,6 @@
     dropState = false
   }
 
-  async function logout(){
-    const result = await fetch('/api/v1/logout')
-  }
 </script>
 
 <div class="p-0 bg-base-300" on:mouseover={open} on:focus={open} on:mouseleave={close} role="navigation">
@@ -36,7 +32,7 @@
   {#if dropState}
   <div class="absolute top-16">
     <ul class="menu menu-sm bg-base-200 text-base-content w-56 shadow">
-      <li><a href="/app/profile" data-sveltekit-preload-data="tap">Profile</a></li>
+      <li><a href="/app/profile" data-sveltekit-preload-data>Profile</a></li>
       <li><a href="/app/club" data-sveltekit-preload-data="tap">Club</a></li>
       <li class="disabled" data-sveltekit-preload-data="tap"><a href="#">My Match (WIP)</a></li>
       {#if user.roleId > 101}

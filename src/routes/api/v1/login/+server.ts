@@ -10,32 +10,14 @@ export async function POST({request, cookies}) {
     const resultFirebase = await firebaseAuth.verifyIdToken(idToken)
 
     if (resultFirebase) {
+      // search data and do check if 
       const expiresIn = 60 * 60 * 24 * 7 * 1000; //7 days expiration
       const options = { maxAge: expiresIn/1000, httpOnly: true, secure: true, path:'/' };
-      
-      //get user and set custom claim
-      // const loginUser = await await db.user.findFirstOrThrow({
-      //   where: {
-      //     firebaseId: resultFirebase.uid
-      //   },
-      //   include: {
-      //     rtData: true
-      //   }
-      // })
-      // firebaseAuth.setCustomUserClaims(resultFirebase.uid, {
-      //   userId: loginUser.id,
-      //   roleId: loginUser.roleId,
-      //   banStatus: loginUser.banStatus,
-      //   banedAt: loginUser.banedAt,
-      //   banExpiration: loginUser.banExpiration,
-      //   banReason: loginUser.banReason,
-      //   rtName: loginUser.rtData.name,
-      // })
 
       //firebaseCookie
       const sessionCookie = await firebaseAuth.createSessionCookie(idToken, {expiresIn})
       cookies.set('janshi_token', sessionCookie, options)
-      
+
       response.header.ok = true
     } else {
       response.header.ok = false

@@ -11,49 +11,13 @@ export async function handle({event, resolve}) {
   if (firebaseToken && firebaseToken != undefined){
     try {
       const decodedIdToken = await firebaseValidation(event.cookies)
-      const user = await db.user.findUnique({
-        where: {
-          firebaseId: decodedIdToken.uid
-        },
-        select: {
-          email: true, //
-          fullName: true, //
-          uuid: true,
-          id: true,//
-          roleId: true,
-          banStatus: true,
-          banedAt: true,
-          banExpiration: true,
-          banReason: true,
-          rtData: {
-            select: {
-              name: true,
-              skillIndex: true,
-              baseRP: true,
-              promotionRP: true,
-              clubLimit: true,
-              groupRefId: true,
-            }
-          },
-          currentRP: true
-        }
-      })
-      if (user) {
-        event.locals.user = user
-        event.locals.status = 'login'
-      } else {
-        event.locals.user = undefined
-        event.locals.status = 'register'
-      }
+      event.locals.firebaseId = decodedIdToken.sub
     } catch (e) {
-      event.locals.user = undefined
-      event.locals.status = undefined
+      event.locals.firebaseId = undefined
       event.cookies.delete('janshi_token', {path: ''})
     }
-    
   } else {
-    event.locals.user = undefined
-    event.locals.status = undefined
+    event.locals.firebaseId = undefined
   }
    
 	return await resolve(event);

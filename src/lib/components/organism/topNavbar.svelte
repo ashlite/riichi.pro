@@ -8,9 +8,9 @@
   import { signInWithPopup, GoogleAuthProvider, signInWithCredential } from "firebase/auth";
   import { firebaseAuth, googleProvider } from "service/firebase";
   import toastAlert from 'store/toast';
+  import { getLoginUser } from 'store/user';
 
-  export let user: iUserLocal | undefined
-  export let status: 'login' | 'register' | undefined
+  export let status: 'login' | 'register' | 'logout'
   const logo = env.PUBLIC_TEBI_CORE + 'logo.svg'
 
   async function loginUser() {
@@ -57,14 +57,14 @@
       <li><Button color="ghost text-primary" text="Clubs" icon="ph:buildings" href="/club" /></li>
       <!-- <li><Button color="ghost text-primary" text="Tournament" icon="ph:trophy" href="/tournament"/></li> -->
       <!-- <li><Button color="ghost text-primary" text="Match" icon="ph:handshake" href="/match"/></li> -->
-      {#if user}
-        <AvatarBtn user={user} />
+      {#if status == 'login'}
+        <AvatarBtn />
       {:else if status == 'register'}
-        <li id="Login">
+        <li id="Register">
           <Button color="ghost" text="Complete Registration" icon="ph:user" href="/register" />
         </li>
       {:else}
-        <li id="Login">
+        <li id="Logout">
           <Button color="ghost" text="Login" icon="ph:user" on:click={loginUser} />
         </li>
       {/if}

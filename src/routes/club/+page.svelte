@@ -8,9 +8,16 @@
   import Icon from "@iconify/svelte";
   
   export let data: PageData
-  const listClub = data.listClub
-  const listJoinedClub = data.listJoinClub
-  const listPendingClub = data.listPendingClub
+  const listJoinedClub: string[] = []
+  const listPendingClub: string[] = []
+
+  if (data.user) {
+    data.user.clubList.forEach(club => {
+      if (club.roleId < 306) listJoinedClub.push(club.clubId)
+      else if (club.roleId == 306) listJoinedClub.push(club.clubId)
+    })
+  }
+
   </script>
   
   <div class="mt-8 mx-8">
@@ -27,8 +34,8 @@
           </tr>
         </thead>
         <tbody>
-          {#if listClub.length > 0}
-            {#each listClub as club}
+          {#if data.listClub.length > 0}
+            {#each data.listClub as club}
               <tr class="">
                 <td class="">
                   <div class="flex flex-row items-center gap-4">

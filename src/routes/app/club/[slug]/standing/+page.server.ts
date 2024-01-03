@@ -1,7 +1,7 @@
 import { firebaseValidation } from '$lib/server/firebaseAdmin.js';
 import { db } from '$lib/server/db.js';
 
-export async function load({locals, params, url}) {
+export async function load({params, url}) {
   const slug = params.slug
   const today = new Date()
   const monthFilter = Number(url.searchParams.get('month') ?? today.getMonth())

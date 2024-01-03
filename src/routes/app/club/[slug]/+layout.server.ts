@@ -4,13 +4,13 @@ import type { LayoutServerLoadEvent } from "./$types";
 import { db } from "$lib/server/db";
 
 export async function load({ locals, params }: LayoutServerLoadEvent) {
-  if (!locals.user || locals.user.roleId < 102) { redirect(307, "/"); }
-
   try {
     //check user and throw if needed
     const userMemberData = await db.clubMember.findFirstOrThrow({
       where: {
-        userId: locals.user.id,
+        userData: {
+          firebaseId: locals.firebaseId!
+        },
         roleId: {
           notIn: [399, 306]
         },

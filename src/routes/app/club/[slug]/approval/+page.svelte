@@ -10,7 +10,6 @@
 
   export let data: PageData
 
-
   async function applyAction(id: number, action: 'approvePending' | 'rejectPending' | 'approveMain' | 'rejectMain') {
     const payload: iMemberAction = {
       action: action,

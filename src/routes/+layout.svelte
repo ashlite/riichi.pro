@@ -10,12 +10,15 @@
   import { injectSpeedInsights } from "@vercel/speed-insights/sveltekit"
   import { dev } from '$app/environment';
   import { inject } from '@vercel/analytics';
+  import { setLoginUser } from "store/user";
  
-  inject({ mode: dev ? 'development' : 'production' });
+  // inject({ mode: dev ? 'development' : 'production' });
+  // injectSpeedInsights();
 
   export let data: LayoutData
-  let appVersion = data.appVersion
-  injectSpeedInsights();
+  if (data.loginState == 'login' && data.user) {
+    setLoginUser(data.user)
+  }
 
   onMount(() => {
     themeChange(false)
@@ -28,10 +31,10 @@
 
 <ToastAlert />
 <Modal />
-<TopNavbar user={data.user} status={data.status}  />
+<TopNavbar status={data.loginState}  />
 
 <div class="p-0 m-0 min-h-screen">
   <slot />
 </div>
 
-<Footer {appVersion} />
+<Footer appVersion={data.appVersion} />
