@@ -7,14 +7,17 @@ import { db } from "$lib/server/db.js";
 
 export async function POST({cookies, locals, params}) {
   const response = {header:{}, data:{}} as iGlobalResponse
-  
-  if (locals.user?.roleId && locals.user.roleId < 102) {
-    response.header.ok = false
-    response.header.error = 'Unauthorized roles'
-  } else {
     try {
       //check cookie
-      await firebaseValidation(cookies)
+      const decodeToken = await firebaseValidation(cookies)
+      const userData = await db.user.findFirstOrThrow({
+        where: {
+          firebaseId: decodeToken.sub,
+          roleId: {
+            gte: 102
+          }
+        }
+      })
   
       //approving club
       await db.club.update({
@@ -27,7 +30,7 @@ export async function POST({cookies, locals, params}) {
           currentCC: 100,
           transactionList: {
             create: {
-              userId: locals.user!.id,
+              userId: userData.id,
               ccBefore: 0,
               ccMove: 100,
               ccAfter: 100,
@@ -46,7 +49,6 @@ export async function POST({cookies, locals, params}) {
         response.header.error = e as string
       }
     }
-  }
   
   return json(response)
 }

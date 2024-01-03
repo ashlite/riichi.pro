@@ -12,18 +12,17 @@ export async function PATCH({request, cookies, locals, params}) {
   const { slug } = params
 
   try {
-    if (!locals.user) {
-      throw 'You must login to continue'
-    }
     //check cookie
-    await firebaseValidation(cookies)
+    const decodeToken = await firebaseValidation(cookies)
 
     //check image
     const payload: Prisma.ClubUpdateInput = await request.json()
     
     const userMember = await db.clubMember.findFirstOrThrow({
       where: {
-        userId: locals.user.id,
+        userData: {
+          firebaseId: decodeToken.sub
+        },
         clubData: {
           slug: slug
         }

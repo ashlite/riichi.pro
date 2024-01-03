@@ -5,20 +5,19 @@ import { json } from "@sveltejs/kit";
 import { firebaseValidation } from "$lib/server/firebaseAdmin";
 import { db } from "$lib/server/db.js";
 
-export async function POST({request, cookies, locals, params}) {
+export async function POST({request, cookies, params}) {
   const response = {header:{}, data:{}} as iGlobalResponse
   const { slug } = params
   try {
-    if (!locals.user) {
-      throw 'You must login to continue'
-    }
     //check cookie
-    await firebaseValidation(cookies)
+    const decodeToken = await firebaseValidation(cookies)
     
     const payload: iMemberAction = await request.json()
     const userMember = await db.clubMember.findFirstOrThrow({
       where: {
-        userId: locals.user.id,
+        userData: {
+          firebaseId: decodeToken.sub
+        },
         clubData: {
           slug: slug
         }
