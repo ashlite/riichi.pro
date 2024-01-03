@@ -1,10 +1,8 @@
 <script lang="ts">
   import type { PageData } from "./$types";
-  import { objCountries, countryNameFromCode, countryPhoneFromCode } from "service/country";
+  import { countryNameFromCode, countryPhoneFromCode } from "service/country";
   import { dateFormater } from "service/tools";
   import Button from "atom/button.svelte";
-  import { firebaseAuth } from "service/firebase";
-  import { sendEmailVerification } from "firebase/auth";
 	import toastAlert from "store/toast";
 
   export let data: PageData

@@ -1,10 +1,10 @@
-import { redirect } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 import { db } from '$lib/server/db.js';
 
 export async function load({params, parent}) {
   const { slug } = params
   
-  const listPending = db.clubMember.findMany({
+  const listPending = await db.clubMember.findMany({
     where: {
       roleId: {
         in: [305, 306]
@@ -28,7 +28,7 @@ export async function load({params, parent}) {
 
   const { userMemberData } = await parent()
   if (userMemberData.roleId > 302 || (userMemberData.roleId == 302 && !userMemberData.canApproveMember)) {
-    redirect(307, `/app/club/${slug}/`);
+    error(403, `Forbidden to access`);
   }
 
   return {

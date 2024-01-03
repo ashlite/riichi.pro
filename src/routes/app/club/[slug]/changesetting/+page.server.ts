@@ -1,4 +1,3 @@
-import { redirect } from '@sveltejs/kit';
 import { db } from '$lib/server/db.js';
 import { error } from '@sveltejs/kit';
 
@@ -6,7 +5,7 @@ export async function load({params, parent}) {
   const { slug } = params
   
   try {
-    const clubSetting = db.clubSetting.findFirstOrThrow({
+    const clubSetting = await db.clubSetting.findFirstOrThrow({
       where: {
         clubData: {
           slug: slug
@@ -16,7 +15,7 @@ export async function load({params, parent}) {
     
     const { userMemberData } = await parent()
     if (userMemberData.roleId > 302 || (userMemberData.roleId == 302 && !userMemberData.canEditClubInfo)) {
-      redirect(307, `/app/club/${slug}/`);
+      error(403, `Forbidden to access`);
     }
     return {
       clubSetting

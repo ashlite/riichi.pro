@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client"
 export interface iRegisterData {
   fullName: string
   nationalityCountryCode: string
@@ -22,19 +23,12 @@ interface iRtData {
   groupRefId: number
 }
 
-export interface iUserLocal {
-  id: number
-  uuid: string
-  fullName: string
-  email: string
-  roleId: number
-  banStatus: boolean
-  banReason: string | null
-  banExpiration: Date | null
-  banedAt: Date | null
-  currentRP: number
-  rtData: iRtData
-}
+export type iUserLocal = Prisma.UserGetPayload<{
+  include: {
+    rtData: true,
+    clubList: true
+  }
+}>
 
 export interface iUserSimple {
   id: number
@@ -47,7 +41,6 @@ export interface iUserSimple {
 }
 
 export interface iMemberRoles {
-  
   id: number
   roleId: number
   canApproveMember: boolean
