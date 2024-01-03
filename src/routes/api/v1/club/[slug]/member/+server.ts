@@ -10,9 +10,6 @@ export async function GET({cookies, locals, params, url}) {
   const { slug } = params
 
   try {
-    if (!locals.user) {
-      throw 'You must login to continue'
-    }
     //check cookie
     await firebaseValidation(cookies)
 
@@ -103,9 +100,7 @@ export async function PATCH({cookies, locals, params, request}) {
   const { slug } = params
 
   try {
-    if (!locals.user) {
-      throw 'You must login to continue'
-    }
+
     //check cookie
     await firebaseValidation(cookies)
 

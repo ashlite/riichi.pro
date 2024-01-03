@@ -12,8 +12,8 @@
   import { inject } from '@vercel/analytics';
   import { setLoginUser } from "store/user";
  
-  // inject({ mode: dev ? 'development' : 'production' });
-  // injectSpeedInsights();
+  inject({ mode: dev ? 'development' : 'production' });
+  injectSpeedInsights();
 
   export let data: LayoutData
   if (data.loginState == 'login' && data.user) {

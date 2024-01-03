@@ -19,12 +19,8 @@ export async function POST({cookies, locals, params, request}) {
   const upsertUmaStandingInput: iUpsertUmaStandingInput = {}
   
   try {
-    if (!locals.user) {
-      throw 'You must login to continue'
-    }
-
     //check cookie
-    await firebaseValidation(cookies)
+    const decodeToken = await firebaseValidation(cookies)
 
     //check payload to ensure only 4 player
     if (payload.participantIdList.length != 4 || payload.participantList.length != 4) throw 'Must input 4 player game'
@@ -37,7 +33,9 @@ export async function POST({cookies, locals, params, request}) {
     const [submitterData, matchType, rtList, playerList] = await db.$transaction([
       db.clubMember.findFirstOrThrow({
         where: {
-          userId: locals.user.id,
+          userData: {
+            firebaseId: decodeToken.sub
+          },
           clubData: {
             slug: slug
           },

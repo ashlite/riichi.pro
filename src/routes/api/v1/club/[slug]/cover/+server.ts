@@ -13,11 +13,8 @@ export async function POST({request, cookies, locals, params}) {
   const { slug } = params
   const allowedExtension =  /(\.jpg|\.jpeg|\.png|\.gif|\.webp)$/i
   try {
-    if (!locals.user) {
-      throw {code: 'You must login to continue'}
-    }
     //check cookie
-    await firebaseValidation(cookies)
+    const decodeToken = await firebaseValidation(cookies)
 
     //check image
     const payload = await request.formData()
@@ -32,7 +29,9 @@ export async function POST({request, cookies, locals, params}) {
 
     const userMember = await db.clubMember.findFirstOrThrow({
       where: {
-        userId: locals.user.id,
+        userData: {
+          firebaseId: decodeToken.sub
+        },
         clubData: {
           slug: slug
         }

@@ -6,31 +6,27 @@ import { firebaseValidation } from "$lib/server/firebaseAdmin";
 import { db } from "$lib/server/db.js";
 import { countryPhoneFromCode } from "service/country.js";
 
-export async function POST({request, cookies, locals}) {
+export async function POST({request, cookies}) {
   const response = {header:{}, data:{}} as iGlobalResponse
   try {
-    if (!locals.user || locals.user?.banStatus) {
-      throw 'Unauthorized or banned user'
-    }
-
-    //check cookie
-    await firebaseValidation(cookies)
-    const clubList = await db.clubMember.findMany({
+    const decodeToken = await firebaseValidation(cookies)
+    const userData = await db.user.findFirstOrThrow({
       where: {
-        userId: locals.user.id,
-        roleId: {
-          not: 399
-        }
+        firebaseId: decodeToken.sub
+      },
+      include: {
+        clubList: true,
+        rtData: true
       }
     })
     
-    clubList.forEach(club => {
+    userData.clubList.forEach(club => {
       if (club.roleId < 304) {
         throw 'You must not become any main member to any club'
       }
     })
 
-    if (locals.user.rtData.clubLimit <= clubList.length) {
+    if (userData.rtData.clubLimit <= userData.clubList.length) {
       throw 'You cannot exceed your club limit'
     }
 
@@ -57,7 +53,7 @@ export async function POST({request, cookies, locals}) {
         },
         memberList: {
           create: {
-            userId: locals.user.id,
+            userId: userData.id,
             roleId: 301,
           }
         }
