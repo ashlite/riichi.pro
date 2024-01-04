@@ -5,7 +5,10 @@
   import { countryNameFromCode } from "service/country.js";
   import Button from "atom/button.svelte";
   import {env} from '$env/dynamic/public'
-  import Icon from "@iconify/svelte";
+  import Icon from "@iconify/svelte"
+  import type { iGlobalResponse } from "interface/utils.js";
+	import toastAlert from "store/toast.js";
+  import { invalidateAll } from "$app/navigation";
   
   export let data: PageData
   const listJoinedClub: string[] = []
@@ -16,6 +19,19 @@
       if (club.roleId < 306) listJoinedClub.push(club.clubId)
       else if (club.roleId == 306) listJoinedClub.push(club.clubId)
     })
+  }
+
+  async function joinClub(slug: string, name: string) {
+    const response = await fetch(`/api/v1/club/${slug}/member`, {
+      method: 'POST'
+    })
+    const result = await response.json() as iGlobalResponse
+    if (result.header.ok) {
+      invalidateAll()
+      toastAlert.success(`Success applied to ${name}`)
+    } else {
+      toastAlert.responseError(result)
+    }
   }
 
   </script>
@@ -29,7 +45,6 @@
           <tr>
             <th>Club</th>
             <th>Total Member/Main</th>
-            <th>Website</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -53,21 +68,14 @@
                   </div>
                 </td>
                 <td>{club.totalMember} / {club.totalMainMember}</td>
-                {#if club.website}
-                  <td>
-                    <a data-sveltekit-preload-data="tap" href={'//'+ club.website} rel="external" target="_blank" class="btn btn-accent"><Icon icon="ph:link-bold" width={30}/>go to website</a>
-                  </td>
-                {:else}
-                  <td>none</td>
-                {/if}
                 <td class="flex flex-row gap-4 items-center">
-                  <Button icon="ph:info" color="info" text="info" />
+                  <Button icon="ph:info" color="info" text="info" href={`/club/${club.slug}`} />
                   {#if listJoinedClub.includes(club.id) }
-                    <Button icon="ph:person" text="Enter" color="disabled" />
+                    <Button icon="ph:person" text="Enter" color="primary" href={`/app/club/${club.slug}`} />
                   {:else if listPendingClub.includes(club.id)}
-                    <Button icon="ph:person" text="pending" color="disabled" />
+                    <Button icon="ph:person" text="Pending" color="disabled" />
                   {:else}
-                    <Button icon="ph:person" text="join" color="success" />
+                    <Button icon="ph:person" text="Join" color="success" on:click={() => joinClub(club.slug, club.name)} />
                   {/if}
                 </td>
               </tr>

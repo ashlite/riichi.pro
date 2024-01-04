@@ -9,8 +9,6 @@ export async function load({ url, parent }) {
   const currentPage = Number(url.searchParams.get('page') ?? 1)
   const takeRow = Number(url.searchParams.get('take') ?? 10)
   const country = url.searchParams.get('country') ?? 'global'
-  const listJoinClub: string[] = []
-  const listPendingClub: string[] = []
   let whereInput: Prisma.ClubWhereInput
 
   if (country == 'global') {
@@ -36,7 +34,7 @@ export async function load({ url, parent }) {
         totalMember: true,
         totalMainMember: true,
         countryISO2: true,
-        website: true
+        slug: true
       }
     }),
     db.club.count({
