@@ -1,4 +1,3 @@
-import { PUBLIC_BACKEND_URL } from '$env/static/public'
 import { error } from '@sveltejs/kit'
 import Cookies from 'js-cookie'
 
