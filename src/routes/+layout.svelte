@@ -16,7 +16,7 @@
   injectSpeedInsights();
 
   export let data: LayoutData
-  if (data.loginState == 'login' && data.user) {
+  if (data.loginState && data.user) {
     setLoginUser(data.user)
   }
 
@@ -31,7 +31,7 @@
 
 <ToastAlert />
 <Modal />
-<TopNavbar status={data.loginState}  />
+<TopNavbar loginState={data.loginState}  />
 
 <div class="p-0 m-0 min-h-screen">
   <slot />

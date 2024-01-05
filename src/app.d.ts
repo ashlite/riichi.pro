@@ -1,11 +1,11 @@
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
-import type {  iMemberRoles } from "interface/user";
+import type {  iUserLocal } from "interface/user";
 declare global {
 	namespace App {
 		// interface Error {}
 		interface Locals {
-      firebaseId?: str
+      user: iUserLocal|null
     }
 		// interface PageData {}
 		// interface Platform {}

@@ -7,8 +7,6 @@ import { PUBLIC_FIREBASE_PROJECT_ID } from '$env/static/public';
 import type { Cookies } from '@sveltejs/kit';
 import { error } from '@sveltejs/kit';
 
-
-
 function makeApp() {
   const apps = getApps();
   if (apps.length > 0) {
@@ -29,7 +27,7 @@ export const firebase = makeApp()
 export const firebaseAuth = getAuth(firebase)
 export const firestore = getFirestore()
 
-export async function firebaseValidation(cookie: Cookies): Promise<DecodedIdToken> {
+export async function cookieValidationStrict(cookie: Cookies): Promise<DecodedIdToken> {
   //validate request
   const token = cookie.get("janshi_token")
   if (token) {
@@ -40,5 +38,19 @@ export async function firebaseValidation(cookie: Cookies): Promise<DecodedIdToke
     return firebaseData
   } else {
     error(401, 'Authentication failed, please login first');
+  }
+}
+
+export async function cookieValidation(cookie: Cookies): Promise<DecodedIdToken|null> {
+  //validate request
+  const token = cookie.get("janshi_token")
+  if (token) {
+    const firebaseData = firebaseAuth.verifySessionCookie(token, true)
+    if (!firebaseData) {
+      return null
+    } 
+    return firebaseData
+  } else {
+    return null
   }
 }

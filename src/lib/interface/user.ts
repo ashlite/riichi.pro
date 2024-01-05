@@ -24,9 +24,19 @@ interface iRtData {
 }
 
 export type iUserLocal = Prisma.UserGetPayload<{
-  include: {
-    rtData: true,
-    clubList: true
+  select: {
+    id: true,
+    seqId: true,
+    fullName: true,
+    email: true,
+    nationalityCountryCode: true,
+    residenceCountryCode: true,
+    genderRefId: true,
+    rtId: true,
+    banStatus: true,
+    banExpiration: true,
+    roleId: true,
+    bioValid: true
   }
 }>
 

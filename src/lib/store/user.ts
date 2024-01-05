@@ -1,10 +1,12 @@
 import { getContext, setContext } from "svelte";
 import type { iUserLocal } from "interface/user";
+import { writable, type Writable } from "svelte/store";
 
 export function setLoginUser(user: iUserLocal) {
-  return setContext('userLocal', user)
+  const userStore = writable(user)
+  return setContext('userLocal', userStore)
 }
 
-export function getLoginUser(): iUserLocal {
-  return getContext('userLocal')
+export function getLoginUser() {
+  return getContext<Writable<iUserLocal>>('userLocal')
 }

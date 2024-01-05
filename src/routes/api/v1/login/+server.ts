@@ -1,18 +1,37 @@
 import { json } from '@sveltejs/kit';
 import { firebaseAuth } from '$lib/server/firebaseAdmin';
-import { db } from '$lib/server/db.js';
+import { env } from '$env/dynamic/private';
 import type { iGlobalResponse } from 'interface/utils.js';
+import { db } from '$lib/server/db.js';
 
 export async function POST({request, cookies}) {
   const response = {header:{}, data:{}} as iGlobalResponse
   try {
     const idToken = await request.text()
-    const resultFirebase = await firebaseAuth.verifyIdToken(idToken)
+    const resultFirebase = await firebaseAuth.verifyIdToken(idToken, true)
+    const firebaseUser = await firebaseAuth.getUser(resultFirebase.sub)
+    const today = new Date()
 
     if (resultFirebase) {
-      // search data and do check if 
+      // upsert user data
+      await db.user.upsert({
+        where: {
+          id: resultFirebase.sub
+        }, 
+        create: {
+          id: resultFirebase.sub,
+          email: resultFirebase.email!,
+          fullName: firebaseUser.displayName!,
+          avatarUrl: firebaseUser.photoURL,
+          lastLogin: today
+        }, 
+        update: {
+          lastLogin: today
+        }
+      })
+
       const expiresIn = 60 * 60 * 24 * 7 * 1000; //7 days expiration
-      const options = { maxAge: expiresIn/1000, httpOnly: true, secure: true, path:'/' };
+      const options = { maxAge: expiresIn/1000, httpOnly: true, secure: env.NODE_ENV === 'production', path:'/' };
 
       //firebaseCookie
       const sessionCookie = await firebaseAuth.createSessionCookie(idToken, {expiresIn})

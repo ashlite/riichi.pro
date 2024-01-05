@@ -10,38 +10,29 @@
   import toastAlert from 'store/toast';
   import { getLoginUser } from 'store/user';
 
-  export let status: 'login' | 'register' | 'logout'
+  export let loginState: boolean
   const logo = env.PUBLIC_TEBI_CORE + 'logo.svg'
 
   async function loginUser() {
-    signInWithPopup(firebaseAuth, googleProvider)
-    .then((result) => {
-      const credential = GoogleAuthProvider.credentialFromResult(result)
-      signInWithCredential(firebaseAuth, credential!)
-      .then( async (result) => {
-        const loginApp = await fetch('/api/v1/login', {
-          method: 'POST',
-          body: await result.user.getIdToken()
-        })
-        const loginResult = await loginApp.json() as iGlobalResponse
-        if (loginResult.header.ok) {
-          await invalidateAll()
-          toastAlert.success('Login Success')
-        } else {
-          toastAlert.responseError(loginResult)
-        }
+    try {
+      const signResult = await signInWithPopup(firebaseAuth, googleProvider)
+      const credential = GoogleAuthProvider.credentialFromResult(signResult)
+      const credentialSignIn = await signInWithCredential(firebaseAuth, credential!)
+      const loginApp = await fetch('/api/v1/login', {
+        method: 'POST',
+        body: await credentialSignIn.user.getIdToken()
       })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        toastAlert.error(`ERROR ${errorCode}, ${errorMessage}`)
-      })
-    }).catch((error) => {
-      // Handle Errors here.
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      toastAlert.error(`ERROR ${errorCode}, ${errorMessage}`)
-    });
+      const loginResult = await loginApp.json() as iGlobalResponse
+      if (loginResult.header.ok) {
+        await invalidateAll()
+        toastAlert.success('Login Success')
+      } else {
+        toastAlert.responseError(loginResult)
+      }
+    } catch (e: any) {
+      console.log(e)
+      toastAlert.error(`ERROR ${e.code}, ${e.message}`)
+    }
   }
 </script>
 
@@ -55,16 +46,10 @@
     <ul class="menu menu-horizontal menu-lg gap-4 p-0 items-center">
       <li><Button color="ghost text-primary" text="Players" icon="ph:users-four" href="/players" /></li>
       <li><Button color="ghost text-primary" text="Clubs" icon="ph:buildings" href="/club" /></li>
-      <!-- <li><Button color="ghost text-primary" text="Tournament" icon="ph:trophy" href="/tournament"/></li> -->
-      <!-- <li><Button color="ghost text-primary" text="Match" icon="ph:handshake" href="/match"/></li> -->
-      {#if status == 'login'}
+      {#if loginState}
         <AvatarBtn />
-      {:else if status == 'register'}
-        <li id="Register">
-          <Button color="ghost" text="Complete Registration" icon="ph:user" href="/register" />
-        </li>
       {:else}
-        <li id="Logout">
+        <li>
           <Button color="ghost" text="Login" icon="ph:user" on:click={loginUser} />
         </li>
       {/if}
