@@ -1,7 +1,7 @@
 import type { iGlobalResponse } from "interface/utils.js";
 import { Prisma } from "@prisma/client";
 import { json } from "@sveltejs/kit";
-import { firebaseValidation } from "$lib/server/firebaseAdmin";
+import { cookieValidationStrict } from "$lib/server/firebaseAdmin";
 import { db } from "$lib/server/db.js";
 import type { iMemberPicker } from "interface/club.js";
 import { error } from "@sveltejs/kit";
@@ -12,7 +12,7 @@ export async function GET({cookies, params, url}) {
 
   try {
     //check cookie
-    await firebaseValidation(cookies)
+    await cookieValidationStrict(cookies)
 
     let whereInput: Prisma.ClubMemberWhereInput
     const searchName = url.searchParams.get('name')
@@ -147,7 +147,7 @@ export async function POST({cookies, params}) {
 
   try {
     //check cookie
-    const decodeToken = await firebaseValidation(cookies)
+    const decodeToken = await cookieValidationStrict(cookies)
 
     const [userData, clubData] = await db.$transaction([
       db.user.findFirstOrThrow({

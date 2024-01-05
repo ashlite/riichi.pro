@@ -22,7 +22,9 @@ export async function getUser(cookie: Cookies): Promise<iUserLocal|null> {
         banStatus: true,
         banExpiration: true,
         roleId: true,
-        bioValid: true
+        bioValid: true,
+        avatarUrl: true,
+        rtData: true,
       }
     })
   

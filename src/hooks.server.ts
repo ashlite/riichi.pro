@@ -1,6 +1,6 @@
 import { getUser } from '$lib/server/userhook'
 import { redirect } from '@sveltejs/kit'
-
+import { error } from '@sveltejs/kit'
 
 export async function handle({event, resolve}) {
   
@@ -16,6 +16,8 @@ export async function handle({event, resolve}) {
         redirect(303, '/')
       }
     }
+  } else if (event.url.pathname.startsWith('/api/v1/private')) {
+    if (!user) error(403, 'You must login to access cookie')
   }
    
 	return await resolve(event);

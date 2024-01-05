@@ -27,19 +27,19 @@ export const firebase = makeApp()
 export const firebaseAuth = getAuth(firebase)
 export const firestore = getFirestore()
 
-export async function cookieValidationStrict(cookie: Cookies): Promise<DecodedIdToken> {
-  //validate request
-  const token = cookie.get("janshi_token")
-  if (token) {
-    const firebaseData = firebaseAuth.verifySessionCookie(token, true)
-    if (!firebaseData) {
-      error(404, 'Firebase auth not match');
-    } 
-    return firebaseData
-  } else {
-    error(401, 'Authentication failed, please login first');
-  }
-}
+// export async function cookieValidationStrict(cookie: Cookies): Promise<DecodedIdToken> {
+//   //validate request
+//   const token = cookie.get("janshi_token")
+//   if (token) {
+//     const firebaseData = firebaseAuth.verifySessionCookie(token, true)
+//     if (!firebaseData) {
+//       error(404, 'Firebase auth not match');
+//     } 
+//     return firebaseData
+//   } else {
+//     error(401, 'Authentication failed, please login first');
+//   }
+// }
 
 export async function cookieValidation(cookie: Cookies): Promise<DecodedIdToken|null> {
   //validate request

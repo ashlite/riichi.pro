@@ -8,7 +8,6 @@
   import { signInWithPopup, GoogleAuthProvider, signInWithCredential } from "firebase/auth";
   import { firebaseAuth, googleProvider } from "service/firebase";
   import toastAlert from 'store/toast';
-  import { getLoginUser } from 'store/user';
 
   export let loginState: boolean
   const logo = env.PUBLIC_TEBI_CORE + 'logo.svg'
@@ -18,7 +17,7 @@
       const signResult = await signInWithPopup(firebaseAuth, googleProvider)
       const credential = GoogleAuthProvider.credentialFromResult(signResult)
       const credentialSignIn = await signInWithCredential(firebaseAuth, credential!)
-      const loginApp = await fetch('/api/v1/login', {
+      const loginApp = await fetch('/api/v1/public/login', {
         method: 'POST',
         body: await credentialSignIn.user.getIdToken()
       })

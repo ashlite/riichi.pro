@@ -4,17 +4,17 @@ import type { iUserLocal } from 'interface/user'
 
 export const ssr = false
 let loginState: boolean
-let loginUser: iUserLocal | undefined = undefined
+let loginUser: iUserLocal | null = null
 
 export const load: LayoutServerLoad = async ({ locals }) => {
 
   if (locals.user) {
-    //login
+    //get Complex Data
     loginUser = locals.user
     loginState = true        
   } else {
     //register
-    loginUser = undefined
+    loginUser = null
     loginState = false
   }
 

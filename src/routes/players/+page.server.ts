@@ -1,8 +1,7 @@
 import { db } from '$lib/server/db.js';
 import type { iPagination } from 'interface/pageMeta.js';
-import { redirect } from '@sveltejs/kit';
 
-export async function load({ url, locals }) {
+export async function load({ url }) {
   // const rtQuery = url.searchParams.get('')
   const currentPage = Number(url.searchParams.get('page') ?? 1)
   const takeRow = Number(url.searchParams.get('take') ?? 10)
@@ -17,11 +16,11 @@ export async function load({ url, locals }) {
     },
     select: {
       id: true,
-      uuid: true,
       nationalityCountryCode: true,
       fullName: true,
       currentTP: true,
       currentRP: true,
+      avatarUrl: true,
       rtData: true,
       metaData: true,
       clubList: {
