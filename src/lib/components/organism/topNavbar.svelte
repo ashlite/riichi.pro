@@ -7,9 +7,10 @@
   import { goto, invalidateAll } from '$app/navigation';
   import { signInWithPopup, GoogleAuthProvider, signInWithCredential } from "firebase/auth";
   import { firebaseAuth, googleProvider } from "service/firebase";
-  import toastAlert from 'store/toast';
+  import toastAlert from 'store/toast'
 
   export let loginState: boolean
+  export let user: iUserLocal | null
   const logo = env.PUBLIC_TEBI_CORE + 'logo.svg'
 
   async function loginUser() {
@@ -23,8 +24,8 @@
       })
       const loginResult = await loginApp.json() as iGlobalResponse
       if (loginResult.header.ok) {
-        await invalidateAll()
         toastAlert.success('Login Success')
+        invalidateAll()
       } else {
         toastAlert.responseError(loginResult)
       }
@@ -45,8 +46,8 @@
     <ul class="menu menu-horizontal menu-lg gap-4 p-0 items-center">
       <li><Button color="ghost text-primary" text="Players" icon="ph:users-four" href="/players" /></li>
       <li><Button color="ghost text-primary" text="Clubs" icon="ph:buildings" href="/club" /></li>
-      {#if loginState}
-        <AvatarBtn />
+      {#if loginState && user}
+        <AvatarBtn user={user} />
       {:else}
         <li>
           <Button color="ghost" text="Login" icon="ph:user" on:click={loginUser} />

@@ -14,7 +14,7 @@ export async function POST({request, cookies}) {
 
     if (resultFirebase) {
       // upsert user data
-      await db.user.upsert({
+      const userData = await db.user.upsert({
         where: {
           id: resultFirebase.sub
         }, 
@@ -41,6 +41,7 @@ export async function POST({request, cookies}) {
       cookies.set('janshi_token', sessionCookie, options)
 
       response.header.ok = true
+      response.data = userData
     } else {
       response.header.ok = false
       response.header.error = 'Failed creating cookies'

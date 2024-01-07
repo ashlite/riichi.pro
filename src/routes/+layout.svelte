@@ -31,7 +31,7 @@
 
 <ToastAlert />
 <Modal />
-<TopNavbar loginState={data.loginState}/>
+<TopNavbar loginState={data.loginState} user={data.user}/>
 
 <div class="p-0 m-0 min-h-screen">
   <slot />
