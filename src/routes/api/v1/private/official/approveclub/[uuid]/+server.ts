@@ -2,17 +2,14 @@ import type { iRegisterClub } from "interface/club";
 import type { iGlobalResponse } from "interface/utils.js";
 import { Prisma } from "@prisma/client";
 import { json } from "@sveltejs/kit";
-import { firebaseValidation } from "$lib/server/firebaseAdmin";
 import { db } from "$lib/server/db.js";
 
-export async function POST({cookies, locals, params}) {
+export async function POST({locals, params}) {
   const response = {header:{}, data:{}} as iGlobalResponse
     try {
-      //check cookie
-      const decodeToken = await firebaseValidation(cookies)
       const userData = await db.user.findFirstOrThrow({
         where: {
-          firebaseId: decodeToken.sub,
+          id: locals.user!.id,
           roleId: {
             gte: 102
           }

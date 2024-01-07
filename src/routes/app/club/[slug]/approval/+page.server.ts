@@ -4,6 +4,11 @@ import { db } from '$lib/server/db.js';
 export async function load({params, parent}) {
   const { slug } = params
   
+  const { userMemberData } = await parent()
+  if (userMemberData.roleId > 302 || (userMemberData.roleId == 302 && !userMemberData.canApproveMember)) {
+    error(403, `Forbidden to access`);
+  }
+  
   const listPending = await db.clubMember.findMany({
     where: {
       roleId: {
@@ -25,11 +30,6 @@ export async function load({params, parent}) {
       roleId: 'asc'
     }
   })
-
-  const { userMemberData } = await parent()
-  if (userMemberData.roleId > 302 || (userMemberData.roleId == 302 && !userMemberData.canApproveMember)) {
-    error(403, `Forbidden to access`);
-  }
 
   return {
     listPending,

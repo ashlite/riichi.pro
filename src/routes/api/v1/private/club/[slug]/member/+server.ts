@@ -1,22 +1,18 @@
 import type { iGlobalResponse } from "interface/utils.js";
 import { Prisma } from "@prisma/client";
 import { json } from "@sveltejs/kit";
-import { cookieValidationStrict } from "$lib/server/firebaseAdmin";
 import { db } from "$lib/server/db.js";
-import type { iMemberPicker } from "interface/club.js";
 import { error } from "@sveltejs/kit";
 
-export async function GET({cookies, params, url}) {
+export async function GET({locals, params, url}) {
   const response = {header:{}, data:{}} as iGlobalResponse
   const { slug } = params
 
   try {
-    //check cookie
-    await cookieValidationStrict(cookies)
-
     let whereInput: Prisma.ClubMemberWhereInput
     const searchName = url.searchParams.get('name')
     const searchID = url.searchParams.get('id')
+    
     if (searchName) {
       whereInput = {
         roleData: {
@@ -51,7 +47,7 @@ export async function GET({cookies, params, url}) {
           lt: 306
         },
         userData: {
-          id: Number(searchID)
+          id: searchID
         }
       }
     } else {
@@ -96,14 +92,11 @@ export async function GET({cookies, params, url}) {
   return json(response)
 }
 
-export async function PATCH({cookies, params, request}) {
+export async function PATCH({locals, params, request}) {
   const response = {header:{}, data:{}} as iGlobalResponse
   const { slug } = params
 
   try {
-
-    //check cookie
-    await firebaseValidation(cookies)
 
     const payload = await request.json()
 
@@ -140,19 +133,17 @@ export async function PATCH({cookies, params, request}) {
   return json(response)
 }
 
-export async function POST({cookies, params}) {
+export async function POST({locals, params}) {
   //apply to join to club, post by user
   const response = {header:{}, data:{}} as iGlobalResponse
   const { slug } = params
 
   try {
-    //check cookie
-    const decodeToken = await cookieValidationStrict(cookies)
 
     const [userData, clubData] = await db.$transaction([
       db.user.findFirstOrThrow({
         where: {
-          firebaseId: decodeToken.sub
+          id: locals.user?.id
         },
         include: {
           rtData: true,

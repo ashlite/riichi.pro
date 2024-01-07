@@ -1,28 +1,20 @@
-import type { iMemberAction } from "interface/club";
 import type { iGlobalResponse } from "interface/utils.js";
 import { Prisma } from "@prisma/client";
-import { error, json } from "@sveltejs/kit";
-import { firebaseValidation } from "$lib/server/firebaseAdmin";
+import { json } from "@sveltejs/kit";
 import { db } from "$lib/server/db.js";
-import { uploadImage } from "service/s3.js";
-import { env } from '$env/dynamic/public'
 
-export async function PATCH({request, cookies, locals, params}) {
+
+export async function PATCH({request, locals, params}) {
   const response = {header:{}, data:{}} as iGlobalResponse
   const { slug } = params
 
   try {
-    //check cookie
-    const decodeToken = await firebaseValidation(cookies)
-
     //check image
     const payload: Prisma.ClubUpdateInput = await request.json()
     
     const userMember = await db.clubMember.findFirstOrThrow({
       where: {
-        userData: {
-          firebaseId: decodeToken.sub
-        },
+        userId: locals.user?.id,
         clubData: {
           slug: slug
         }

@@ -1,11 +1,10 @@
 import type { iGlobalResponse } from "interface/utils.js";
 import { Prisma } from "@prisma/client";
-import { json } from "@sveltejs/kit";
-import { firebaseValidation } from "$lib/server/firebaseAdmin";
+import { json } from "@sveltejs/kit"
 import { db } from "$lib/server/db.js";
 import type { iMatchInput, iRTList, iPlayerData, iUpdateManyPlayerData, iUpsertUmaStandingInput } from "interface/match.js";
 
-export async function POST({cookies, locals, params, request}) {
+export async function POST({locals, params, request}) {
   const response = {header:{}, data:{}} as iGlobalResponse
   const { slug } = params
   const payload: iMatchInput = await request.json()
@@ -19,9 +18,6 @@ export async function POST({cookies, locals, params, request}) {
   const upsertUmaStandingInput: iUpsertUmaStandingInput = {}
   
   try {
-    //check cookie
-    const decodeToken = await firebaseValidation(cookies)
-
     //check payload to ensure only 4 player
     if (payload.participantIdList.length != 4 || payload.participantList.length != 4) throw 'Must input 4 player game'
 
@@ -33,9 +29,7 @@ export async function POST({cookies, locals, params, request}) {
     const [submitterData, matchType, rtList, playerList] = await db.$transaction([
       db.clubMember.findFirstOrThrow({
         where: {
-          userData: {
-            firebaseId: decodeToken.sub
-          },
+          userId: locals.user?.id,
           clubData: {
             slug: slug
           },
@@ -67,7 +61,7 @@ export async function POST({cookies, locals, params, request}) {
           baseRP: true,
         }
       }),
-      db.user.findMany({
+      db.clubMember.findMany({
         where: {
           id: {
             in: payload.participantIdList
@@ -76,9 +70,15 @@ export async function POST({cookies, locals, params, request}) {
         select: {
           id: true,
           roleId: true,
-          currentRP: true,
-          rtId: true,
-          rankedAt: true,
+          userData: {
+            select: {
+              id: true,
+              seqId: true,
+              currentRP: true,
+              rtId: true,
+              rankedAt: true,
+            }
+          }
         }
       })
       
@@ -114,7 +114,7 @@ export async function POST({cookies, locals, params, request}) {
       if (participant.playerRtGroup == 201) useCC += matchType.ccNovice
       else if (participant.playerRtGroup == 202) useCC += matchType.ccAmateur
       else if (participant.playerRtGroup == 203) useCC += matchType.ccPro
-      totalSkill += rtData[playerData[participant.userId].rtId].skillIndex
+      totalSkill += rtData[playerData[participant.clubMemberId].userData.rtId].skillIndex
     })
     const avgSkill = ((totalSkill * 100)/4)/100
 
@@ -167,49 +167,49 @@ export async function POST({cookies, locals, params, request}) {
         case 3: 
         default:
       }
-      totalGainRP = Math.round((((rankMultiplier-totalSameMatch)* gainRP)/100) + bonusRP)
+      totalGainRP = Math.round((((rankMultiplier-totalSameMatch)* gainRP)/100) + bonusRP + bonusFromScore)
       totalGainUma = gainUma + (participant.yakuman * submitterData.clubData.clubSetting.yakumanBonus) + (participant.chombo * submitterData.clubData.clubSetting.chomboPenalty) 
-      let adjustedRP = playerData[participant.userId].currentRP + totalGainRP
+      let adjustedRP = playerData[participant.clubMemberId].userData.currentRP + totalGainRP
       if (adjustedRP < 0) adjustedRP = 0
-      let newRtId = playerData[participant.userId].rtId
-      let rankedAt = playerData[participant.userId].rankedAt
+      let newRtId = playerData[participant.clubMemberId].userData.rtId
+      let rankedAt = playerData[participant.clubMemberId].userData.rankedAt
 
       // build transaction RP input
-      if (adjustedRP >= rtData[playerData[participant.userId].rtId].promotionRP && rtData[playerData[participant.userId].rtId].promotionRP > 0) {
+      if (adjustedRP >= rtData[playerData[participant.clubMemberId].userData.rtId].promotionRP && rtData[playerData[participant.clubMemberId].userData.rtId].promotionRP > 0) {
         //promotion trigger
-        adjustedRP = rtData[playerData[participant.userId].rtId].baseRP
-        newRtId = playerData[participant.userId].rtId + 1
+        adjustedRP = rtData[playerData[participant.clubMemberId].userData.rtId].baseRP
+        newRtId = playerData[participant.clubMemberId].userData.rtId + 1
         rankedAt = today
         
         transRPInput.push({
-          userId: participant.userId,
-          rpBefore: playerData[participant.userId].currentRP,
+          userId: playerData[participant.clubMemberId].userData.id,
+          rpBefore: playerData[participant.clubMemberId].userData.currentRP,
           rpAfter: adjustedRP,
           rpMove: totalGainRP,
           rtChange: true,
-          rtIdBefore: playerData[participant.userId].rtId,
-          rtIdAfter: playerData[participant.userId].rtId + 1,
+          rtIdBefore: playerData[participant.clubMemberId].userData.rtId,
+          rtIdAfter: playerData[participant.clubMemberId].userData.rtId + 1,
         })
 
-      } else if (adjustedRP == 0 && rtData[playerData[participant.userId].rtId].demotion) {
+      } else if (adjustedRP == 0 && rtData[playerData[participant.clubMemberId].userData.rtId].demotion) {
         //demotion trigger
-        newRtId = playerData[participant.userId].rtId - 1
+        newRtId = playerData[participant.clubMemberId].userData.rtId - 1
         rankedAt = today
 
         transRPInput.push({
-          userId: participant.userId,
-          rpBefore: playerData[participant.userId].currentRP,
+          userId: playerData[participant.clubMemberId].userData.id,
+          rpBefore: playerData[participant.clubMemberId].userData.currentRP,
           rpAfter: adjustedRP,
           rpMove: totalGainRP,
           rtChange: true,
-          rtIdBefore: playerData[participant.userId].rtId,
-          rtIdAfter: playerData[participant.userId].rtId - 1,
+          rtIdBefore: playerData[participant.clubMemberId].userData.rtId,
+          rtIdAfter: playerData[participant.clubMemberId].userData.rtId - 1,
         })
 
       } else {
         transRPInput.push({
-          userId: participant.userId,
-          rpBefore: playerData[participant.userId].currentRP,
+          userId: playerData[participant.clubMemberId].userData.id,
+          rpBefore: playerData[participant.clubMemberId].userData.currentRP,
           rpAfter: adjustedRP,
           rpMove: totalGainRP,
           rtChange: false,
@@ -221,11 +221,11 @@ export async function POST({cookies, locals, params, request}) {
         avgMatchSkill: avgSkill,
         draw: draw > 0 ? true : false,
         gainUma: totalGainUma,
-        playerRtId: playerData[participant.userId].rtId,
+        playerRtId: playerData[participant.clubMemberId].userData.rtId,
         position: position,
         score: participant.score,
         seatRefId: i == 0 ? 701 : i == 1 ? 702 : i == 2 ? 703 : 704,
-        userId: participant.userId,
+        userId: playerData[participant.clubMemberId].userData.id,
         chombo: participant.chombo,
         dealIn: participant.dealIn,
         ron: participant.ron,
@@ -233,9 +233,9 @@ export async function POST({cookies, locals, params, request}) {
       })
 
       // set update userData input
-      updatePlayerDataInput[participant.userId] = {
+      updatePlayerDataInput[participant.clubMemberId] = {
         where: {
-          id: participant.userId
+          id: playerData[participant.clubMemberId].userData.id
         },
         data: {
           currentRP: adjustedRP,
@@ -244,22 +244,54 @@ export async function POST({cookies, locals, params, request}) {
               id: newRtId
             }
           },
-          rankedAt: rankedAt
+          rankedAt: rankedAt,
+          metaData: {
+            update: {
+              totalDealIn: {
+                increment: participant.dealIn ?? 0,
+              },
+              totalRon: {
+                increment: participant.ron ?? 0,
+              },
+              totalTsumo: {
+                increment: participant.tsumo ?? 0,
+              },
+              totalChombo: {
+                increment: participant.chombo ?? 0
+              },
+              totalFirst: {
+                increment: position == 0 ? 1 : 0
+              },
+              totalFourth: {
+                increment: position == 3 ? 1 : 0
+              },
+              totalSecond: {
+                increment: position == 1 ? 1 : 0
+              },
+              totalThird: {
+                increment: position == 2 ? 1 : 0
+              },
+              totalMatch: {
+                increment: 1
+              },
+
+            }
+          }
         }
       }
 
       //upsert uma standing
-      upsertUmaStandingInput[participant.userId] = {
+      upsertUmaStandingInput[participant.clubMemberId] = {
         where: {
-          playerId_clubId_periodMonth_periodYear: {
-            playerId: participant.userId,
+          userId_clubId_periodMonth_periodYear: {
+            userId: playerData[participant.clubMemberId].userData.id,
             clubId: submitterData.clubId,
             periodMonth: today.getMonth(),
             periodYear: today.getFullYear()
           }
         },
         create: {
-          playerId: participant.userId,
+          userId: playerData[participant.clubMemberId].userData.id,
           clubId: submitterData.clubId,
           totalUma: totalGainUma,
           totalMatch: 1,
@@ -281,7 +313,7 @@ export async function POST({cookies, locals, params, request}) {
     //submit write in transactions
     db.$transaction(async (tx) => {
       //deduct CC from club
-      const updatedClub = await db.club.update({
+      const updatedClub = await tx.club.update({
         where: {
           id: submitterData.clubId
         }, 
@@ -295,7 +327,7 @@ export async function POST({cookies, locals, params, request}) {
       if (updatedClub.currentCC < 0) throw 'club credit not enough to submit match'
 
       //submit transaction history to clubs
-      await db.transactionCC.create({
+      await tx.transactionCC.create({
         data: {
           clubData: {
             connect: {
@@ -315,7 +347,7 @@ export async function POST({cookies, locals, params, request}) {
       })
 
       //Record match data
-      await db.match.create({
+      await tx.match.create({
         data: {
           matchAt: payload.matchAt,
           typeId: payload.matchRuleId,
@@ -339,9 +371,9 @@ export async function POST({cookies, locals, params, request}) {
       })
 
       //update user and upsert uma standing
-      for (const [i, playerId] of payload.participantIdList.entries()) {
-        await db.user.update(updatePlayerDataInput[playerId])
-        await db.clubUmaStanding.upsert(upsertUmaStandingInput[playerId])
+      for (const [i, clubMemberId] of payload.participantIdList.entries()) {
+        await db.user.update(updatePlayerDataInput[clubMemberId])
+        await db.clubUmaStanding.upsert(upsertUmaStandingInput[clubMemberId])
       }
       
     })  

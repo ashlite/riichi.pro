@@ -18,11 +18,11 @@
     processing = true
     let response: Response
     if (queryName) {
-      response = await fetch(`/api/v1/club/${clubSlug}/member?name=${queryName}`, {
+      response = await fetch(`/api/v1/private/club/${clubSlug}/member?name=${queryName}`, {
         method: 'GET'
       })
     } else {
-      response = await fetch(`/api/v1/club/${clubSlug}/member?id=${queryId}`, {
+      response = await fetch(`/api/v1/private/club/${clubSlug}/member?id=${queryId}`, {
         method: 'GET'
       })
     }
@@ -32,7 +32,6 @@
         showResult = true
         listMember = result.data
       }
-      
     } else { toastAlert.responseError(result) }
     processing = false
   }
@@ -45,6 +44,7 @@
 
 <div>
   <div class="form-control w-full">
+    <!-- svelte-ignore a11y-label-has-associated-control -->
     <label class="label">
       <span class="label-text">Search by member name</span>
       <span class="label-text">Search by member ID</span>
@@ -62,10 +62,12 @@
   {#if showResult}
     <ul class="menu bg-base-200 w-4/5 rounded-box">
       {#each listMember as member }
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
         <li on:click={() => selectMember(member)}>
           <div class="flex flex-row gap-4">
             <div>
-              <Avatar seed={member.userData.uuid} />
+              <Avatar user={member.userData} />
             </div>
             <div class="flex flex-col">
               <h1><span class="font-bold text-primary">#{member.userData.id}</span> {member.userData.fullName}</h1>

@@ -9,7 +9,6 @@
 	import type { iMemberAction } from "interface/club";
 	import type { iGlobalResponse } from "interface/utils";
 	import toastAlert from "store/toast";
-	import { goto } from "$app/navigation";
 	import globalModal from "store/modal";
 
   export let data: PageData

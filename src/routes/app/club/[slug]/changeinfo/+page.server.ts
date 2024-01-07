@@ -4,6 +4,11 @@ import { error } from '@sveltejs/kit';
 export async function load({params, parent}) {
   const { slug } = params
   
+  const { userMemberData } = await parent()
+  if (userMemberData.roleId > 302 || (userMemberData.roleId == 302 && !userMemberData.canEditClubInfo)) {
+    error(403, `Forbidden to Access`);
+  }
+  
   try {
     const clubInfo = await db.club.findUniqueOrThrow({
       where: {
@@ -11,10 +16,6 @@ export async function load({params, parent}) {
       },
     })
 
-    const { userMemberData } = await parent()
-    if (userMemberData.roleId > 302 || (userMemberData.roleId == 302 && !userMemberData.canEditClubInfo)) {
-      error(403, `Forbidden to Access`);
-    }
     
     return {
       clubInfo

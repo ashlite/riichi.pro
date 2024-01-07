@@ -15,7 +15,7 @@ let processing = false
 async function quit() {
   processing = true
   const payload: iMemberAction = {action: 'quit', targetId: memberId}
-  const response = await fetch(`/api/v1/club/${slug}/actionmember`, {
+  const response = await fetch(`/api/v1/private/club/${slug}/actionmember`, {
     method: 'POST',
     body: JSON.stringify(payload)
   })

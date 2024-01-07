@@ -22,7 +22,7 @@
 
   async function updateInfo() {
     processing = true
-    const response = await fetch(`/api/v1/club/${data.clubInfo.slug}/info`, {
+    const response = await fetch(`/api/v1/private/club/${data.clubInfo.slug}/info`, {
       method: 'PATCH',
       body: JSON.stringify(data.clubInfo)
     })

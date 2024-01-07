@@ -15,7 +15,7 @@
       action: action,
       targetId: id
     }
-    const response = await fetch(`/api/v1/club/${data.userMemberData.clubData.slug}/actionmember`, {
+    const response = await fetch(`/api/v1/private/club/${data.userMemberData.clubData.slug}/actionmember`, {
       method: 'POST',
       body: JSON.stringify(payload)
     })
@@ -78,7 +78,7 @@
           <tr>
             <td>
               <div class="flex flex-row gap-4">
-                <Avatar seed={member.userData.uuid} />
+                <Avatar user={member.userData} />
                 <div class="flex flex-col">
                   <div class="font-bold text-primary text-xl text-ellipsis">{member.userData.fullName}</div>
                   {#if member.roleData.id == 301}
@@ -106,7 +106,7 @@
           <tr>
             <td>
               <div class="flex flex-row gap-4">
-                <Avatar seed={member.userData.uuid} />
+                <Avatar user={member.userData} />
                 <div class="flex flex-col">
                   <div class="font-bold text-primary text-xl">{member.userData.fullName}</div>
                   {#if member.roleData.id == 301}

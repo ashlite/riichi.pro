@@ -1,21 +1,16 @@
-import type { iMemberAction } from "interface/club";
 import type { iGlobalResponse } from "interface/utils.js";
 import { Prisma } from "@prisma/client";
-import { error, json } from "@sveltejs/kit";
-import { firebaseValidation } from "$lib/server/firebaseAdmin";
+import { json } from "@sveltejs/kit";
 import { db } from "$lib/server/db.js";
 import { uploadImage, deleteImage } from "service/s3.js";
 import { env } from '$env/dynamic/public'
 import sharp from 'sharp'
 
-export async function POST({request, cookies, locals, params}) {
+export async function POST({request, locals, params}) {
   const response = {header:{}, data:{}} as iGlobalResponse
   const { slug } = params
   const allowedExtension =  /(\.jpg|\.jpeg|\.png|\.gif|\.webp)$/i
   try {
-    //check cookie
-    const decodeToken = await firebaseValidation(cookies)
-
     //check image
     const payload = await request.formData()
     const imageFile = payload.get('image') as File
@@ -29,9 +24,7 @@ export async function POST({request, cookies, locals, params}) {
 
     const userMember = await db.clubMember.findFirstOrThrow({
       where: {
-        userData: {
-          firebaseId: decodeToken.sub
-        },
+        userId: locals.user?.id,
         clubData: {
           slug: slug
         }

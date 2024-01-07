@@ -1,24 +1,19 @@
 import type { iGlobalResponse } from "interface/utils.js";
 import { Prisma } from "@prisma/client";
 import { json } from "@sveltejs/kit";
-import { firebaseValidation } from "$lib/server/firebaseAdmin";
 import { db } from "$lib/server/db.js";
 
-export async function PATCH({request, cookies, locals, params}) {
+export async function PATCH({request, locals, params}) {
   const response = {header:{}, data:{}} as iGlobalResponse
   const { slug } = params
 
   try {
-
-    //check cookie
-    const decodeToken = await firebaseValidation(cookies)
-
     const payload: Prisma.ClubSettingUpdateInput = await request.json()
     
     const userMember = await db.clubMember.findFirstOrThrow({
       where: {
         userData: {
-          firebaseId: decodeToken.sub
+          id: locals.user?.id
         },
         clubData: {
           slug: slug

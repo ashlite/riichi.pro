@@ -2,22 +2,16 @@ import type { iMemberAction } from "interface/club";
 import type { iGlobalResponse } from "interface/utils.js";
 import { Prisma } from "@prisma/client";
 import { json } from "@sveltejs/kit";
-import { firebaseValidation } from "$lib/server/firebaseAdmin";
 import { db } from "$lib/server/db.js";
 
-export async function POST({request, cookies, params}) {
+export async function POST({request, locals, params}) {
   const response = {header:{}, data:{}} as iGlobalResponse
   const { slug } = params
-  try {
-    //check cookie
-    const decodeToken = await firebaseValidation(cookies)
-    
+  try {    
     const payload: iMemberAction = await request.json()
     const userMember = await db.clubMember.findFirstOrThrow({
       where: {
-        userData: {
-          firebaseId: decodeToken.sub
-        },
+        userId: locals.user?.id,
         clubData: {
           slug: slug
         }
@@ -45,48 +39,52 @@ export async function POST({request, cookies, params}) {
           })
           break
         case 'approvePending':
-          await db.clubMember.update({
-            where: {
-              id: payload.targetId,
-              roleId: 306
-            },
-            data: {
-              roleId: 304
-            }
-          })
-
-          await db.club.update({
-            where: {
-              id: userMember.clubId
-            },
-            data: {
-              totalMember: {
-                increment: 1
+          await db.$transaction([
+            db.clubMember.update({
+              where: {
+                id: payload.targetId,
+                roleId: 306
+              },
+              data: {
+                roleId: 304
               }
-            }
-          })
+            }),
+            db.club.update({
+              where: {
+                id: userMember.clubId
+              },
+              data: {
+                totalMember: {
+                  increment: 1
+                }
+              }
+            })
+          ])
+
           break
         case 'approveMain':
-          await db.clubMember.update({
-            where: {
-              id: payload.targetId,
-              roleId: 305
-            },
-            data: {
-              roleId: 303
-            }
-          })
-
-          await db.club.update({
-            where: {
-              id: userMember.clubId
-            },
-            data: {
-              totalMainMember: {
-                increment: 1
+          await db.$transaction([
+            db.clubMember.update({
+              where: {
+                id: payload.targetId,
+                roleId: 305
+              },
+              data: {
+                roleId: 303
               }
-            }
-          })
+            }),
+            db.club.update({
+              where: {
+                id: userMember.clubId
+              },
+              data: {
+                totalMainMember: {
+                  increment: 1
+                }
+              }
+            })
+          ])
+
           break
         case 'rejectMain':
           await db.clubMember.update({
@@ -102,55 +100,56 @@ export async function POST({request, cookies, params}) {
       }
       response.header.ok = true
     } else if (['transferOwnership'].includes(payload.action) && userMember.roleId == 301 ) {
-      //transfer to new Owner
-      await db.clubMember.update({
-        where: {
-          id: payload.targetId,
-          roleId: 302,
-          clubId: userMember.clubId
-        },
-        data: {
-          roleId: 301
-        }
-      })
-
-      //revoke owner
-      await db.clubMember.update({
-        where: {
-          id: userMember.id,
-          roleId: 301
-        }, 
-        data: {
-          roleId: 302
-        }
-      })
+      await db.$transaction([
+        //transfer to new Owner
+        db.clubMember.update({
+          where: {
+            id: payload.targetId,
+            roleId: 302,
+            clubId: userMember.clubId
+          },
+          data: {
+            roleId: 301
+          }
+        }),
+        //revoke owner
+        db.clubMember.update({
+          where: {
+            id: userMember.id,
+            roleId: 301
+          }, 
+          data: {
+            roleId: 302
+          }
+        })
+      ])
       
       response.header.ok = true
     } else if (['becomeAdmin', 'kickAdmin', 'kick'].includes(payload.action) && userMember.roleId <= 302 || (userMember.roleId == 302 && userMember.canEditAccess)) {
       switch(payload.action) {
         case 'becomeAdmin': {
-          //check total admin
-          const totalAdmin = await db.clubMember.count({
-            where: {
-              roleId: 302,
-              clubData: {
-                slug: slug
+          await db.$transaction(async (tx) => {
+            //check total admin
+            const totalAdmin = await tx.clubMember.count({
+              where: {
+                roleId: 302,
+                clubData: {
+                  slug: slug
+                }
               }
+            })
+            if (totalAdmin >= userMember.clubData.maxAdmin) {
+              throw `Maximum total admin is ${userMember.clubData.maxAdmin}`
             }
-          })
-
-          if (totalAdmin >= userMember.clubData.maxAdmin) {
-            throw `Maximum total admin is ${userMember.clubData.maxAdmin}`
-          }
-
-          await db.clubMember.update({
-            where: {
-              id: payload.targetId,
-              roleId: 303,
-            },
-            data: {
-              roleId: 302
-            }
+            await tx.clubMember.update({
+              where: {
+                id: payload.targetId,
+                roleId: 303,
+              },
+              data: {
+                roleId: 302
+              }
+            })
           })
           break
         }
@@ -166,31 +165,32 @@ export async function POST({request, cookies, params}) {
           })
           break
         case 'kick': {
-          const kickedUser = await db.clubMember.update({
-            where: {
-              id: payload.targetId,
-              roleId: {
-                in: [302, 303, 304, 305]
-              }
-            },
-            data: {
-              roleId: 399
-            }
-          })
-
-          //update number
-          await db.club.update({
-            where: {
-              id: userMember.clubId
-            },
-            data: {
-              totalMember: {
-                decrement: 1
+          await db.$transaction(async (tx) => {
+            const kickedUser = await tx.clubMember.update({
+              where: {
+                id: payload.targetId,
+                roleId: {
+                  in: [302, 303, 304, 305]
+                }
               },
-              totalMainMember: {
-                decrement: kickedUser.roleId <= 303 ? 1 : 0
+              data: {
+                roleId: 399
               }
-            }
+            })
+            //update number
+            await tx.club.update({
+              where: {
+                id: userMember.clubId
+              },
+              data: {
+                totalMember: {
+                  decrement: 1
+                },
+                totalMainMember: {
+                  decrement: kickedUser.roleId <= 303 ? 1 : 0
+                }
+              }
+            })
           })
           break
         }
@@ -199,57 +199,60 @@ export async function POST({request, cookies, params}) {
     } else if (['quit', 'applyMain' ].includes(payload.action) && userMember.roleId > 301) {
       switch(payload.action) {
         case 'quit':
-          await db.clubMember.update({
-            where: {
-              id: userMember.id,
-              clubId: userMember.clubId,
-              roleId: {
-                notIn: [301, 399]
+          await db.$transaction(async (tx) => {
+            await tx.clubMember.update({
+              where: {
+                id: userMember.id,
+                clubId: userMember.clubId,
+                roleId: {
+                  notIn: [301, 399]
+                },
               },
-            },
-            data: {
-              roleId: 399
-            }
-          })
-
-          //update number
-          await db.club.update({
-            where: {
-              id: userMember.clubId
-            },
-            data: {
-              totalMember: {
-                decrement: 1
-              },
-              totalMainMember: {
-                decrement: userMember.roleId <= 303 ? 1 : 0
+              data: {
+                roleId: 399
               }
-            }
+            })
+            //update number
+            await tx.club.update({
+              where: {
+                id: userMember.clubId
+              },
+              data: {
+                totalMember: {
+                  decrement: 1
+                },
+                totalMainMember: {
+                  decrement: userMember.roleId <= 303 ? 1 : 0
+                }
+              }
+            })
           })
           break
         case 'applyMain':{
-          //check total main member
-          const totalMain = await db.clubMember.count({
-            where: {
-              id: userMember.id,
-              roleId: {
-                in: [301, 302, 303, 305]
+          await db.$transaction(async (tx) => {
+            //check total main member
+            const totalMain = await tx.clubMember.count({
+              where: {
+                id: userMember.id,
+                roleId: {
+                  in: [301, 302, 303, 305]
+                }
               }
+            })
+            
+            if (totalMain > 0) {
+              throw 'You can only apply and become main member to one club'
             }
-          })
-          
-          if (totalMain > 0) {
-            throw 'You can only apply and become main member to one club'
-          }
-
-          await db.clubMember.update({
-            where: {
-              id: userMember.id,
-              roleId: 304
-            },
-            data: {
-              roleId: 305
-            }
+            
+            await tx.clubMember.update({
+              where: {
+                id: userMember.id,
+                roleId: 304
+              },
+              data: {
+                roleId: 305
+              }
+            })
           })
         }
       }

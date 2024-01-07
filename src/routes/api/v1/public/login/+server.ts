@@ -23,7 +23,10 @@ export async function POST({request, cookies}) {
           email: resultFirebase.email!,
           fullName: firebaseUser.displayName!,
           avatarUrl: firebaseUser.photoURL,
-          lastLogin: today
+          lastLogin: today,
+          metaData: {
+            create: {}
+          }
         }, 
         update: {
           lastLogin: today

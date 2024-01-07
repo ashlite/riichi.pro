@@ -2,7 +2,7 @@
   import Icon from "@iconify/svelte";
   import Button from "atom/button.svelte";
   import globalModal from "store/modal";
-  import { objCountries, countryNameFromCode } from "service/country";
+  import { countryNameFromCode } from "service/country";
   import Image from "atom/image.svelte";
   import {env} from '$env/dynamic/public'
   
