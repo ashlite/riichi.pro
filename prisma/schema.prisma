@@ -85,9 +85,9 @@ model UserMeta {
   totalSecond Int      @default(0) @map("total_second")
   totalThird  Int      @default(0) @map("total_third")
   totalFourth Int      @default(0) @map("total_fourth")
-  totalRon      Int    @default(0) @map("total_ron")
-  totalTsumo    Int    @default(0) @map("total_tsumo")
-  totalDealIn   Int    @default(0) @map("total_deal_in")
+  totalRon    Int      @default(0) @map("total_ron")
+  totalTsumo  Int      @default(0) @map("total_tsumo")
+  totalDealIn Int      @default(0) @map("total_deal_in")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
