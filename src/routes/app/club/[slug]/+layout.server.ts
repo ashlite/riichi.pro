@@ -9,7 +9,7 @@ export async function load({ locals, params }: LayoutServerLoadEvent) {
     const userMemberData = await db.clubMember.findFirstOrThrow({
       where: {
         userData: {
-          firebaseId: locals.firebaseId!
+          id: locals.user?.id
         },
         roleId: {
           notIn: [399, 306]
@@ -21,6 +21,7 @@ export async function load({ locals, params }: LayoutServerLoadEvent) {
       select: {
         id: true,
         roleId: true,
+        userId: true,
         canApproveMember: true,
         canBuyCC: true,
         canEditAccess: true,

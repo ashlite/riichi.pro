@@ -13,7 +13,7 @@
 
   async function saveSetting() {
     processing = true
-    const response = await fetch(`/api/v1/club/${data.userMemberData.clubData.slug}/setting`, {
+    const response = await fetch(`/api/v1/private/club/${data.userMemberData.clubData.slug}/setting`, {
       method: 'PATCH',
       body: JSON.stringify(clubSetting)
     })

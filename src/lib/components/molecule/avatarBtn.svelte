@@ -1,8 +1,9 @@
 <script lang="ts">
   import { getLoginUser } from "store/user";
   import Avatar from "atom/avatar.svelte";
+  import type { iUserLocal } from "interface/user";
 
-  const user = getLoginUser()
+  export let user: iUserLocal
 
   let dropState = false
 
@@ -26,7 +27,7 @@
     </div>
     <!-- svelte-ignore a11y-label-has-associated-control -->
     <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-    <Avatar seed={user.uuid} size="w-12" />
+    <Avatar user={user} size="w-12" />
     <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
   </div>
   {#if dropState}

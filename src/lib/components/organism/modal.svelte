@@ -1,5 +1,4 @@
 <script lang='ts'>
-  import FormLogin from 'template/modal/formLogin.svelte';
   import FormPlayerEditor from 'template/modal/formPlayerEditor.svelte';
   import WebCredit from 'template/modal/webCredit.svelte';
   import ClubEditor from 'template/modal/clubEditor.svelte';
@@ -22,9 +21,7 @@
     </div>
     
     <div id="modal-body">
-      {#if $globalModal?.template == 'loginForm'}
-        <FormLogin />
-      {:else if $globalModal?.template == 'playerEditor'}
+      {#if $globalModal?.template == 'playerEditor'}
         <FormPlayerEditor />
       {:else if $globalModal?.template == 'credit'}
         <WebCredit />

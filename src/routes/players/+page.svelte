@@ -26,7 +26,7 @@ export let data: PageData
             <tr class="hover:bg-base-200">
               <td class="hover:cursor-pointer hover:bg-base-300">
                 <div class="flex flex-row items-center gap-4">
-                  <Avatar seed={player.uuid} />
+                  <Avatar user={data.user} />
                   <div class="flex flex-col">
                     <div class="text-ellipsis">
                       {player.fullName}

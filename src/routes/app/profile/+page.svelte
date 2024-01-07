@@ -6,7 +6,7 @@
 	import toastAlert from "store/toast";
 
   export let data: PageData
-  const profile = data.profileData
+  $: profile = data.profileData
   let showPhone = false
   let showId = false
 </script>
@@ -17,12 +17,12 @@
   <div class="grid grid-cols-4 text-lg gap-4">
     <div class="text-secondary text-right">ID :</div>
     <div class="">{profile.id}</div>
-    <div class="text-secondary text-right">UUID :</div>
-    <div class="text-sm self-center">{profile.uuid}</div>
+    <div class="text-secondary text-right"># ID :</div>
+    <div class="text-sm self-center">{profile.seqId}</div>
     <div class="text-secondary text-right">Name :</div>
     <div class="">{profile.fullName}</div>
     <div class="text-secondary text-right">Nationality :</div>
-    <div class="">{countryNameFromCode(profile.nationalityCountryCode)}</div>
+    <div class="">{profile.nationalityCountryCode ? countryNameFromCode(profile.nationalityCountryCode) : 'none'}</div>
     <div class="text-secondary text-right">Gender :</div>
     <div class="">{profile.genderData?.name}</div>
     <div class="text-secondary text-right">Date of birth :</div>
@@ -32,7 +32,7 @@
     <div class="text-secondary text-right">District/State/Province :</div>
     <div class="">{profile.district}</div>
     <div class="text-secondary text-right">Residence Country :</div>
-    <div class="">{countryNameFromCode(profile.residenceCountryCode)}</div>
+    <div class="">{profile.residenceCountryCode ? countryNameFromCode(profile.residenceCountryCode) : 'none'}</div>
     <div class="text-secondary text-right">Phone :</div>
     <div class="" 
       on:mouseover={() => showPhone = true} 

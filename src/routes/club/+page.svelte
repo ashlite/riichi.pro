@@ -14,15 +14,15 @@
   const listJoinedClub: string[] = []
   const listPendingClub: string[] = []
 
-  if (data.user) {
-    data.user.clubList.forEach(club => {
+  if (data.listClubUser) {
+    data.listClubUser.forEach(club => {
       if (club.roleId < 306) listJoinedClub.push(club.clubId)
-      else if (club.roleId == 306) listJoinedClub.push(club.clubId)
+      else if (club.roleId == 306) listPendingClub.push(club.clubId)
     })
   }
 
   async function joinClub(slug: string, name: string) {
-    const response = await fetch(`/api/v1/club/${slug}/member`, {
+    const response = await fetch(`/api/v1/private/club/${slug}/member`, {
       method: 'POST'
     })
     const result = await response.json() as iGlobalResponse

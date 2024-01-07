@@ -1,9 +1,8 @@
-import { firebaseValidation } from '$lib/server/firebaseAdmin.js';
-import { db } from '$lib/server/db.js';
-import { error } from '@sveltejs/kit';
+import { db } from '$lib/server/db.js'
 
-export async function load({params, parent}) {
-  const slug = params.slug
+
+export async function load({params}) {
+  const {slug} = params
   const listMember = await db.clubMember.findMany({
     where: {
       roleId: {
@@ -27,6 +26,6 @@ export async function load({params, parent}) {
   })
 
   return {
-    listMember,
+    listMember
   }
 }

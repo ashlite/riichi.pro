@@ -5,10 +5,9 @@ import { getLoginUser } from "store/user.js";
 
 export let data: PageData
 const loginUser = getLoginUser()
-const listClub = data.listClub
 
 let totalMain = 0
-listClub.forEach(club => {
+data.listClub.forEach(club => {
   if (club.roleData.id < 304) totalMain++
 })
 </script>
@@ -17,10 +16,10 @@ listClub.forEach(club => {
   <h1 class="font-bold text-5xl text-primary">Your club List</h1>
   <div class="divider"></div>
   <div class="flex flex-row flex-wrap gap-4">
-    {#if totalMain == 0 && listClub.length < loginUser.rtData.clubLimit}
+    {#if totalMain == 0 && data.listClub.length < $loginUser.rtData.clubLimit}
       <ClubCard newClub />
     {/if}
-    {#each listClub as club}
+    {#each data.listClub as club}
       <ClubCard name={club.clubData.name} emblem={club.clubData.emblemFile} country={club.clubData.countryISO2} role={club.roleData.name} slug={club.clubData.slug} status={club.clubData.clubStatusId} />
     {/each}
   </div>

@@ -17,9 +17,9 @@ async function submitForm() {
 
   //testing text
   if (!/^\w*$/g.test(dataClub.slug)) {
-    toastAlert.error("slug input is wrong format")
+    toastAlert.error("slug input is in wrong format")
   } else {
-    const response = await fetch('/api/v1/createclub',{
+    const response = await fetch('/api/v1/private/createclub',{
       method:'POST',
       body: JSON.stringify(dataClub)
     })

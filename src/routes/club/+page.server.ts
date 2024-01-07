@@ -3,8 +3,7 @@ import { redirect } from '@sveltejs/kit';
 import type { iPagination } from 'interface/pageMeta.js';
 import type { Prisma } from '@prisma/client';
 
-export async function load({ url, parent }) {
-
+export async function load({ url, locals }) {
   // const rtQuery = url.searchParams.get('')
   const currentPage = Number(url.searchParams.get('page') ?? 1)
   const takeRow = Number(url.searchParams.get('take') ?? 10)
@@ -22,7 +21,7 @@ export async function load({ url, parent }) {
     }
   }
 
-  const [listClub, totalClub] = await db.$transaction([
+  const [listClub, totalClub, listClubUser] = await db.$transaction([
     db.club.findMany({
       where: whereInput,
       take: takeRow,
@@ -40,7 +39,14 @@ export async function load({ url, parent }) {
     db.club.count({
       where: whereInput
     }),
-
+    db.clubMember.findMany({
+      where: {
+        userId: locals.user?.id,
+        roleId: {
+          lte: 306
+        }
+      }
+    })
   ])
 
   const pageMeta: iPagination = {
@@ -50,11 +56,9 @@ export async function load({ url, parent }) {
     totalPage: Math.ceil(totalClub/takeRow),
   }
 
-  const {loginState} = await parent()
-
 	return {
 		listClub,
     meta: pageMeta,
-    loginState
+    listClubUser
 	}
 }

@@ -13,7 +13,6 @@
   import Button from "atom/button.svelte";
   import Select from "molecule/select.svelte";
   import SelectItem from 'atom/selectItem.svelte';
-  import { invalidateAll } from "$app/navigation";
   
   export let data: PageData
   const matchData = { matchAt: new Date, deposit: 0, type: 1, matchRuleId: 0,  playerUniqueCode: '', note: undefined, participantList:[], participantIdList:[] } as iMatchInput
@@ -36,7 +35,7 @@
         playerRtName: member.userData.rtData.name,
         playerRtGroup: member.userData.rtData.groupRefId,
         score: data.listMatchType[selectedRule].totalScore/4,
-        userId: member.id,
+        clubMemberId: member.id,
         yakuman: 0
       }]
       matchData.participantIdList = [...matchData.participantIdList, member.id]
@@ -65,7 +64,7 @@
     processing = true
     matchData.matchRuleId = data.listMatchType[selectedRule].id
 
-    const response = await fetch(`/api/v1/club/${data.userMemberData.clubData.slug}/match`, {
+    const response = await fetch(`/api/v1/private/club/${data.userMemberData.clubData.slug}/match`, {
       method: 'POST',
       body: JSON.stringify(matchData)
     })

@@ -1,15 +1,12 @@
-import { firebaseValidation } from '$lib/server/firebaseAdmin.js';
 import { db } from '$lib/server/db.js';
 
 export async function load({locals}) {
   const listClub = await db.clubMember.findMany({
     where: {
+      userId: locals.user!.id,
       roleId: {
         not: 399
       },
-      userData: {
-        firebaseId: locals.firebaseId!
-      }
     },
     select: {
       id: true,

@@ -1,4 +1,4 @@
-import type { iUserSimple } from "./user"
+import type { Prisma } from "@prisma/client"
 
 export interface iRegisterClub {
   name: string
@@ -12,10 +12,15 @@ export interface iRegisterClub {
   website?: string
 }
 
-export interface iMemberPicker {
-  id: number
-  userData: iUserSimple
-}
+export type iMemberPicker = Prisma.ClubMemberGetPayload<{
+  include: {
+    userData: {
+      include: {
+        rtData: true
+      }
+    }
+  }
+}>
 
 export interface iMemberAction {
   action: 'rejectPending' | 'approvePending' | 'quit' | 'kick' | 'applyMain' | 'approveMain' | 'rejectMain' | 'becomeAdmin' | 'kickAdmin' | 'transferOwnership'

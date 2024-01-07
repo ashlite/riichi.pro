@@ -24,21 +24,30 @@ interface iRtData {
 }
 
 export type iUserLocal = Prisma.UserGetPayload<{
-  include: {
-    rtData: true,
-    clubList: true
+  select: {
+    id: true,
+    seqId: true,
+    fullName: true,
+    email: true,
+    nationalityCountryCode: true,
+    residenceCountryCode: true,
+    genderRefId: true,
+    rtId: true,
+    banStatus: true,
+    banExpiration: true,
+    roleId: true,
+    bioValid: true,
+    avatarUrl: true,
+    rtData: true
   }
 }>
 
-export interface iUserSimple {
-  id: number
-  uuid: string
-  fullName: string
-  email: string
-  banStatus: boolean
-  rtId: number
-  rtData: iRtData
-}
+export type iUserComplex = Prisma.UserGetPayload<{
+  include: {
+    rtData: true,
+    clubList: true,
+  }
+}>
 
 export interface iMemberRoles {
   id: number

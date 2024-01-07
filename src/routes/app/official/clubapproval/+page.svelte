@@ -3,14 +3,13 @@ import type { PageData } from "./$types";
 import type { iGlobalResponse } from "interface/utils";
 import { invalidateAll } from "$app/navigation";
 import Button from "atom/button.svelte";
-import { objCountries, countryNameFromCode } from "service/country";
+import { countryNameFromCode } from "service/country";
 import toastAlert from "store/toast";
 
 export let data: PageData
-const listApproval = data.listApproval
 
 async function approveClub(uuid: string) {
-  const response = await fetch(`/api/v1/official/approveclub/${uuid}`,{
+  const response = await fetch(`/api/v1/private/official/approveclub/${uuid}`,{
     method: 'POST'
   })
   const result: iGlobalResponse = await response.json()
@@ -38,7 +37,7 @@ async function approveClub(uuid: string) {
       </tr>
     </thead>
     <tbody>
-      {#each listApproval as club}
+      {#each data.listApproval as club}
         <tr>
           <td>{club.name}</td>
           <td>{countryNameFromCode(club.countryISO2)}</td>
@@ -51,7 +50,7 @@ async function approveClub(uuid: string) {
           </td>
           <td class="flex flex-col">
             <div class="font-bold">{club.memberList[0].userData.fullName}</div>
-            <div>member ID: {club.memberList[0].id}</div>
+            <div>{club.memberList[0].userId}</div>
           </td>
           <td>
             <Button text="Approve" color="success bg-success text-success-content hover:bg-success" icon="ph:check" on:click={() => approveClub(club.id)} />

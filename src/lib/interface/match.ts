@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client"
 
 export interface iParticipant {
-  userId: number
+  clubMemberId: number
   fullName: string
   score: number
   playerRtId: number
@@ -43,13 +43,19 @@ export interface iRTList {
 }
 
 export interface iPlayerData {
-  [key: number]: Prisma.UserGetPayload<{
+  [key: number]: Prisma.ClubMemberGetPayload<{
     select: {
       id: true,
       roleId: true,
-      currentRP: true,
-      rtId: true,
-      rankedAt: true,
+      userData: {
+        select: {
+          id: true,
+          seqId: true,
+          currentRP: true,
+          rtId: true,
+          rankedAt: true,
+        }
+      }
     }
   }>
 }
