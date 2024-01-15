@@ -13,13 +13,12 @@ const config = {
 		// See https://kit.svelte.dev/docs/adapters for more information about adapters.
 		adapter: adapter(),
     alias: {
-      'atom': 'src/lib/components/atom',
-      'molecule': 'src/lib/components/molecule',
-      'organism': 'src/lib/components/organism',
-      'template': 'src/lib/components/template',
+      'ui': 'src/lib/client/ui', //ui component
+      'controller': 'src/lib/client/controller', //client logic
+      'store': 'src/lib/client/store', //svelte store
+      'client-service': 'src/lib/client/service', //third party integration for client
+      'server-service': 'src/lib/server/service', //third party integration for server
       'interface': 'src/lib/interface',
-      'service': 'src/lib/service',
-      'store': 'src/lib/store',
     }
 	}
 };
