@@ -17,9 +17,9 @@
 
 </script>
 
-<footer class="flex flex-col p-4 items-center bottom-0 bg-primary text-primary-content">
+<footer class="flex flex-col p-4 items-center bottom-0 variant-filled-primary text-primary-content">
   <div class="text-center">v{appVersion} - Copyright {today.getFullYear()} by janshi.pro</div>
-  <div class="card p-4 variant-filled-primary" data-popup="popData">
+  <div class="card p-8 variant-filled-surface" data-popup="popData">
     <h1 class="text-xl">David Santoso</h1>
     <h2 class="">Fullstack Developer</h2>
     <div class="flex flex-col md:flex-row w-full md:w-3/5 gap-2">
@@ -30,7 +30,7 @@
         EMAIL ME
       </a>
     </div>
-    <div class="arrow variant-filled-primary" />
+    <div class="arrow variant-filled-surface" />
   </div>
   <button class="font-bold underline hover:cursor-pointer" use:popup={developerPop}>Developers</button>
 </footer>

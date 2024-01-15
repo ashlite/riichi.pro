@@ -1,7 +1,8 @@
 <script lang="ts">
   //svelte
   import {env} from '$env/dynamic/public'
-  import { invalidateAll } from "$app/navigation";
+  import { invalidateAll, goto } from "$app/navigation";
+  import {page} from '$app/stores'
   //icon
   import Icon from "@iconify/svelte"
   //skeleteon
@@ -50,17 +51,21 @@
   // }
 
   function onPageChange(e: CustomEvent): void {
-    console.log('event:page', e.detail);
+    const url = new URL($page.url)
+    url.searchParams.set('page', e.detail)
+    goto(url)
   }
 
   function onAmountChange(e: CustomEvent): void {
-    console.log('event:amount', e.detail);
+    const url = new URL($page.url)
+    url.searchParams.set('limit', e.detail)
+    goto(url)
   }
 
   </script>
   
   <div class="mt-8 mx-8">
-    <Paginator on:amount={onAmountChange} on:page={onPageChange} showNumerals maxNumerals={3}></Paginator>
+    <Paginator on:amount={onAmountChange} on:page={onPageChange} bind:settings={data.paginationData} showFirstLastButtons showPreviousNextButtons showNumerals justify="justify-end" maxNumerals={3}></Paginator>
     <div class="flex flex-col">
       <div class="flex flex-col gap-4 my-4">
         {#each data.listClub as club }
