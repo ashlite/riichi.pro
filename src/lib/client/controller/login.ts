@@ -1,8 +1,9 @@
 import { invalidateAll } from "$app/navigation";
 import { signInWithPopup, GoogleAuthProvider, signInWithCredential } from "firebase/auth";
 import { firebaseAuth, googleProvider } from "client-service/firebase";
+import { type ToastStore } from "@skeletonlabs/skeleton";
 
-export async function loginUser() {
+export async function loginUser(toastStore: ToastStore) {
   try {
     const signResult = await signInWithPopup(firebaseAuth, googleProvider)
     const credential = GoogleAuthProvider.credentialFromResult(signResult)
@@ -12,14 +13,25 @@ export async function loginUser() {
       body: await credentialSignIn.user.getIdToken()
     })
     const loginResult = await loginApp.json()
-    if (loginResult.header.ok) {
-      toastAlert.success('Login Success')
+    if (loginApp.ok) {
+      toastStore.trigger({
+        message: 'Login Success',
+        timeout: 3000,
+        background: "variant-filled-success"
+      })
       invalidateAll()
     } else {
-      toastAlert.responseError(loginResult)
+      toastStore.trigger({
+        message: `Error: ${loginResult.header.status}. ${loginResult.header.statusText}`,
+        timeout: 6000,
+        background: "variant-filled-error"
+      })
     }
   } catch (e: any) {
-    console.log(e)
-    toastAlert.error(`ERROR ${e.code}, ${e.message}`)
+    toastStore.trigger({
+      message: `Error: ${e.code}. ${e.message}`,
+      timeout: 6000,
+      background: "variant-filled-error"
+    })
   }
 }

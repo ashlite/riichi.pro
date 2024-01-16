@@ -4,6 +4,7 @@
   import { dev } from '$app/environment';
   import type { AfterNavigate } from '@sveltejs/kit';
   import { afterNavigate } from '$app/navigation';
+	import { onMount } from "svelte";
   //vercel
   import { injectSpeedInsights } from "@vercel/speed-insights/sveltekit"
   import { inject } from '@vercel/analytics';
@@ -11,26 +12,32 @@
   import { AppShell, storePopup, Emerald, initializeStores, Toast } from '@skeletonlabs/skeleton'
   import { computePosition, autoUpdate, offset, shift, flip, arrow } from '@floating-ui/dom';
   //mylib
-  import { setLoginUser } from "store/user";
+  import { setLoginUser, getLoginUser } from "store/user";
   import TopNav from 'ui/navigation/top.svelte'
   import Footer from 'ui/navigation/footer.svelte'
   import Drawer from 'ui/drawer/drawer.svelte'
   
   export let data
-  if (data.loginState && data.user) {
-    setLoginUser(data.user)
+  setLoginUser()
+
+  $: if (data.loginState && data.user) {
+    const user = getLoginUser()
+    user.set(data.user)
   }
-  
+
+
   initializeStores()
   storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
   inject({ mode: dev ? 'development' : 'production' });
   injectSpeedInsights();
 
   afterNavigate((params: AfterNavigate) => {
-    const isNewPage = params.from?.url.pathname !== params.to?.url.pathname
-    const elemPage = document.querySelector('#page')
-    if (isNewPage && elemPage !== null) {
-      elemPage.scrollTop = 0
+    if(params.from && params.to) {
+      const isNewPage = params.from.url.pathname !== params.to.url.pathname
+      const elemPage = document.querySelector('#page')
+      if (isNewPage && elemPage !== null) {
+        elemPage.scrollTop = 0
+      }
     }
   })
 

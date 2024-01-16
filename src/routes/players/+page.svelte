@@ -1,14 +1,32 @@
 <script lang="ts">
-import PaginationNav from "organism/paginationNav.svelte";
-import Avatar from "atom/avatar.svelte";
-import type { PageData } from "./$types.js";
+  //svelte
+  import { page } from '$app/stores'
+  import { goto } from '$app/navigation'
+  //skeleton
+  import { Paginator, Avatar } from '@skeletonlabs/skeleton'
+// import PaginationNav from "organism/paginationNav.svelte";
+// import Avatar from "atom/avatar.svelte";
+// import type { PageData } from "./$types.js";
 
-export let data: PageData
+export let data
+
+  function onPageChange(e: CustomEvent): void {
+    const url = new URL($page.url)
+    url.searchParams.set('page', e.detail)
+    goto(url)
+  }
+
+  function onAmountChange(e: CustomEvent): void {
+    const url = new URL($page.url)
+    url.searchParams.set('limit', e.detail)
+    goto(url)
+  }
 </script>
 
 <div class="mt-8 mx-8">
-  <PaginationNav pagination={data.meta} />
-  <div class="overflow-x-auto">
+  <!-- <PaginationNav pagination={data.meta} /> -->
+  <Paginator on:amount={onAmountChange} on:page={onPageChange} bind:settings={data.paginationData} showFirstLastButtons showPreviousNextButtons showNumerals justify="justify-end" maxNumerals={3}></Paginator>
+  <div class="table-container my-4">
     <table class="table">
       <!-- head -->
       <thead>
@@ -26,7 +44,7 @@ export let data: PageData
             <tr class="hover:bg-base-200">
               <td class="hover:cursor-pointer hover:bg-base-300">
                 <div class="flex flex-row items-center gap-4">
-                  <Avatar user={data.user} />
+                  <Avatar src={player.avatarUrl ?? ''} width="w-24" fallback={`https://api.dicebear.com/7.x/initials/svg?seed=${player.fullName}`} />
                   <div class="flex flex-col">
                     <div class="text-ellipsis">
                       {player.fullName}

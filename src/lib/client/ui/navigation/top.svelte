@@ -5,17 +5,19 @@
   //icon
   import Icon from '@iconify/svelte'
   //skeleton
-  import { AppBar, LightSwitch, Avatar, ListBox, ListBoxItem, popup, getDrawerStore } from '@skeletonlabs/skeleton'
+  import { AppBar, LightSwitch, Avatar, ListBox, ListBoxItem, popup, getDrawerStore, getToastStore } from '@skeletonlabs/skeleton'
   import type { PopupSettings, DrawerSettings } from '@skeletonlabs/skeleton';
   //mylib
   import { getLoginUser } from 'store/user'
   import NavList from './navList.svelte';
 	import Navitem from 'ui/navigation/navitem.svelte';
+  import { loginUser } from 'controller/login';
 
   export let loginState: boolean
   const logo = env.PUBLIC_TEBI_CORE + 'logo.svg'
   const user = getLoginUser()
   const drawerStore = getDrawerStore()
+  const toast = getToastStore()
 
   const drawerSetting: DrawerSettings = {
     id: 'navigation',
@@ -24,8 +26,8 @@
   
   const loginMenu: PopupSettings = {
     event: 'click',
-    target: 'loginMenu',
-    placement: 'bottom'
+    target: 'userMenu',
+    placement: 'bottom-start'
   };
 					
 </script>
@@ -43,23 +45,51 @@
     <div class="hidden lg:block">
       <div class="flex flex-row items-center gap-4">
         <NavList />
-        {#if loginState}
-          <div class="flex flex-row items-center gap-2 relative">
-            <button use:popup={loginMenu}>
-              <Avatar src={$user.avatarUrl ?? undefined} initials={$user.fullName} />
-            </button>
-            <div class="flex flex-col gap-2" data-popup="loginMenu">
-              <a href="/">Profile</a>
-              <a href="/">MyClub</a>
-              <a href="/">Official</a>
-            </div>
-          </div>
-        {:else}
-          <button class="btn hover:variant-soft-primary text-2xl font-bold">
+        {#if !loginState}
+          <button class="btn hover:variant-soft-primary text-2xl font-bold" on:click={() => {
+            loginUser(toast)
+          }}>
             Login
           </button>
         {/if}
         <LightSwitch height="h-8" width="w-16" />
+        {#if loginState}
+          <div class="flex flex-row items-center gap-2 relative">
+            <button use:popup={loginMenu} class="[&>*]:pointer-events-none">
+              <Avatar src={$user.avatarUrl ?? undefined} initials={$user.fullName} />
+            </button>
+            <div class="card p-4 variant-filled-surface" data-popup="userMenu">
+              <div class="arrow variant-filled-surface" />
+              <section class="flex flex-col gap-4">
+                <div>
+                  <p class="font-bold text-lg">{$user.fullName}</p>
+                  <p class="">{$user.rtData.name}</p>
+                </div>
+                <div class="bg-surface-800-100-token h-1"></div>
+                <a href="/app/profile" class="btn w-40 variant-filled-primary">
+                  <span class="mr-2 h3"><Icon icon="mingcute:user-3-line" /></span>
+                  Profile
+                </a>
+                <a href="/app/club" class="btn w-40 variant-filled-primary">
+                  <span class="mr-2 h3"><Icon icon="mingcute:group-3-line" /></span>
+                  MyClub
+                </a>
+                {#if $user.roleId >= 102}
+                  <a href="/app/official" class="btn w-40 variant-filled-primary">
+                    <span class="mr-2 h3"><Icon icon="mingcute:certificate-line" /></span>
+                    Official
+                  </a>
+                {/if}
+                <form method="post" action="/logout">
+                  <button type="submit" class="btn w-40 variant-filled-primary">
+                    <span class="mr-2 h3"><Icon icon="mingcute:exit-line" /></span>
+                    Logout
+                  </button>
+                </form>
+              </section>
+            </div>
+          </div>
+        {/if}
       </div>
     </div>
 
