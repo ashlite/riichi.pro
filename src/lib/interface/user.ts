@@ -1,17 +1,14 @@
 import { Prisma } from "@prisma/client"
-export interface iRegisterData {
+export interface iUpdateProfile {
   fullName: string
   nationalityCountryCode: string
   residenceCountryCode: string
   dob: Date
   genderRefId: number
-  district: string
-  address: string
+  district: string | null
+  address: string | null
   phoneCountry: string
   phone: string
-  realId: string
-  sourceRealId: string
-  telegramId?: string
 }
 
 interface iRtData {
