@@ -1,20 +1,24 @@
 <script lang="ts">
-  import BadgeNotification from 'atom/badgeNotification.svelte'
-  import type { LayoutServerData } from './$types'
+  // import BadgeNotification from 'atom/badgeNotification.svelte'
   import { page } from '$app/stores'
+  import Navitem from 'ui/navigation/navitem.svelte';
 
-  export let data: LayoutServerData
+  export let data
 
 </script>
 
 <div class="grid grid-cols-12 mt-8 mx-8 gap-8">
   <div class="col-span-3">
-    <ul class="menu bg-base-200 w-full rounded-box">
-      <li><a href="/app/official/dashboard" class={$page.url.pathname.includes('/dashboard') ? "text-primary" : ""}>Dashboard</a></li>
+    <ul class="card p-4 w-full flex flex-col gap-2">
+      <Navitem href="/app/official/dashboard">
+        Dashboard
+      </Navitem>
       <!-- <li><a>Player Reported <span class="badge">0</span></a></li>
       <li><a>Player Management</a></li>
       <li><a>Match Reported <span class="badge">0</span></a></li> -->
-      <li><a data-sveltekit-preload-data href="/app/official/clubapproval" class={$page.url.pathname.includes('/official/clubapproval') ? "text-primary" : ""}>Club Approval <BadgeNotification total={data.totalPendingClub} /></a></li>
+      <Navitem href="/app/official/clubapproval">
+        Club Approval <span class="badge variant-filled mx-4">{data.totalPendingClub}</span>
+      </Navitem>
       <!-- <li><a data-sveltekit-preload-data href="/app/official/rulesetting" class={$page.url.pathname.includes('/official/rulesetting') ? "text-primary" : ""}>Rule Setting</a></li> -->
       <!-- <li><a>Club Reported <span class="badge">0</span></a></li>
       <li><a>Club Management</a></li>

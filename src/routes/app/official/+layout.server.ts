@@ -1,17 +1,15 @@
-import { error } from "@sveltejs/kit";
-import type { LayoutServerLoadEvent } from "./$types";
+import { redirect } from "@sveltejs/kit";
 import { db } from "$lib/server/db";
 
-export async function load({ parent }: LayoutServerLoadEvent) {
+export async function load({url}) {
 
   const totalPendingClub = await db.club.count({
     where: {
       clubStatusId: 501
     }
   })
-
-  const {user} = await parent()
-  if (user && user.roleId < 102) error(403, 'Forbidden to access the resource')
+  console.log(url.pathname)
+  if (url.pathname == '/app/official') redirect(303,'/app/official/dashboard')
 
   return {
     totalPendingClub

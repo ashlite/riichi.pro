@@ -2,9 +2,10 @@
 import type { PageData } from "./$types";
 import type { iGlobalResponse } from "interface/utils";
 import { invalidateAll } from "$app/navigation";
-import Button from "atom/button.svelte";
-import { countryNameFromCode } from "service/country";
+// import Button from "atom/button.svelte";
+import { countryNameFromCode } from "client-service/country";
 import toastAlert from "store/toast";
+import Icon from "@iconify/svelte";
 
 export let data: PageData
 
@@ -53,8 +54,10 @@ async function approveClub(uuid: string) {
             <div>{club.memberList[0].userId}</div>
           </td>
           <td>
-            <Button text="Approve" color="success bg-success text-success-content hover:bg-success" icon="ph:check" on:click={() => approveClub(club.id)} />
-            <Button text="Reject" color="error" icon="ph:x" on:click={() => toastAlert.warning('Work In Progress')}/>
+            <button class="btn variant-filled-success" on:click={() => approveClub(club.id)}>
+              <span><Icon icon="mingcute:check-line" /></span>
+              Approve
+            </button>
           </td>
         </tr>
       {/each}

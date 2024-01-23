@@ -75,7 +75,7 @@
                   MyClub
                 </a>
                 {#if $user.roleId >= 102}
-                  <a href="/app/official" class="btn w-40 variant-filled-primary">
+                  <a href="/app/official/dashboard" class="btn w-40 variant-filled-primary">
                     <span class="mr-2 h3"><Icon icon="mingcute:certificate-line" /></span>
                     Official
                   </a>
