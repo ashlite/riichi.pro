@@ -8,7 +8,6 @@ export async function load({url}) {
       clubStatusId: 501
     }
   })
-  console.log(url.pathname)
   if (url.pathname == '/app/official') redirect(303,'/app/official/dashboard')
 
   return {
