@@ -1,34 +1,50 @@
 <script lang="ts">
-  import type { PageData } from "./$types";
-  import Image from "atom/image.svelte";
+  //Icon
   import Icon from "@iconify/svelte";
-	import { countryNameFromCode } from "service/country";
-  import { dateFormater } from "service/tools";
-  import {env} from '$env/dynamic/public'
-  import Button from "atom/button.svelte";
-	import type { iMemberAction } from "interface/club";
-	import type { iGlobalResponse } from "interface/utils";
-	import toastAlert from "store/toast";
-	import globalModal from "store/modal";
+	//mylib
+  import { countryNameFromCode } from "client-service/country";
+  import { dateFormater } from "client-service/tools";
+  import type { iMemberAction } from "interface/club";
+  import Image from 'ui/image.svelte'
+  //skeleton
+  import { getToastStore, getModalStore } from '@skeletonlabs/skeleton'
 
-  export let data: PageData
+  //svelte
+  import {env} from '$env/dynamic/public'
+
+  export let data
   const clubData = data.userMemberData.clubData
   const baseEmblemUrl = env.PUBLIC_TEBI_CLUB_EMBLEM
   const baseCoverUrl = env.PUBLIC_TEBI_CLUB_COVER
+  const toast = getToastStore()
+  const modal = getModalStore()
 
   async function applyMain() {
-    toastAlert.warning('Applying to become main member')
+    toast.trigger({
+      message: 'Applying to become main member',
+      background: 'variant-filled-warning'
+    })
     const payload: iMemberAction = {action: 'applyMain', targetId: data.userMemberData.id}
     const response = await fetch(`/api/v1/club/${data.userMemberData.clubData.slug}/actionmember`, {
       method: 'POST',
       body: JSON.stringify(payload)
     })
-    const result = await response.json() as iGlobalResponse
-    if (result.header.ok) {
-      toastAlert.success('Success applying member')
+    const result = await response.json()
+    if (result.ok) {
+      toast.trigger({
+        message: 'Success applying to become member',
+        background: 'variant-filled-success'
+      })
     } else {
-      toastAlert.responseError(result)
+      toast.trigger({
+        message: 'Failed to apply member',
+        background: 'variant-filled-error'
+      })
     }
+  }
+
+  async function exitClub() {
+    
   }
 </script>
 
@@ -45,7 +61,7 @@
   <p class="text-justify whitespace-pre-wrap px-12">{clubData.description}</p>
 {/if}
 <div class="mt-8 flex flex-row gap-4 mb-8">
-  <div class="card w-1/3 bg-primary text-primary-content shadow-xl">
+  <div class="card p-4 w-1/3 variant-filled shadow-xl">
     <div class="card-body">
       <h2 class="text-center font-bold text-2xl">Profile</h2>
       <div class="grid grid-cols-2 gap-4 gap-y-1">
@@ -62,7 +78,7 @@
       </div>
     </div>
   </div>
-  <div class="card w-1/3 bg-secondary text-secondary-content shadow-xl">
+  <div class="card p-4 w-1/3 variant-filled shadow-xl">
     <div class="card-body">
       <h2 class="text-center font-bold text-2xl">Meta Data</h2>
       <div class="grid grid-cols-2 gap-4 gap-y-1">
@@ -77,43 +93,43 @@
       </div>
     </div>
   </div>
-  <div class="card w-1/3 bg-base-200 shadow-xl">
+  <div class="card p-4 w-1/3 variant-filled shadow-xl">
     <div class="card-body">
       <h2 class="text-center font-bold text-2xl">Settings</h2>
       <div class="flex flex-col items-center gap-4 gap-y-1">
         <h2 class="font-bold flex flex-row items-center gap-2">
           Accept Autotable
           {#if clubData.clubSetting?.acceptAutotable}
-            <span class="text-success text-2xl">
-              <Icon icon="ph:check-square-fill" />
+            <span class="h3 text-success-500">
+              <Icon icon="mingcute:checkbox-fill" />
             </span>
           {:else}
-            <span class="text-error text-2xl">
-              <Icon icon="ph:x-square-fill" />
+            <span class="h3 text-error-500">
+              <Icon icon="mingcute:square-line" />
             </span>
           {/if}
         </h2>
         <h2 class="font-bold flex flex-row items-center gap-2">
           Auto Approve
           {#if clubData.clubSetting?.autoApproveMember}
-            <span class="text-success text-2xl">
-              <Icon icon="ph:check-square-fill" />
+            <span class="h3 text-success-500">
+              <Icon icon="mingcute:checkbox-fill" />
             </span>
           {:else}
-            <span class="text-error text-2xl">
-              <Icon icon="ph:x-square-fill" />
+            <span class="h3 text-error-500">
+              <Icon icon="mingcute:square-line" />
             </span>
           {/if}
         </h2>
         <h2 class="font-bold flex flex-row items-center gap-2">
           Hide Contact
           {#if clubData.clubSetting?.hideContact}
-            <span class="text-success text-2xl">
-              <Icon icon="ph:check-square-fill" />
+            <span class="h3 text-success-500">
+              <Icon icon="mingcute:checkbox-fill" />
             </span>
           {:else}
-            <span class="text-error text-2xl">
-              <Icon icon="ph:x-square-fill" />
+            <span class="h3 text-error-500">
+              <Icon icon="mingcute:square-line" />
             </span>
           {/if}
         </h2>
@@ -136,12 +152,23 @@
     </div>
   </div>
 </div>
-<div class="divider">ACTION</div>
+<div class="h2 w-full text-left border-b-2 border-primary-500">ACTION</div>
 <div class="flex flex-row mb-8 gap-4">
   {#if data.userMemberData.roleId != 301}
-    <Button text="Quit Club" color="info" on:click={() => globalModal.quitClub(data.userMemberData.clubData.name, data.userMemberData.id, data.userMemberData.clubData.slug)} />
+    <button class="btn variant-filled-error" on:click={() => modal.trigger({
+      type: 'confirm',
+      title: 'Confirmation',
+      body: `Are you sure you want to quit from club ${clubData.name}?`,
+      response: (res) => {
+        if (res) exitClub()
+      },
+    })}>
+      Quit Club
+    </button>
   {/if}
   {#if data.userMemberData.roleId == 304}
-    <Button text="Apply Main Member" color="info" on:click={applyMain} />
+    <button class="btn variant-filled-primary" on:click={applyMain}>
+      Apply Main Member
+    </button>
   {/if}
 </div>

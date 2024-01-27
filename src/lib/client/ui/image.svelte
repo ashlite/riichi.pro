@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { validUrl } from "$lib/service/tools"
-
   export let src: string | undefined
   export let alt: string | undefined = 'Image/Gambar'
   export let maxH: number | 'full' = 60

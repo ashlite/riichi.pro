@@ -9,7 +9,7 @@
   import { injectSpeedInsights } from "@vercel/speed-insights/sveltekit"
   import { inject } from '@vercel/analytics';
   //skeleton
-  import { AppShell, storePopup, Emerald, initializeStores, Toast } from '@skeletonlabs/skeleton'
+  import { AppShell, storePopup, Emerald, initializeStores, Toast, Modal } from '@skeletonlabs/skeleton'
   import { computePosition, autoUpdate, offset, shift, flip, arrow } from '@floating-ui/dom';
   //mylib
   import { setLoginUser, getLoginUser } from "store/user";
@@ -52,6 +52,7 @@
 <TopNavbar loginState={data.loginState} user={data.user}/> -->
 <Toast />
 <Drawer />
+<Modal />
 <Emerald />
 
 <AppShell>
