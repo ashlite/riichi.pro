@@ -1,5 +1,5 @@
 import { type PaginationSettings } from '@skeletonlabs/skeleton';
-import { db } from '$lib/server/db.js';
+import { db } from 'server-service/db.js';
 import { redirect } from '@sveltejs/kit';
 import type { Prisma } from '@prisma/client';
 

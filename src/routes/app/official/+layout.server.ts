@@ -1,5 +1,5 @@
 import { redirect } from "@sveltejs/kit";
-import { db } from "$lib/server/db";
+import { db } from "server-service/db";
 
 export async function load({url}) {
 

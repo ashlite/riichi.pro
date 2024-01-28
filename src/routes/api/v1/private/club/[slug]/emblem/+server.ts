@@ -1,8 +1,8 @@
 import type { iGlobalResponse } from "interface/utils.js";
 import { Prisma } from "@prisma/client";
 import { json } from "@sveltejs/kit";
-import { db } from "$lib/server/db.js";
-import { uploadImage, deleteImage } from "service/s3.js";
+import { db } from "server-service/db.js";
+import { uploadImage, deleteImage } from "server-service/s3.js";
 import { env } from '$env/dynamic/public'
 import sharp from 'sharp'
 

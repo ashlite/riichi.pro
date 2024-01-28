@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit';
 import type { iUpdateProfile } from 'interface/user'
-import { db } from '$lib/server/db';
+import { db } from 'server-service/db';
 import { Prisma } from "@prisma/client";
 
 export async function PATCH({request, locals}) {

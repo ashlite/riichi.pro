@@ -1,4 +1,4 @@
-import { db } from '$lib/server/db.js';
+import { db } from 'server-service/db.js';
 import { type PaginationSettings } from '@skeletonlabs/skeleton';
 
 export async function load({ url }) {

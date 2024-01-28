@@ -1,5 +1,5 @@
-import { firebaseValidation } from '$lib/server/firebaseAdmin.js';
-import { db } from '$lib/server/db.js';
+import { firebaseValidation } from 'server-service/firebaseAdmin.js';
+import { db } from 'server-service/db.js';
 
 export async function load({params, url}) {
   const slug = params.slug

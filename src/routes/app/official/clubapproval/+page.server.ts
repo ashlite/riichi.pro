@@ -1,4 +1,4 @@
-import { db } from '$lib/server/db.js'
+import { db } from 'server-service/db.js'
 
 export async function load() {
   const listApproval = await db.club.findMany({

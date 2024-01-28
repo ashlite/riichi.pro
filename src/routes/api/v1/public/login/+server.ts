@@ -1,8 +1,8 @@
 import { json } from '@sveltejs/kit';
-import { firebaseAuth } from '$lib/server/firebaseAdmin';
+import { firebaseAuth } from 'server-service/firebaseAdmin';
 import { env } from '$env/dynamic/private';
 import type { iGlobalResponse } from 'interface/utils.js';
-import { db } from '$lib/server/db.js';
+import { db } from 'server-service/db.js';
 
 export async function POST({request, cookies}) {
   const response = {header:{}, data:{}} as iGlobalResponse

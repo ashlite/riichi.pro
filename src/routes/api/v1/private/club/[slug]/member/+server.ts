@@ -1,7 +1,7 @@
 import type { iGlobalResponse } from "interface/utils.js";
 import { Prisma } from "@prisma/client";
 import { json } from "@sveltejs/kit";
-import { db } from "$lib/server/db.js";
+import { db } from "server-service/db.js";
 import { error } from "@sveltejs/kit";
 
 export async function GET({locals, params, url}) {
