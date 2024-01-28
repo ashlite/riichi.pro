@@ -87,7 +87,6 @@ export async function download(path: string, token: string | null = null): Promi
   }
   opts.headers = optsHeaders
   const res = await fetch(`${PUBLIC_BACKEND_URL}${path}`, opts)
-  console.log(res)
   if (res.ok) {
     const blobFileData = await res.blob()
     return {

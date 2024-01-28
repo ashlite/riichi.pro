@@ -1,14 +1,15 @@
 <script lang="ts">
-  import type { PageData } from "./$types";
+  //mylib
   import type { iMemberAction } from "interface/club";
   import type { iGlobalResponse } from "interface/utils";
-  import Avatar from "atom/avatar.svelte";
-  import { dateFormater } from "service/tools";
-  import Button from "atom/button.svelte";
-  import toastAlert from "store/toast";
+  import { dateFormater } from "client-service/tools.js";
+  //skeleton
+  import { Avatar, getToastStore } from '@skeletonlabs/skeleton'
+  //svelte  
   import { invalidateAll } from "$app/navigation";
 
-  export let data: PageData
+  export let data
+  const toast = getToastStore()
 
   async function applyAction(id: number, action: 'approvePending' | 'rejectPending' | 'approveMain' | 'rejectMain') {
     const payload: iMemberAction = {
@@ -19,17 +20,23 @@
       method: 'POST',
       body: JSON.stringify(payload)
     })
-    const result: iGlobalResponse = await response.json()
-    if (result.header.ok) {
-      toastAlert.success('Success applying action')
+    const result = await response.json()
+    if (response.ok) {
+      toast.trigger({
+        message:'Success applying action',
+        background: 'variant-filled-success'
+      })
       invalidateAll()
     } else {
-      toastAlert.responseError(result)
+      toast.trigger({
+        message:'Failed applying action',
+        background: 'variant-filled-error'
+      })
     }
   }
 </script>
 
-<div class="overflow-x-auto mb-8">
+<div class="table-container mb-8">
   <table class="table">
     <thead>
       <tr>
@@ -44,28 +51,36 @@
         <tr>
           <td>
             <div class="flex flex-row gap-4">
-              <Avatar user={member.userData} />
+              <Avatar src={member.userData.avatarUrl ?? ''} initials={member.userData.fullName} />
               <div class="flex flex-col">
-                <div class="font-bold text-primary text-xl">{member.userData.fullName}</div>
-                <div class="text-secondary">{member.userData.rtData.name} - {member.userData.currentRP}</div>
+                <h3 class="h3 font-bold text-primary-600-300-token">{member.userData.fullName}</h3>
+                <div class="">{member.userData.rtData.name} - {member.userData.currentRP}</div>
               </div>
             </div>
           </td>
           <td>{dateFormater(member.createdAt, 'date')}</td>
           <td class="font-bold">
             {#if member.roleId == 306}
-              <span class="text-accent">Applying BASIC member</span>
+              <span class="">Applying BASIC member</span>
             {:else if member.roleId == 305}
-              <span class="text-warning">Applying MAIN member</span>
+              <span class="">Applying MAIN member</span>
             {/if}
           </td>
           <td>
             {#if member.roleId == 306}
-              <Button text="Approve" color="success btn-success" on:click={() => applyAction(member.id, 'approvePending')} />
-              <Button text="Reject" color="error" on:click={() => applyAction(member.id, "approvePending")} />
+              <button class="btn variant-filled-success" on:click={() => applyAction(member.id, 'approvePending')} >
+                Approve
+              </button>
+              <button class="btn variant-filled-error" on:click={() => applyAction(member.id, "approvePending")} >
+                Reject
+              </button>
             {:else if member.roleId == 305}
-              <Button text="Approve" color="success btn-success" on:click={() => applyAction(member.id, 'approveMain')} />
-              <Button text="Reject" color="error" on:click={() => applyAction(member.id, 'rejectMain')} />
+              <button class="btn variant-filled-success" on:click={() => applyAction(member.id, 'approveMain')} >
+                Approve
+              </button>
+              <button class="btn variant-filled-error" on:click={() => applyAction(member.id, 'rejectMain')} >
+                Reject
+              </button>
             {/if}
           </td>
         </tr>

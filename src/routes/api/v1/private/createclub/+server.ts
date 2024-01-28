@@ -2,8 +2,8 @@ import type { iRegisterClub } from "interface/club";
 import type { iGlobalResponse } from "interface/utils.js";
 import { Prisma } from "@prisma/client";
 import { error, json } from "@sveltejs/kit";
-import { db } from "$lib/server/db.js";
-import { countryPhoneFromCode } from "service/country.js";
+import { db } from "server-service/db.js";
+import { countryPhoneFromCode } from "client-service/country.js";
 
 export async function POST({request, locals}) {
   const response = {header:{}, data:{}} as iGlobalResponse

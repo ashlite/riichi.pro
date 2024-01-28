@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { db } from '$lib/server/db.js';
+import { db } from 'server-service/db.js';
 
 export async function load({params, parent}) {
   const { slug } = params

@@ -1,40 +1,73 @@
 <script lang="ts">
+  //svelte
   import "../app.css"
-  import { onMount } from 'svelte';
-  import TopNavbar from 'organism/topNavbar.svelte'
-  import { themeChange } from 'theme-change'
-  import ToastAlert from 'molecule/toastAlert.svelte'
-  import Modal from 'organism/modal.svelte'
-  import Footer from "organism/footer.svelte"
-  import type { LayoutData } from "./$types";
-  import { injectSpeedInsights } from "@vercel/speed-insights/sveltekit"
   import { dev } from '$app/environment';
+  import type { AfterNavigate } from '@sveltejs/kit';
+  import { afterNavigate } from '$app/navigation';
+	import { onMount } from "svelte";
+  //vercel
+  import { injectSpeedInsights } from "@vercel/speed-insights/sveltekit"
   import { inject } from '@vercel/analytics';
-  import { setLoginUser } from "store/user";
- 
+  //skeleton
+  import { AppShell, storePopup, Emerald, initializeStores, Toast, Modal } from '@skeletonlabs/skeleton'
+  import { computePosition, autoUpdate, offset, shift, flip, arrow } from '@floating-ui/dom';
+  //mylib
+  import { setLoginUser, getLoginUser } from "store/user";
+  import TopNav from 'ui/navigation/top.svelte'
+  import Footer from 'ui/navigation/footer.svelte'
+  import Drawer from 'ui/drawer/drawer.svelte'
+  
+  export let data
+  setLoginUser()
+
+  $: if (data.loginState && data.user) {
+    const user = getLoginUser()
+    user.set(data.user)
+  }
+
+
+  initializeStores()
+  storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
   inject({ mode: dev ? 'development' : 'production' });
   injectSpeedInsights();
 
-  export let data: LayoutData
-  if (data.loginState && data.user) {
-    setLoginUser(data.user)
-  }
-
-  onMount(() => {
-    themeChange(false)
+  afterNavigate((params: AfterNavigate) => {
+    if(params.from && params.to) {
+      const isNewPage = params.from.url.pathname !== params.to.url.pathname
+      const elemPage = document.querySelector('#page')
+      if (isNewPage && elemPage !== null) {
+        elemPage.scrollTop = 0
+      }
+    }
   })
+
 </script>
 
 <svelte:head>
   <title>Janshi Pro</title>
 </svelte:head>
 
-<ToastAlert />
+<!-- <ToastAlert />
 <Modal />
-<TopNavbar loginState={data.loginState} user={data.user}/>
+<TopNavbar loginState={data.loginState} user={data.user}/> -->
+<Toast />
+<Drawer />
+<Modal />
+<Emerald />
 
-<div class="p-0 m-0 min-h-screen">
-  <slot />
-</div>
+<AppShell>
+	<svelte:fragment slot="header">
+    <TopNav loginState={data.loginState} />
+  </svelte:fragment>
+	<!-- <svelte:fragment slot="sidebarRight">
+    <div id="sidebar-right" class="sm:block lg:hidden">
+      Sidebar Right
+    </div>
+  </svelte:fragment> -->
+	<slot />
+	<svelte:fragment slot="pageFooter">
+    <Footer appVersion={data.appVersion} />
+  </svelte:fragment>
+</AppShell>
 
-<Footer appVersion={data.appVersion} />
+<!-- <Footer appVersion={data.appVersion} /> -->

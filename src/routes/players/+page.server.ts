@@ -1,10 +1,10 @@
-import { db } from '$lib/server/db.js';
-import type { iPagination } from 'interface/pageMeta.js';
+import { db } from 'server-service/db.js';
+import { type PaginationSettings } from '@skeletonlabs/skeleton';
 
 export async function load({ url }) {
   // const rtQuery = url.searchParams.get('')
   const currentPage = Number(url.searchParams.get('page') ?? 1)
-  const takeRow = Number(url.searchParams.get('take') ?? 10)
+  const takeRow = Number(url.searchParams.get('limit') ?? 10)
   const filterRT = url.searchParams.get('rt') ?? 'mix'
   
   const players = await db.user.findMany({
@@ -47,15 +47,15 @@ export async function load({ url }) {
     },
   })
 
-  const pageMeta: iPagination = {
-    currentPage: currentPage,
-    rowPerPage: takeRow,
-    totalRow: totalPlayer,
-    totalPage: Math.ceil(totalPlayer/takeRow),
+  const paginationData: PaginationSettings = {
+    page: currentPage,
+    limit: takeRow,
+    size: totalPlayer,
+    amounts: [10, 20, 30, 50]
   }
 
 	return {
-		players: players,
-    meta: pageMeta
+		players,
+    paginationData
 	}
 }

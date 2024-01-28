@@ -1,7 +1,7 @@
 import { redirect } from "@sveltejs/kit";
 import { error } from "@sveltejs/kit";
 import type { LayoutServerLoadEvent } from "./$types";
-import { db } from "$lib/server/db";
+import { db } from "server-service/db";
 
 export async function load({ locals, params }: LayoutServerLoadEvent) {
   try {

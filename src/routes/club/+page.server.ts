@@ -1,12 +1,12 @@
-import { db } from '$lib/server/db.js';
+import { type PaginationSettings } from '@skeletonlabs/skeleton';
+import { db } from 'server-service/db.js';
 import { redirect } from '@sveltejs/kit';
-import type { iPagination } from 'interface/pageMeta.js';
 import type { Prisma } from '@prisma/client';
 
 export async function load({ url, locals }) {
   // const rtQuery = url.searchParams.get('')
   const currentPage = Number(url.searchParams.get('page') ?? 1)
-  const takeRow = Number(url.searchParams.get('take') ?? 10)
+  const takeRow = Number(url.searchParams.get('limit') ?? 10)
   const country = url.searchParams.get('country') ?? 'global'
   let whereInput: Prisma.ClubWhereInput
 
@@ -49,16 +49,16 @@ export async function load({ url, locals }) {
     })
   ])
 
-  const pageMeta: iPagination = {
-    currentPage: currentPage,
-    rowPerPage: takeRow,
-    totalRow: totalClub,
-    totalPage: Math.ceil(totalClub/takeRow),
+  const paginationData: PaginationSettings = {
+    page: currentPage,
+    limit: takeRow,
+    size: totalClub,
+    amounts: [10, 20, 30, 50]
   }
 
 	return {
 		listClub,
-    meta: pageMeta,
+    paginationData,
     listClubUser
 	}
 }

@@ -21,22 +21,26 @@ export function marginCalc(buy: number | undefined = 0, sell: number | undefined
   else return Math.round(((sell - buy) / sell) * 100)
 }
 
-export function dateFormater(date: Date | string, settings: 'date' | 'time' | 'datetime' | 'monthly' | 'month' | 'isoDateTime'): string {
-  const formatedDate = new Date(date)
-
-  switch (settings) {
-    case 'date':
-      return new Intl.DateTimeFormat('id-ID', {dateStyle:'medium'}).format(formatedDate)
-    case 'time':
-      return new Intl.DateTimeFormat('id-ID', {timeStyle:'short'}).format(formatedDate)
-    case 'datetime':
-      return new Intl.DateTimeFormat('id-ID', {dateStyle:'medium', timeStyle:'short'}).format(formatedDate)
-    case 'monthly':
-      return new Intl.DateTimeFormat('id-ID',{month: 'long', year:'numeric'}).format(formatedDate)
-    case 'month':
-      return new Intl.DateTimeFormat('id-ID',{month: 'long'}).format(formatedDate)
-    case 'isoDateTime':
-      return formatedDate.toLocaleString('sv').replace(' ','T')
+export function dateFormater(date: Date | string | undefined | null, settings: 'date' | 'time' | 'datetime' | 'monthly' | 'month' | 'isoDateTime'): string {
+  if (date == undefined) {
+    return '--'
+  } else {
+    const formatedDate = new Date(date)
+  
+    switch (settings) {
+      case 'date':
+        return new Intl.DateTimeFormat('id-ID', {dateStyle:'medium'}).format(formatedDate)
+      case 'time':
+        return new Intl.DateTimeFormat('id-ID', {timeStyle:'short'}).format(formatedDate)
+      case 'datetime':
+        return new Intl.DateTimeFormat('id-ID', {dateStyle:'medium', timeStyle:'short'}).format(formatedDate)
+      case 'monthly':
+        return new Intl.DateTimeFormat('id-ID',{month: 'long', year:'numeric'}).format(formatedDate)
+      case 'month':
+        return new Intl.DateTimeFormat('id-ID',{month: 'long'}).format(formatedDate)
+      case 'isoDateTime':
+        return formatedDate.toLocaleString('sv').replace(' ','T')
+    }
   }
 }
 

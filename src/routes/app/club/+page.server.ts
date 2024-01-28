@@ -1,4 +1,4 @@
-import { db } from '$lib/server/db.js';
+import { db } from 'server-service/db.js';
 
 export async function load({locals}) {
   const listClub = await db.clubMember.findMany({

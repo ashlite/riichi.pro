@@ -22,6 +22,18 @@ export type iMemberPicker = Prisma.ClubMemberGetPayload<{
   }
 }>
 
+export type iListClub = Prisma.ClubGetPayload<{
+  select: {
+    id: true,
+    name: true,
+    emblemFile: true,
+    totalMember: true,
+    totalMainMember: true,
+    countryISO2: true,
+    slug: true
+  }
+}>
+
 export interface iMemberAction {
   action: 'rejectPending' | 'approvePending' | 'quit' | 'kick' | 'applyMain' | 'approveMain' | 'rejectMain' | 'becomeAdmin' | 'kickAdmin' | 'transferOwnership'
   targetId: number

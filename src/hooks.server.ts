@@ -1,4 +1,4 @@
-import { getUser } from '$lib/server/userhook'
+import { getUser } from 'server-service/userhook'
 import { redirect } from '@sveltejs/kit'
 import { error } from '@sveltejs/kit'
 

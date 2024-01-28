@@ -1,12 +1,8 @@
 <script lang="ts">
-  import type { PageData } from "./$types";
-  import Select from "molecule/select.svelte";
-  import SelectItem from "atom/selectItem.svelte";
-  import PaginationNav from "organism/paginationNav.svelte";
   import { page } from "$app/stores";
 	import { goto } from "$app/navigation";
 
-  export let data: PageData
+  export let data
   const curentUrl = new URL($page.url)
   const today = new Date()  
 
@@ -30,4 +26,4 @@
   </table>
 </div> -->
 
-<h1>WORK IN PROGRESS</h1>
+<h1 class="h1">WORK IN PROGRESS</h1>
