@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { PageData } from "./$types";
-  import Select from "molecule/select.svelte";
-  import SelectItem from "atom/selectItem.svelte";
-  import PaginationNav from "organism/paginationNav.svelte";
+  // import Select from "molecule/select.svelte";
+  // import SelectItem from "atom/selectItem.svelte";
+  // import PaginationNav from "organism/paginationNav.svelte";
   import { page } from "$app/stores";
 	import { goto } from "$app/navigation";
 
@@ -26,28 +26,32 @@
 </script>
 
 <div class="w-full flex flex-row gap-4 mb-4">
-  <Select labelTL="Select Month" bind:value={selectedMonth} on:change={updateDate}>
-    <SelectItem text="January" value=0 />
-    <SelectItem text="February" value=1 />
-    <SelectItem text="March" value=2 />
-    <SelectItem text="April" value=3 />
-    <SelectItem text="May" value=4 />
-    <SelectItem text="June" value=5 />
-    <SelectItem text="July" value=6 />
-    <SelectItem text="August" value=7 />
-    <SelectItem text="September" value=8 />
-    <SelectItem text="October" value=9 />
-    <SelectItem text="November" value=10 />
-    <SelectItem text="December" value=11 />
-  </Select>
+  <label class="label">
+    <span>Select Month</span>
+    <select class="select" bind:value={selectedMonth} on:change={updateDate}>
+      <option value=0>January</option>
+      <option value=1>February</option>
+      <option value=2>March</option>
+      <option value=3>April</option>
+      <option value=4>May</option>
+      <option value=5>June</option>
+      <option value=6>July</option>
+      <option value=7>August</option>
+      <option value=8>September</option>
+      <option value=9>October</option>
+      <option value=10>November</option>
+      <option value=11>December</option>
+    </select>
+  </label>
 
-  <Select labelTL="Select Year" bind:value={selectedYear} on:change={updateDate}>
-    {#each yearRange as year}
-      <SelectItem text={year} value={year} />      
-    {/each}
-  </Select>
-
-  <!-- <PaginationNav /> -->
+  <label class="label">
+    <span>Select Year</span>
+    <select class="select" bind:value={selectedYear} on:change={updateDate}>
+      {#each yearRange as year}
+        <option value={year}>{year}</option>      
+      {/each}
+    </select>
+  </label>
 </div>
 <div class="overflow-x-auto">
   <table class="table">

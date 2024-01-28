@@ -12,6 +12,7 @@ export interface iParticipant {
   ron?: number
   tsumo?: number
   dealIn?: number
+  avatarUrl: string | null
 }
 
 export interface iMatchInput {

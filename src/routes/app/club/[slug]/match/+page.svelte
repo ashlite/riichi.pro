@@ -1,20 +1,21 @@
 <script lang="ts">
-  import type { PageData } from "./$types";
-  import TextArea from "molecule/textArea.svelte";
-  import DatePicker from "organism/datePicker.svelte";
-  import ClubMemberPicker from "organism/clubMemberPicker.svelte"
+  //skeleton
+  import {getToastStore} from '@skeletonlabs/skeleton'
+  //mylib
+  import ClubMemberPicker from "ui/clubMemberPicker.svelte"
   import type { iMatchInput } from "interface/match";
   import type { iMemberPicker } from "interface/club";
   import type { iGlobalResponse } from "interface/utils";
-	import toastAlert from "store/toast";
-  import ParticipantCard from "organism/participantCard.svelte";
-	import NumberInput from "molecule/numberInput.svelte";
-  import { priceFormater } from "service/tools";
-  import Button from "atom/button.svelte";
-  import Select from "molecule/select.svelte";
-  import SelectItem from 'atom/selectItem.svelte';
+  import DatePicker from 'ui/datePicker.svelte'
+  import { priceFormater } from "client-service/tools.js";
+	import ParticipantCard from "ui/participantCard.svelte";
+	// import NumberInput from "molecule/numberInput.svelte";
+  // import Button from "atom/button.svelte";
+  // import Select from "molecule/select.svelte";
+  // import SelectItem from 'atom/selectItem.svelte';
   
-  export let data: PageData
+  export let data
+  const toast = getToastStore()
   const matchData = { matchAt: new Date, deposit: 0, type: 1, matchRuleId: 0,  playerUniqueCode: '', note: undefined, participantList:[], participantIdList:[] } as iMatchInput
   let scoreList: number[] = []
   let totalNovice = 0
@@ -36,7 +37,8 @@
         playerRtGroup: member.userData.rtData.groupRefId,
         score: data.listMatchType[selectedRule].totalScore/4,
         clubMemberId: member.id,
-        yakuman: 0
+        yakuman: 0,
+        avatarUrl: member.userData.avatarUrl
       }]
       matchData.participantIdList = [...matchData.participantIdList, member.id]
       if (member.userData.rtData.groupRefId == 201) totalNovice++
@@ -44,12 +46,18 @@
       else totalPro++
       scoreList = [...scoreList, 30000]
     } else {
-      toastAlert.error('Player already inputed')
+      toast.trigger({
+        message: 'Player already inputed',
+        background: 'variant-filled-error'
+      })
     }
   }
 
   function removePlayer(index: number) {
-    toastAlert.warning(`Player ${matchData.participantList[index].fullName} removed from this match`)
+    toast.trigger({
+      message: `Player ${matchData.participantList[index].fullName} removed from this match`,
+      background: 'variant-filled-warning'
+    })
     
     if (matchData.participantList[index].playerRtGroup == 201) totalNovice--
     else if (matchData.participantList[index].playerRtGroup == 202) totalAmateur--
@@ -68,8 +76,7 @@
       method: 'POST',
       body: JSON.stringify(matchData)
     })
-    const result: iGlobalResponse = await response.json()
-    if (result.header.ok) {
+    if (response.ok) {
       totalNovice = 0
       totalAmateur = 0
       totalPro = 0
@@ -80,9 +87,15 @@
       matchData.note = undefined
       matchData.participantList = []
       matchData.participantIdList = []
-      toastAlert.success('Match Recorded')
+      toast.trigger({
+        message: 'Match recorded',
+        background: 'variant-filled-success'
+      })
     } else {
-      toastAlert.responseError(result)
+      toast.trigger({
+        message: response.statusText,
+        background: 'variant-filled-error'
+      })
     }
     processing = false
   }
@@ -90,57 +103,55 @@
 </script>
 
 <div>
-  <h1 class="text-4xl font-bold text-primary">Record a Match</h1>
-  <div class="divider"></div>
+  <h1 class="h1 font-bold text-primary-500">Record a Match</h1>
   <p class="mb-4 text-secondary">Record a match for this club. Recorded match will have effect to player overall ranks and record, while it will be recorded to club standings. Please start by selecting participant player in the match. It is recomended to start inputing player in seat sequence <span class="font-bold">(EAST - SOUTH - WEST - NORTH)</span></p>
-  {#if matchData.participantIdList.length < 4}
-    <div class="w-3/5 mx-auto">
-      <ClubMemberPicker clubSlug={data.userMemberData.clubData.slug} on:memberSelected={addPlayer} />
-    </div>
-  {/if}
-  <div class="divider mt-8">Match Data</div>
-  <div class="grid grid-cols-12 gap-4 items-center">
-    <div class="col-span-3 form-control w-full z-10 ">
-      <label class="label">
-        <span class="label-text">Match Date?</span>
-      </label>
+  <h1 class="h1 font-bold text-primary-500 mt-8">Match Data</h1>
+  <div class="grid grid-cols-3 gap-4 items-center">
+    <label for="matchdate" class="label flex flex-col">
+      <span>Match Date?</span>
       <DatePicker bind:selectedDate={matchData.matchAt} maxDay={0} />
+    </label>
+    <label class="">
+      <span>DEPOSIT</span>
+      <input step="100" class="input p-3 variant-filled" type="number" />
+    </label>
+    <div class="font-bold flex flex-col">
+      Total Score: 
+      <span class={`h2 ${totalScore == 120000 ? 'text-success-500' : 'text-error-500'}`}>{priceFormater(totalScore, 'none')}</span>
     </div>
-    <div class="col-span-9 row-span-2">
-      <TextArea labelTL="Notes" bind:value={matchData.note} />
-    </div>
-    <div class="col-span-3 form-control">
-      <Select bind:value={selectedRule} labelTL="Ruleset" >
+    <label for="notes" class="col-span-2 label">
+      <span>Notes</span>
+      <textarea class="textarea variant-filled p-2" rows="4" bind:value={matchData.note} />
+    </label>
+    <label class="label">
+      <span>Ruleset</span>
+      <select bind:value={selectedRule} size=3 class="select p-1" >
         {#each data.listMatchType as matchType, i}
-          <SelectItem value={i} text={matchType.name} />
+          <option value={i}>{matchType.name}</option>
         {/each}
-      </Select>
-    </div>
-    <div class="col-span-1 row-start-3 text-end">
-      DEPOSIT:
-    </div>
-    <div class="col-span-2 row-start-3">
-      <NumberInput bind:value={matchData.deposit} step={100} />
-    </div>
-    <div class="col-span-3 font-bold">
-      Total Score: <span class={`text-2xl ${totalScore == 120000 ? 'text-success' : 'text-error'}`}>{priceFormater(totalScore, 'none')}</span>
-    </div>
-    <div class="col-span-3">
+      </select>
+    </label>
+    <div class="col-start-2">
       Estimate Use of Credit: <span class="text-2xl">{totalCC}</span>
     </div>
-    <div class="col-span-3">
+    <div class="">
       {#if processing}
-        <Button color="warning" text="Processing" full />
+        <button class="btn w-full variant-ghost" disabled>Processing</button>
       {:else if matchData.participantIdList.length >= 4 && totalScore == data.listMatchType[selectedRule].totalScore}
-        <Button color="success" text="Submit Match" full on:click={submitMatch} />
+        <button class="btn w-full variant-filled-success" on:click={submitMatch}>Submit Match</button>
       {:else if matchData.participantIdList.length < 4}
-        <Button full color="base no-animation" text={`${matchData.participantIdList.length}/4 players`} />
+        <button class="btn w-full variant-filled-success" disabled>{`${matchData.participantIdList.length}/4 players`}</button>  
       {:else if totalScore != data.listMatchType[selectedRule].totalScore}
-        <Button full color="base no-animation" text={`total score must 120.000`} />
+        <button class="btn w-full variant-filled-success" disabled>total score must 120.000</button>
       {/if}
     </div>
   </div>
-  <div class="divider mt-8">Participant</div>
+  <h1 class="h1 font-bold text-primary-500 mt-8">Participant List</h1>
+  {#if matchData.participantIdList.length < 4}
+    <div class="w-4/5 mx-auto my-4">
+      <ClubMemberPicker clubSlug={data.userMemberData.clubData.slug} on:memberSelected={addPlayer} />
+    </div>
+  {/if}
   <div class="grid grid-cols-2 gap-4 mb-8">
     {#each matchData.participantList as participant, i}
       <ParticipantCard data={participant} index={i} on:scoreChange={(event) => scoreList[i] = Number(event.detail)} on:remove={() => removePlayer(i)}/>

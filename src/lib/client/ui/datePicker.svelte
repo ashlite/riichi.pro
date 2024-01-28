@@ -98,7 +98,7 @@
 <button class="btn variant-filled" type="button" use:popup={datePop}>{buttonText}</button>
 
 <div class="card p-4 variant-filled" data-popup="calendar">
-	<div class="arrow variant-filled-primary" />
+	<div class="arrow variant-filled" />
   <div class="flex flex-row justify-center items-center gap-4">
     {#if longYear}
       <button class="btn-icon btn-icon-sm variant-filled-primary" type="button" on:click={() => {
