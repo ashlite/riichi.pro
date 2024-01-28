@@ -1,6 +1,6 @@
 {
 	"name": "riichi.pro",
-	"version": "0.8.0",
+	"version": "0.8.1",
 	"private": true,
 	"prisma": {
 		"seed": "ts-node --esm prisma/seed.ts"
