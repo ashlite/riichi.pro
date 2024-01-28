@@ -37,8 +37,7 @@
         method:'POST',
         body: JSON.stringify(clubData)
       })
-      const result = await response.json()
-      if (result.ok) {
+      if (response.ok) {
         goto('/app/club')
         toast.trigger({
           message: 'Club creation is in request',

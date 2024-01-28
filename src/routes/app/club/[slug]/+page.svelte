@@ -29,8 +29,7 @@
       method: 'POST',
       body: JSON.stringify(payload)
     })
-    const result = await response.json()
-    if (result.ok) {
+    if (response.ok) {
       toast.trigger({
         message: 'Success applying to become member',
         background: 'variant-filled-success'

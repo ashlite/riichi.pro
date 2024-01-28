@@ -1,14 +1,14 @@
 <script lang="ts">
-  import type { PageData } from "./$types";
+  //mylib
   import type { iMemberAction } from "interface/club";
   import type { iGlobalResponse } from "interface/utils";
-  import Avatar from "atom/avatar.svelte";
-  import Button from "atom/button.svelte";
-	import globalModal from "store/modal";
-  import toastAlert from "store/toast";
+  //skeleton
+  import { Avatar, getToastStore, getModalStore } from '@skeletonlabs/skeleton'
   import { invalidateAll } from "$app/navigation";
 
-  export let data: PageData
+  export let data
+  const modal = getModalStore()
+  const toast = getToastStore()
 
   async function applyAction(id: number, action: 'transferOwnership' | 'becomeAdmin' | 'kickAdmin') {
     const payload: iMemberAction = {
@@ -19,12 +19,18 @@
       method: 'POST',
       body: JSON.stringify(payload)
     })
-    const result: iGlobalResponse = await response.json()
-    if (result.header.ok) {
-      toastAlert.success('Success applying action')
+    // const result = await response.json()
+    if (response.ok) {
+      toast.trigger({
+        message:'Success applying action',
+        background: 'variant-filled-success'
+      })
       invalidateAll()
     } else {
-      toastAlert.responseError(result)
+      toast.trigger({
+        message:'Failed applying action',
+        background: 'variant-filled-error'
+      })
     }
   }
 
@@ -45,20 +51,25 @@
       method: 'PATCH',
       body: JSON.stringify(payload)
     })
-    const result: iGlobalResponse = await response.json()
-    if (result.header.ok) {
-      toastAlert.success('Success saving access')
+    if (response.ok) {
+      toast.trigger({
+        message:'Success saving access',
+        background: 'variant-filled-success'
+      })
       invalidateAll()
     } else {
-      toastAlert.responseError(result)
+      toast.trigger({
+        message:'Error when updating access, please contact admin if the problem still persist.',
+        background: 'variant-filled-error'
+      })
     }
   }
 </script>
 
 <h1 class="text-4xl mb-4">Admin access setting</h1>
 
-<div class="overflow-x-auto mb-8">
-  <table class="table">
+<div class="table-container mb-8">
+  <table class="table table-compact">
     <thead>
       <tr>
         <th>User Data</th>
@@ -78,17 +89,17 @@
           <tr>
             <td>
               <div class="flex flex-row gap-4">
-                <Avatar user={member.userData} />
+                <Avatar src={member.userData.avatarUrl ?? ''} initials={member.userData.fullName} />
                 <div class="flex flex-col">
-                  <div class="font-bold text-primary text-xl text-ellipsis">{member.userData.fullName}</div>
+                  <div class="font-bold text-primary-600-300-token text-xl truncate">{member.userData.fullName}</div>
                   {#if member.roleData.id == 301}
-                    <span class="badge badge-primary">{member.roleData.name}</span>
+                    <span class="badge variant-filled-primary">{member.roleData.name}</span>
                   {:else if member.roleData.id == 302}
-                    <span class="badge badge-secondary">{member.roleData.name}</span>
+                    <span class="badge variant-filled-secondary">{member.roleData.name}</span>
                   {:else if member.roleData.id == 303}
-                    <span class="badge badge-warning">{member.roleData.name}</span>
+                    <span class="badge variant-filled-tertiary">{member.roleData.name}</span>
                   {:else}
-                    <span class="text-accent">{member.roleData.name}</span>
+                    <span class="badge variant-filled">{member.roleData.name}</span>
                   {/if}
                 </div>
               </div>
@@ -108,15 +119,15 @@
               <div class="flex flex-row gap-4">
                 <Avatar user={member.userData} />
                 <div class="flex flex-col">
-                  <div class="font-bold text-primary text-xl">{member.userData.fullName}</div>
+                  <div class="font-bold text-primary-600-300-token text-xl truncate">{member.userData.fullName}</div>
                   {#if member.roleData.id == 301}
-                    <span class="badge badge-primary">{member.roleData.name}</span>
+                    <span class="badge variant-filled-primary">{member.roleData.name}</span>
                   {:else if member.roleData.id == 302}
-                    <span class="badge badge-secondary">{member.roleData.name}</span>
+                    <span class="badge variant-filled-secondary">{member.roleData.name}</span>
                   {:else if member.roleData.id == 303}
-                    <span class="badge badge-warning">{member.roleData.name}</span>
+                    <span class="badge variant-filled-tertiary">{member.roleData.name}</span>
                   {:else}
-                    <span class="text-accent">{member.roleData.name}</span>
+                    <span class="badge variant-filled">{member.roleData.name}</span>
                   {/if}
                 </div>
               </div>
@@ -131,14 +142,22 @@
             <td class="text-center"><input type="checkbox" class="checkbox" bind:checked={member.canSubmitTournament} disabled={member.roleId == 303 ? true : false}/></td>
             <td class="text-center"><input type="checkbox" class="checkbox" bind:checked={member.canBuyCC} disabled={member.roleId == 303 ? true : false}/></td>
             <td class="flex flex-col gap-2">
-              <Button text="Save Access" color="success" full size="sm" on:click ={() => updateAccess(index)} />
+              <button class="btn variant-filled-success btn-sm" on:click={() => updateAccess(index)}>
+                Save Access
+              </button>
               {#if member.roleData.id == 302}
-                <Button text="Revoke Admin" size="sm" color="info" on:click={() => applyAction(member.id, 'kickAdmin')} />
+                <button class="btn btn-sm variant-filled" on:click={() => applyAction(member.id, 'kickAdmin')}>
+                  Revoke Admin
+                </button>
                 {#if data.userMemberData.roleId == 301}
-                  <Button text="Transfer Ownership" size="sm" color="info" on:click={() => applyAction(member.id, 'transferOwnership')} />
+                  <button class="btn btn-sm variant-filled" on:click={() => applyAction(member.id, 'transferOwnership')}>
+                    Transfer Ownership
+                  </button>
                 {/if}
               {:else if member.roleData.id == 303}
-                <Button text="Set as Admin" color="info" size="sm" on:click={() => applyAction(member.id, 'becomeAdmin')}  />
+                <button class="btn btn-sm variant-filled" on:click={() => applyAction(member.id, 'becomeAdmin')}>
+                  Set as Admin
+                </button>
               {/if}
             </td>
           </tr>
@@ -150,10 +169,12 @@
       <tr>
         <th>User Data</th>
         <th class="text-center">Approval</th>
-        <th class="text-center">Info</th>
-        <th class="text-center">Setting</th>
-        <th class="text-center">Match</th>
-        <th class="text-center">Access</th>
+        <th class="text-center">Update Info</th>
+        <th class="text-center">Update Setting</th>
+        <th class="text-center">Input Match</th>
+        <th class="text-center">Update Access</th>
+        <th class="text-center">Manage Tournament</th>
+        <th class="text-center">Manage CC</th>
         <th class="text-end">Action</th>
       </tr>
     </tfoot>
