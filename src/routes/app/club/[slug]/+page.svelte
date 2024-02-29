@@ -11,6 +11,7 @@
 
   //svelte
   import {env} from '$env/dynamic/public'
+	import { invalidateAll } from "$app/navigation";
 
   export let data
   const clubData = data.userMemberData.clubData
@@ -30,6 +31,7 @@
       body: JSON.stringify(payload)
     })
     if (response.ok) {
+      invalidateAll()
       toast.trigger({
         message: 'Success applying to become member',
         background: 'variant-filled-success'
@@ -54,6 +56,7 @@
         body: JSON.stringify(payload)
       })
       if (response.ok) {
+        invalidateAll()
         toast.trigger({
           message: `Quit from ${data.userMemberData.clubData.name}`,
           background: 'variant-filled-success'

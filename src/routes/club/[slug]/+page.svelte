@@ -10,6 +10,7 @@
   import { getToastStore, getModalStore } from '@skeletonlabs/skeleton'
   //svelte
   import {env} from '$env/dynamic/public'
+	import { invalidateAll } from "$app/navigation";
 
   export let data
   const clubData = data.clubData
@@ -30,6 +31,7 @@
         body: JSON.stringify(payload)
       })
       if (response.ok) {
+        invalidateAll()
         toast.trigger({
           message: 'Success applying to become member',
           background: 'variant-filled-success'
@@ -55,6 +57,7 @@
         body: JSON.stringify(payload)
       })
       if (response.ok) {
+        invalidateAll()
         toast.trigger({
           message: `Quit from ${data.clubData.name}`,
           background: 'variant-filled-success'
@@ -73,6 +76,7 @@
       method: 'POST'
     })
     if (response.ok) {
+      invalidateAll()
       toast.trigger({
         message: `You are now a member of ${data.clubData.name}`,
         background: 'variant-filled-success'
