@@ -43,7 +43,28 @@
   }
 
   async function exitClub() {
-    
+    if (data.userMemberData && data.userMemberData.roleId != 301) {
+      toast.trigger({
+        message: 'Quitting from club',
+        background: 'variant-filled-warning'
+      })
+      const payload: iMemberAction = {action: 'quit', targetId: data.userMemberData.id}
+      const response = await fetch(`/api/v1/club/${data.userMemberData.clubData.slug}/actionmember`, {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      })
+      if (response.ok) {
+        toast.trigger({
+          message: `Quit from ${data.userMemberData.clubData.name}`,
+          background: 'variant-filled-success'
+        })
+      } else {
+        toast.trigger({
+          message: 'Failed to quit club, please contact admin',
+          background: 'variant-filled-error'
+        })
+      }
+    }
   }
 </script>
 
@@ -151,7 +172,7 @@
     </div>
   </div>
 </div>
-<div class="h2 w-full text-left border-b-2 border-primary-500">ACTION</div>
+<div class="h2 w-full text-left border-b-2 border-primary-500 mb-2">ACTION</div>
 <div class="flex flex-row mb-8 gap-4">
   {#if data.userMemberData.roleId != 301}
     <button class="btn variant-filled-error" on:click={() => modal.trigger({
