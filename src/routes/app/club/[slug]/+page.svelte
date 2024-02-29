@@ -25,7 +25,7 @@
       background: 'variant-filled-warning'
     })
     const payload: iMemberAction = {action: 'applyMain', targetId: data.userMemberData.id}
-    const response = await fetch(`/api/v1/club/${data.userMemberData.clubData.slug}/actionmember`, {
+    const response = await fetch(`/api/v1/private/club/${data.userMemberData.clubData.slug}/actionmember`, {
       method: 'POST',
       body: JSON.stringify(payload)
     })
@@ -49,7 +49,7 @@
         background: 'variant-filled-warning'
       })
       const payload: iMemberAction = {action: 'quit', targetId: data.userMemberData.id}
-      const response = await fetch(`/api/v1/club/${data.userMemberData.clubData.slug}/actionmember`, {
+      const response = await fetch(`/api/v1/private/club/${data.userMemberData.clubData.slug}/actionmember`, {
         method: 'POST',
         body: JSON.stringify(payload)
       })

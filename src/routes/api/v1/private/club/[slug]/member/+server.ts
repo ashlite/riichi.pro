@@ -139,7 +139,6 @@ export async function POST({locals, params}) {
   const { slug } = params
 
   try {
-
     const [userData, clubData] = await db.$transaction([
       db.user.findFirstOrThrow({
         where: {
