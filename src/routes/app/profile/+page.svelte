@@ -84,6 +84,10 @@
           <span>Name*</span>
           <input class="input p-2" type="text" placeholder="Input" bind:value={profile.fullName} required />
         </label>
+        <label class="label w-1/2 flex flex-col">
+          <span>Date of birth*</span>
+          <DatePicker bind:selectedDate={profile.dob} maxDay={0} />
+        </label>
         <div class="flex flex-row gap-2">
           <label class="label">
             <span>Nationality*</span>
@@ -102,10 +106,6 @@
             </select>
           </label>
         </div>
-        <label class="label w-1/2 flex flex-col">
-          <span>Date of birth*</span>
-          <DatePicker bind:selectedDate={profile.dob} maxDay={0} />
-        </label>
         <label class="label">
           <span>Address</span>
           <input class="input p-2" type="text" placeholder="Input" bind:value={profile.address} />
