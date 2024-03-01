@@ -9,10 +9,7 @@
   import DatePicker from 'ui/datePicker.svelte'
   import { priceFormater } from "client-service/tools.js";
 	import ParticipantCard from "ui/participantCard.svelte";
-	// import NumberInput from "molecule/numberInput.svelte";
-  // import Button from "atom/button.svelte";
-  // import Select from "molecule/select.svelte";
-  // import SelectItem from 'atom/selectItem.svelte';
+
   
   export let data
   const toast = getToastStore()
@@ -87,6 +84,7 @@
       matchData.note = undefined
       matchData.participantList = []
       matchData.participantIdList = []
+      scoreList = []
       toast.trigger({
         message: 'Match recorded',
         background: 'variant-filled-success'

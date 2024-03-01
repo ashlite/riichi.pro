@@ -1,4 +1,3 @@
-import { firebaseValidation } from 'server-service/firebaseAdmin.js';
 import { db } from 'server-service/db.js';
 
 export async function load({params, url}) {
@@ -8,7 +7,7 @@ export async function load({params, url}) {
   const yearFilter = Number(url.searchParams.get('year') ?? today.getFullYear())
   const page = Number(url.searchParams.get('page') ?? 1)
   let limit = Number(url.searchParams.get('limit') ?? 10)
-  if (limit < 10) limit = 10
+  if (limit < 20) limit = 20
   else if (limit > 100) limit = 100
 
   const totalStandingRow = await db.clubUmaStanding.count({
