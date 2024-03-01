@@ -55,8 +55,6 @@
       const diffDays = Math.ceil( (tempSelectedDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
       //checker min and max
       if (maxDay != undefined && diffDays > maxDay) {
-        console.log(tempSelectedDate.getTime())
-        console.log(today.getTime())
         toast.trigger({
           message: `Maximum selected date is ${dateFormater(new Date(today.getTime() + (1000 * 60 * 60 * 24 * maxDay)), 'date')}`,
           background: "variant-filled-error"
