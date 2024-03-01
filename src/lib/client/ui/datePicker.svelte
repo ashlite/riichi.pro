@@ -11,10 +11,10 @@
   export let maxDay: number | undefined = undefined 
   export let minDay: number | undefined = undefined
   export let longYear = false
-  export let selectedDate: Date | null | undefined = today
+  export let selectedDate: Date | null | undefined = new Date()
   const toast = getToastStore()
   $: buttonText = dateFormater(selectedDate, 'date')
-  let modDate: Date = selectedDate ? new Date(selectedDate) : today
+  let modDate: Date = selectedDate ? new Date(selectedDate) : new Date()
   let totalDate = dateInMonth()
 
   const listMonth = [
@@ -150,5 +150,10 @@
         </div>
       {/each}
     {/each}
+    {#if totalDate.length < 6}
+      <div>
+        <button class="btn btn-sm hover:cursor-default"></button>
+      </div>
+    {/if}
   </div>
 </div>
