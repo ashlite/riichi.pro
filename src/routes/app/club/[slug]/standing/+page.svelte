@@ -13,7 +13,7 @@
   for (let i = 2023; i <= today.getFullYear(); i++) {
     yearRange.push(i);
   }
-  let selectedMonth = curentUrl.searchParams.get('month') ?? today.getMonth()
+  let selectedMonth = Number(curentUrl.searchParams.get('month')) ?? today.getMonth()
   let selectedYear = curentUrl.searchParams.get('year') ?? today.getFullYear()
 
   async function updateDate() {
@@ -53,7 +53,7 @@
     </select>
   </label>
 </div>
-<div class="overflow-x-auto">
+<div class="overflow-x-auto my-4">
   <table class="table">
     <!-- head -->
     <thead>

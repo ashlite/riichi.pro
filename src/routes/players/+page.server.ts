@@ -21,6 +21,8 @@ export async function load({ url }) {
       currentTP: true,
       currentRP: true,
       avatarUrl: true,
+      rtId: true,
+      seqId: true,
       rtData: true,
       metaData: true,
       clubList: {
@@ -36,6 +38,15 @@ export async function load({ url }) {
     },
     take: takeRow,
     skip: (takeRow * (currentPage - 1)),
+    orderBy: [
+      {
+        rtId: 'desc'
+      }, {
+        currentRP: 'desc'
+      }, {
+        seqId: 'desc'
+      }
+    ]
   })
 
   const totalPlayer = await db.user.count({

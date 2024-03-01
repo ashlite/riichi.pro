@@ -3,14 +3,14 @@ import type { Prisma } from '@prisma/client'
 const prisma = new PrismaClient()
 
 async function main() {
-  const clubId = '079f26a5-5c12-4d01-8e68-6e360471cfd2'
+  const clubId = '1a129426-0f4f-41b7-99e8-3c35b343a49e'
   const userInput: Prisma.UserCreateInput[] = [{
+    id: 'test1',
     fullName: 'test 1',
     email: 'test-1@mail.com',
     nationalityCountryCode: 'NA',
     residenceCountryCode: 'NA',
     address: 'unknown',
-    firebaseId: 'test1',
     metaData: {
       create: {}
     },
@@ -26,7 +26,7 @@ async function main() {
     nationalityCountryCode: 'ID',
     residenceCountryCode: 'ID',
     address: 'unknown',
-    firebaseId: 'test2',
+    id: 'test2',
     metaData: {
       create: {}
     },
@@ -42,7 +42,7 @@ async function main() {
     nationalityCountryCode: 'ID',
     residenceCountryCode: 'ID',
     address: 'unknown',
-    firebaseId: 'test3',
+    id: 'test3',
     metaData: {
       create: {}
     },
@@ -58,7 +58,7 @@ async function main() {
     nationalityCountryCode: 'JP',
     residenceCountryCode: 'JP',
     address: 'unknown',
-    firebaseId: 'test4',
+    id: 'test4',
     metaData: {
       create: {}
     },
@@ -74,7 +74,7 @@ async function main() {
     nationalityCountryCode: 'ID',
     residenceCountryCode: 'ID',
     address: 'unknown',
-    firebaseId: 'test5',
+    id: 'test5',
     metaData: {
       create: {}
     },
@@ -90,7 +90,7 @@ async function main() {
     nationalityCountryCode: 'ID',
     residenceCountryCode: 'ID',
     address: 'unknown',
-    firebaseId: 'test6',
+    id: 'test6',
     metaData: {
       create: {}
     },
