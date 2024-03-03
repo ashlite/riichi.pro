@@ -89,7 +89,7 @@
     <tbody>
       {#each data.listStanding as standing, i}
         <tr>
-          <td>{i+1}</td>
+          <td>{i+1+(data.paginationSetting.limit * data.paginationSetting.page)}</td>
           <td>{standing.userData.fullName}</td>
           <td>{standing.totalUma}</td>
           <td>{standing.totalMatch}</td>

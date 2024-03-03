@@ -30,7 +30,10 @@
 </script>
 
 <div class="w-4/5 mt-4 mb-8 mx-auto ">
-  <h2 class="h2 font-bold border-b-4 border-primary-500 pb-2 mb-2">Member club {data.clubData.name}</h2>
+  <div class="h2 font-bold border-b-4 border-primary-500 pb-2 mb-2 flex flex-row gap-4">
+    <a class="btn variant-filled text-xl" href={`/club/${data.clubData.slug}`}><Icon icon="mingcute:home-4-line" /></a>
+    <h2>Member club {data.clubData.name}</h2>
+  </div>
   <div class="mb-4">
     <Paginator
       bind:settings={data.paginationSettings}
