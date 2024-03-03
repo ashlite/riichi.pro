@@ -3,7 +3,7 @@ import type { PaginationSettings } from '@skeletonlabs/skeleton';
 
 export async function load({params, url}) {
   const slug = params.slug
-  const currentPage = Number(url.searchParams.get('page') ?? 1)
+  const currentPage = Number(url.searchParams.get('page') ?? 0)
   const takeRow = Number(url.searchParams.get('limit') ?? 10)  
   const today = new Date()
   const monthFilter = Number(url.searchParams.get('month') ?? today.getMonth())
@@ -26,7 +26,7 @@ export async function load({params, url}) {
       periodMonth: monthFilter,
       periodYear: yearFilter,
     },
-    skip: (currentPage - 1) * takeRow,
+    skip: currentPage * takeRow,
     take: takeRow,
     orderBy: [{
       totalUma: 'desc'
