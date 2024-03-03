@@ -18,6 +18,7 @@
   const baseCoverUrl = env.PUBLIC_TEBI_CLUB_COVER
   const toast = getToastStore()
   const modal = getModalStore()
+  console.log(data.userMemberData)
 
   async function joinClub() {
     const response = await fetch(`/api/v1/private/club/${data.clubData.slug}/member`, {
@@ -63,7 +64,7 @@
               Dashboard
             </a>
           {/if}
-          {#if !data.userMemberData}
+          {#if !data.userMemberData && data.user}
             <button class="btn variant-filled-success" on:click={() => modal.trigger({
               type: 'confirm',
               title: 'Confirmation',
@@ -167,7 +168,7 @@
         </a>
       </div>
     {/each}
-    <a href={`/club/${data.clubData.slug}/member`} class="btn w-24 md:w-32 variant-soft-primary rounded-full h3 text-wrap">
+    <a href={`/club/${data.clubData.slug}/member`} class="btn w-24 h-24 md:h-32 md:w-32 variant-soft-primary rounded-full h3 text-wrap">
       Show more
     </a>
   </div>

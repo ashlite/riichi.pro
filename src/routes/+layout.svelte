@@ -25,21 +25,20 @@
     user.set(data.user)
   }
 
-
   initializeStores()
   storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
   inject({ mode: dev ? 'development' : 'production' });
   injectSpeedInsights();
 
-  afterNavigate((params: AfterNavigate) => {
-    if(params.from && params.to) {
-      const isNewPage = params.from.url.pathname !== params.to.url.pathname
-      const elemPage = document.querySelector('#page')
-      if (isNewPage && elemPage !== null) {
-        elemPage.scrollTop = 0
-      }
-    }
-  })
+  // afterNavigate((params: AfterNavigate) => {
+  //   if(params.from && params.to) {
+  //     const isNewPage = params.from.url.pathname !== params.to.url.pathname
+  //     const elemPage = document.querySelector('#page')
+  //     if (isNewPage && elemPage !== null) {
+  //       elemPage.scrollTop = 0
+  //     }
+  //   }
+  // })
 
 </script>
 

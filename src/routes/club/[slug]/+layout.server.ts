@@ -33,29 +33,33 @@ export async function load({ locals, params }) {
       orderBy: {
         roleId: 'asc'
       }
-    }) 
-    const userMemberData = await db.clubMember.findFirst({
-      where: {
-        userData: {
-          id: locals.user?.id
-        },
-        clubData: {
-          slug: params.slug
-        }
-      },
-      select: {
-        id: true,
-        roleId: true,
-        userId: true,
-        canApproveMember: true,
-        canBuyCC: true,
-        canEditAccess: true,
-        canEditClubInfo: true,
-        canEditClubSetting: true,
-        canSubmitMatch: true,
-        canSubmitTournament: true,
-      }
     })
+    let userMemberData = null
+    if (locals.user) {
+      userMemberData = await db.clubMember.findFirst({
+        where: {
+          userData: {
+            id: locals.user?.id
+          },
+          clubData: {
+            slug: params.slug
+          }
+        },
+        select: {
+          id: true,
+          roleId: true,
+          userId: true,
+          canApproveMember: true,
+          canBuyCC: true,
+          canEditAccess: true,
+          canEditClubInfo: true,
+          canEditClubSetting: true,
+          canSubmitMatch: true,
+          canSubmitTournament: true,
+        }
+      })
+
+    }
 
     return {
       clubData,
