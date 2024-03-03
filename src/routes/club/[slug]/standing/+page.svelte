@@ -41,7 +41,7 @@
 
 <div class="w-4/5 mx-auto mt-4 mb-8">
   <div class="h2 font-bold border-b-4 border-primary-500 pb-2 mb-2 flex flex-row gap-4">
-    <a class="btn variant-filled text-xl" href={`/club/${data.clubData.slug}`}><Icon icon="mingcute:home-4-line" /></a>
+    <a class="btn variant-filled text-xl" href={`/club/${data.clubData.slug}`}><Icon icon="mingcute:left-line" /></a>
     <h2>Monthly standing club {data.clubData.name}</h2>
   </div>
   <div class="w-full flex flex-col md:flex-row gap-4 mb-4 items-center md:items-end">
