@@ -3,7 +3,7 @@ import { error } from "@sveltejs/kit";
 import type { LayoutServerLoadEvent } from "./$types";
 import { db } from "server-service/db";
 
-export async function load({ locals, params }: LayoutServerLoadEvent) {
+export async function load({ locals, params, url }: LayoutServerLoadEvent) {
   try {
     //check user and throw if needed
     const userMemberData = await db.clubMember.findFirstOrThrow({

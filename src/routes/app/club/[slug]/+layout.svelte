@@ -12,7 +12,7 @@
   <div class="lg:col-span-2">
     <ul class="card p-4 variant-filled w-full rounded-box">
       <li>
-        <Navitem href={`/app/club/${$page.params.slug}`} menu>Home</Navitem>
+        <Navitem href={`/app/club/${$page.params.slug}/dashboard`} menu>Dashboard</Navitem>
       </li>
       <li>
         <Navitem href={`/app/club/${$page.params.slug}/member`} menu>Member</Navitem>
