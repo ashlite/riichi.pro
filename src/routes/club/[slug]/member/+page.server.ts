@@ -4,7 +4,7 @@ import type { PaginationSettings } from "@skeletonlabs/skeleton";
 
 export async function load({ params, url }) {
   try {
-    const currentPage = Number(url.searchParams.get('page') ?? 1)
+    const currentPage = Number(url.searchParams.get('page') ?? 0)
     const takeRow = Number(url.searchParams.get('limit') ?? 10)  
 
     const listMemberFull = await db.clubMember.findMany({
@@ -32,6 +32,8 @@ export async function load({ params, url }) {
       orderBy: {
         roleId: 'asc'
       },
+      take: takeRow,
+      skip: currentPage * takeRow
     })
     const totalMember = await db.clubMember.count({
       where: {
