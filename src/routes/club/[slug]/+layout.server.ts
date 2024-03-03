@@ -1,10 +1,7 @@
 import { db } from "server-service/db";
-import { redirect } from '@sveltejs/kit';
-// import type { iPagination } from 'interface/pageMeta.js';
-import type { Prisma } from '@prisma/client';
 import { error } from '@sveltejs/kit';
 
-export async function load({ url, locals, params }) {
+export async function load({ locals, params }) {
   try {
     //check user and throw if needed
     const clubData = await db.club.findFirstOrThrow({
@@ -12,9 +9,31 @@ export async function load({ url, locals, params }) {
         slug: params.slug
       }, 
       include: {
-        clubSetting: true
+        clubSetting: true,
       }
     })
+    const listMember = await db.clubMember.findMany({
+      where: {
+        clubId: clubData.id,
+        roleId: {
+          lte: 306
+        }
+      },
+      select: {
+        id: true,
+        userData: {
+          select: {
+            avatarUrl: true,
+            fullName: true,
+            id: true
+          }
+        }
+      },      
+      take: 8,
+      orderBy: {
+        roleId: 'asc'
+      }
+    }) 
     const userMemberData = await db.clubMember.findFirst({
       where: {
         userData: {
@@ -40,10 +59,11 @@ export async function load({ url, locals, params }) {
 
     return {
       clubData,
-      userMemberData
+      userMemberData,
+      listMember
     }
     
   } catch (e) {
-    error(403, 'You must join the club to access this page.');
+    error(404, 'Club not found.');
   }
 }
