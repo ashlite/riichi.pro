@@ -6,13 +6,17 @@
   import { dateFormater } from 'client-service/tools'
   //Icon
   import Icon from '@iconify/svelte'
+  //svelte
+  import { createEventDispatcher } from 'svelte';
 
   const today = new Date()
+  export let name: string = 'picker'
   export let maxDay: number | undefined = undefined 
   export let minDay: number | undefined = undefined
   export let longYear = false
   export let selectedDate: Date | null | undefined = new Date()
   const toast = getToastStore()
+  const dispatch = createEventDispatcher();
   $: buttonText = dateFormater(selectedDate, 'date')
   let modDate: Date = selectedDate ? new Date(selectedDate) : new Date()
   let totalDate = dateInMonth()
@@ -34,7 +38,7 @@
   const listDay = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
   const datePop: PopupSettings = {
     event: 'click',
-  	target: 'calendar',
+  	target: name,
 	  placement: 'bottom',
     closeQuery: '#close-trigger'
   }
@@ -68,6 +72,7 @@
         selectedDate = tempSelectedDate
         buttonText = dateFormater(selectedDate, 'date')
         selectedDate = selectedDate
+        dispatch('dateSubmit')
         if (document.activeElement instanceof HTMLElement) {
           document.activeElement.blur();
         }
@@ -97,7 +102,7 @@
 
 <button class="btn variant-filled" type="button" use:popup={datePop}>{buttonText}</button>
 
-<div class="card p-4 variant-filled" data-popup="calendar">
+<div class="card p-4 variant-filled z-50" data-popup={name}>
 	<div class="arrow variant-filled" />
   <div class="flex flex-row justify-center items-center gap-4">
     {#if longYear}
