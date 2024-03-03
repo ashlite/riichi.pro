@@ -52,7 +52,7 @@
               PENDING
             </button>
           {:else if club.clubData.clubStatusId == 502}
-            <a href={`/app/club/${club.clubData.slug}`} class="btn variant-filled-success">
+            <a href={`/app/club/${club.clubData.slug}/dashboard`} class="btn variant-filled-success">
               ENTER
             </a>
           {:else}
@@ -67,7 +67,7 @@
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <!-- svelte-ignore a11y-no-static-element-interactions -->
         <div class="card p-4 flex flex-row gap-4" on:click={() => {
-          if(club.clubData.clubStatusId == 502) goto(`/app/club/${club.clubData.slug}`)
+          if(club.clubData.clubStatusId == 502) goto(`/app/club/${club.clubData.slug}/dashboard`)
         }}>
           <figure>
             <Avatar src={club.clubData.emblemFile ?? ''} rounded="rounded-lg" width="w-24" initials={club.clubData.name} />

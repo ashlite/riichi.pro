@@ -79,7 +79,7 @@
             {/if}
           </td>
           <td class="flex flex-row">
-            {#if data.userMemberData.roleId < 303 && data.userMemberData.roleId > member.roleId && data.userMemberData.userId != member.userId}
+            {#if data.userMemberData.roleId < 303 && data.userMemberData.roleId < member.roleId && data.userMemberData.userId != member.userId}
               <div>
                 <button class="btn variant-filled-error" on:click={() => kickMember(member.id, member.userData.fullName)}>
                   <span class="h3 mr-2"><Icon icon="mingcute:user-x-line" /></span>
