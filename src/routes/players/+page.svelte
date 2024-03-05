@@ -4,6 +4,7 @@
   import { goto } from '$app/navigation'
   //skeleton
   import { Paginator, Avatar } from '@skeletonlabs/skeleton'
+	import PlayerAvatar from 'ui/playerAvatar.svelte';
 // import PaginationNav from "organism/paginationNav.svelte";
 // import Avatar from "atom/avatar.svelte";
 // import type { PageData } from "./$types.js";
@@ -42,9 +43,9 @@ export let data
         {#if data.players.length > 0}
           {#each data.players as player}
             <tr class="hover:bg-base-200">
-              <td class="hover:cursor-pointer hover:bg-base-300">
+              <td class="">
                 <div class="flex flex-row items-center gap-4">
-                  <Avatar src={player.avatarUrl ?? ''} width="w-24" fallback={`https://api.dicebear.com/7.x/initials/svg?seed=${player.fullName}`} />
+                  <PlayerAvatar playerAvatarUrl={player.avatarUrl} playerId={player.id} playerName={player.fullName} width="w-16" />
                   <div class="flex flex-col">
                     <div class="text-ellipsis">
                       {player.fullName}

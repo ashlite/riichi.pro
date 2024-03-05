@@ -7,6 +7,7 @@
   import { Avatar, getToastStore } from '@skeletonlabs/skeleton'
   //svelte  
   import { invalidateAll } from "$app/navigation";
+	import PlayerAvatar from "ui/playerAvatar.svelte";
 
   export let data
   const toast = getToastStore()
@@ -51,7 +52,7 @@
         <tr>
           <td>
             <div class="flex flex-row gap-4">
-              <Avatar src={member.userData.avatarUrl ?? ''} initials={member.userData.fullName} />
+              <PlayerAvatar playerAvatarUrl={member.userData.avatarUrl} playerId={member.userData.id} playerName={member.userData.fullName} width="w-20" />
               <div class="flex flex-col">
                 <h3 class="h3 font-bold text-primary-600-300-token">{member.userData.fullName}</h3>
                 <div class="">{member.userData.rtData.name} - {member.userData.currentRP}</div>

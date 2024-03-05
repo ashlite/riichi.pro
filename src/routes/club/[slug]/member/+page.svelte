@@ -2,16 +2,12 @@
   //Icon
   import Icon from "@iconify/svelte";
   //mylib
-  import { countryNameFromCode } from "client-service/country";
-  import { dateFormater } from "client-service/tools";
-  import type { iMemberAction } from "interface/club";
-  import Image from 'ui/image.svelte'
+  import PlayerAvatar from "ui/playerAvatar.svelte";
   //skeleton
-  import { getToastStore, getModalStore, Avatar, Paginator, type PaginationSettings } from '@skeletonlabs/skeleton'
+  import { Avatar, Paginator} from '@skeletonlabs/skeleton'
   //svelte
   import { page } from '$app/stores'
-  import {env} from '$env/dynamic/public'
-  import { invalidateAll, goto } from "$app/navigation";
+  import { goto } from "$app/navigation";
 
   export let data
 
@@ -45,26 +41,24 @@
   </div>
   <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 flex-row flex-wrap gap-4">
     {#each data.listMemberFull as member}
-      <a href={`/players/${member.userData.id}`}>
-        <div class="card flex flex-col w-full items-center p-2 bg-gradient-to-br from-secondary-700 to-secondary-400">
-          <header class="card-header">
-            <Avatar src={member.userData.avatarUrl ?? ''} initials={member.userData.fullName} width="w-28" />
-          </header>
-          <h4 class="h4 truncate">{member.userData.fullName}</h4>
-          <p class="font-bold">{member.userData.rtData.name} - {member.userData.currentRP}</p>
-          <div>
-            {#if member.roleData.id == 301}
-              <span class="badge variant-filled-primary">{member.roleData.name}</span>
-              {:else if member.roleData.id == 302}
-              <span class="badge variant-filled-secondary">{member.roleData.name}</span>
-            {:else if member.roleData.id == 303}
-              <span class="badge variant-filled-tertiary">{member.roleData.name}</span>
-            {:else}
-              <span class="badge variant-filled">{member.roleData.name}</span>
-            {/if}
-          </div>
+      <div class="card flex flex-col w-full items-center p-2 bg-gradient-to-br from-secondary-700 to-secondary-400">
+        <header class="card-header">
+          <PlayerAvatar width="w-28" playerAvatarUrl={member.userData.avatarUrl} playerName={member.userData.fullName} playerId={member.userData.id} />
+        </header>
+        <h4 class="h4 truncate">{member.userData.fullName}</h4>
+        <p class="font-bold">{member.userData.rtData.name} - {member.userData.currentRP}</p>
+        <div>
+          {#if member.roleData.id == 301}
+            <span class="badge variant-filled-primary">{member.roleData.name}</span>
+            {:else if member.roleData.id == 302}
+            <span class="badge variant-filled-secondary">{member.roleData.name}</span>
+          {:else if member.roleData.id == 303}
+            <span class="badge variant-filled-tertiary">{member.roleData.name}</span>
+          {:else}
+            <span class="badge variant-filled">{member.roleData.name}</span>
+          {/if}
         </div>
-      </a>
+      </div>
     {/each}
   </div>
 </div>

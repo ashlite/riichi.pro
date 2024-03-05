@@ -1,6 +1,7 @@
 <script lang="ts">
 //mylib
 import type { iParticipant } from "interface/match";
+import {getInitials} from 'client-service/tools'
 //skeleton
 import {Avatar} from '@skeletonlabs/skeleton'
 //svelte
@@ -21,7 +22,7 @@ function changeScore(e: Event) {
 <div class="card variant-ghost">
   <header class="card-header flex flex-row gap-4">
     <div>
-      <Avatar src={data.avatarUrl ?? ''} initials={data.fullName} />
+      <Avatar src={data.avatarUrl ?? ''} initials={getInitials(data.fullName)} />
     </div>
     <div>
       <h2 class="h2">{data.fullName}</h2>

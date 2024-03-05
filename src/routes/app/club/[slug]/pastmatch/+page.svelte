@@ -7,6 +7,7 @@
   //mylib
   import DatePicker from 'ui/datePicker.svelte'
   import {dateFormater} from 'client-service/tools.js'
+	import PlayerAvatar from "ui/playerAvatar.svelte";
 
   export let data
   const curentUrl = new URL($page.url)
@@ -68,7 +69,7 @@
         {#each match.participantList as participant}
           <div class={participant.position == 0 ? "card p-2 bg-gradient-to-br from-lime-500 to-green-500" : "card p-2"}>
             <div class="flex flex-row gap-2 items-center">
-              <Avatar class="z-0" src={participant.userData.avatarUrl ?? ''} initials={participant.userData.fullName} />
+              <PlayerAvatar playerAvatarUrl={participant.userData.avatarUrl} playerId={participant.userData.id} playerName={participant.userData.fullName} width="w-20" />
               <div class="flex flex-col">
                 <h3 class="h3">
                   <span class="font-bold">({participant.seatRefData.name})</span> {participant.userData.fullName}</h3>

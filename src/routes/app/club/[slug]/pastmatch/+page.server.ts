@@ -87,6 +87,7 @@ export async function load({ params, parent, url}) {
             select: {
               avatarUrl: true,
               fullName: true,
+              id: true,
             }
           }
         }
