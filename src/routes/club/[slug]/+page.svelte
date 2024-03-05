@@ -4,7 +4,7 @@
 	//mylib
   import { countryNameFromCode } from "client-service/country";
   import { dateFormater } from "client-service/tools";
-  import type { iMemberAction } from "interface/club";
+  import PlayerAvatar from "ui/playerAvatar.svelte";
   import Image from 'ui/image.svelte'
   //skeleton
   import { getToastStore, getModalStore, Avatar } from '@skeletonlabs/skeleton'
@@ -163,9 +163,7 @@
   <div class="flex flex-row flex-wrap gap-4 mb-8">
     {#each data.listMember as member }
       <div class="">
-        <a href={`/players/${member.userData.id}`}>
-          <Avatar src={member.userData.avatarUrl ?? ''} width="w-24 md:w-32" rounded="rounded-full" initials={member.userData.fullName} />
-        </a>
+        <PlayerAvatar playerAvatarUrl={member.userData.avatarUrl} playerId={member.userData.id} playerName={member.userData.fullName} />
       </div>
     {/each}
     <a href={`/club/${data.clubData.slug}/member`} class="btn w-24 h-24 md:h-32 md:w-32 variant-soft-primary rounded-full h3 text-wrap">

@@ -10,7 +10,7 @@
   //mylib
   import { getLoginUser } from 'store/user'
   import NavList from './navList.svelte';
-	import Navitem from 'ui/navigation/navitem.svelte';
+	import PlayerAvatar from 'ui/playerAvatar.svelte';
   import { loginUser } from 'controller/login';
 
   export let loginState: boolean
@@ -56,7 +56,7 @@
         {#if loginState}
           <div class="flex flex-row items-center gap-2 relative">
             <button use:popup={loginMenu} class="[&>*]:pointer-events-none">
-              <Avatar src={$user.avatarUrl ?? undefined} initials={$user.fullName} />
+              <PlayerAvatar playerAvatarUrl={$user.avatarUrl} playerId={$user.id} playerName={$user.fullName} noLink width="w-16" />
             </button>
             <div class="card p-4 variant-filled-surface" data-popup="userMenu">
               <div class="arrow variant-filled-surface" />

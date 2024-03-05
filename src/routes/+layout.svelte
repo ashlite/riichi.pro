@@ -9,7 +9,7 @@
   import { injectSpeedInsights } from "@vercel/speed-insights/sveltekit"
   import { inject } from '@vercel/analytics';
   //skeleton
-  import { AppShell, storePopup, Emerald, initializeStores, Toast, Modal } from '@skeletonlabs/skeleton'
+  import { AppShell, storePopup, Emerald, initializeStores, Toast, Modal, type ModalComponent } from '@skeletonlabs/skeleton'
   import { computePosition, autoUpdate, offset, shift, flip, arrow } from '@floating-ui/dom';
   //mylib
   import { setLoginUser, getLoginUser } from "store/user";
@@ -17,6 +17,7 @@
   import Footer from 'ui/navigation/footer.svelte'
   import Drawer from 'ui/drawer/drawer.svelte'
   import Analytics from "ui/analytics.svelte";
+  import PlayerModal from "ui/modal/playerModal.svelte";
   
   export let data
   setLoginUser()
@@ -31,15 +32,9 @@
   inject({ mode: dev ? 'development' : 'production' });
   injectSpeedInsights();
 
-  // afterNavigate((params: AfterNavigate) => {
-  //   if(params.from && params.to) {
-  //     const isNewPage = params.from.url.pathname !== params.to.url.pathname
-  //     const elemPage = document.querySelector('#page')
-  //     if (isNewPage && elemPage !== null) {
-  //       elemPage.scrollTop = 0
-  //     }
-  //   }
-  // })
+  const modalRegistry: Record<string, ModalComponent> = {
+    PlayerModal: { ref: PlayerModal }
+  }
 
 </script>
 
@@ -50,7 +45,7 @@
 <Analytics />
 <Toast />
 <Drawer />
-<Modal />
+<Modal components={modalRegistry} />
 <Emerald />
 
 <AppShell>

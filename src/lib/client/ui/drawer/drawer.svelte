@@ -8,6 +8,7 @@
   import Navitem from 'ui/navigation/navitem.svelte';
   import { getLoginUser } from 'store/user'
   import { loginUser } from 'controller/login';
+  import { getInitials } from 'client-service/tools';
 
   const drawerData = getDrawerStore()
   const toast = getToastStore()
@@ -21,7 +22,7 @@
       <div class="flex flex-col content-between mb-4">
         {#if $user}
           <header class="bg-primary-500 p-4 flex flex-row gap-2">
-            <Avatar src={$user.avatarUrl ?? ''} width="w-24" fallback={`https://api.dicebear.com/7.x/initials/svg?seed=${$user.fullName}`} />
+            <Avatar src={$user.avatarUrl ?? ''} width="w-24" initials={getInitials($user.fullName)} />
             <div class="flex flex-col">
               <h2 class="h2 font-bold">
                 {$user.fullName}

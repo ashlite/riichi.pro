@@ -74,3 +74,13 @@ export function validUrl(urlString: string) {
     return false
   }
 }
+
+export function getInitials(name: string): string {
+  const words = name.split(" ")
+  let initials = ""
+  for (const word of words) {
+    const firstLetter = word.charAt(0).toUpperCase();
+    initials += firstLetter;
+  }
+  return initials;
+}

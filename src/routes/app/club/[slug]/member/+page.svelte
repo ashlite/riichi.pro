@@ -4,6 +4,7 @@
   //mylib
   import { dateFormater } from "client-service/tools.js";
   import type {iMemberAction} from 'interface/club.js'
+  import PlayerAvatar from 'ui/playerAvatar.svelte'
   //Icon
   import Icon from '@iconify/svelte'
   //svelte
@@ -59,7 +60,7 @@
         <tr>
           <td>
             <div class="flex flex-row gap-4 items-center">
-              <Avatar src={member.userData.avatarUrl ?? ''} initials={member.userData.fullName} />
+              <PlayerAvatar playerAvatarUrl={member.userData.avatarUrl} playerId={member.userData.id} playerName={member.userData.fullName} width="w-20" />
               <div class="flex flex-col">
                 <h3 class="h3 font-bold text-primary-600-300-token text-xl">{member.userData.fullName}</h3>
                 <div class="">{member.userData.rtData.name} - {member.userData.currentRP}</div>

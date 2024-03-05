@@ -5,6 +5,7 @@
   //skeleton
   import { Avatar, getToastStore, getModalStore } from '@skeletonlabs/skeleton'
   import { invalidateAll } from "$app/navigation";
+	import PlayerAvatar from "ui/playerAvatar.svelte";
 
   export let data
   const modal = getModalStore()
@@ -89,7 +90,7 @@
           <tr>
             <td>
               <div class="flex flex-row gap-4">
-                <Avatar src={member.userData.avatarUrl ?? ''} initials={member.userData.fullName} />
+                <PlayerAvatar playerAvatarUrl={member.userData.avatarUrl} playerId={member.userData.id} playerName={member.userData.fullName} width="w-16" />
                 <div class="flex flex-col">
                   <div class="font-bold text-primary-600-300-token text-xl truncate">{member.userData.fullName}</div>
                   {#if member.roleData.id == 301}
@@ -117,7 +118,7 @@
           <tr>
             <td>
               <div class="flex flex-row gap-4">
-                <Avatar user={member.userData} />
+                <PlayerAvatar playerAvatarUrl={member.userData.avatarUrl} playerId={member.userData.id} playerName={member.userData.fullName} width="w-16" />
                 <div class="flex flex-col">
                   <div class="font-bold text-primary-600-300-token text-xl truncate">{member.userData.fullName}</div>
                   {#if member.roleData.id == 301}

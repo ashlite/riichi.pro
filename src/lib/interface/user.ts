@@ -57,3 +57,40 @@ export interface iMemberRoles {
   canSubmitMatch: boolean
   canSubmitTournament: boolean
 }
+
+export type iUserPublic = Prisma.UserGetPayload<{
+  select: {
+    id: true,
+    fullName: true,
+    avatarUrl: true,
+    currentRP: true,
+    currentTP: true,
+    rtData: {
+      select: {
+        name: true,
+      }
+    },
+    clubList: {
+      select: {
+        createdAt: true,
+        roleId: true,
+        roleData: {
+          select: {
+            name: true
+          }
+        },
+        clubData: {
+          select: {
+            name: true,
+            slug: true,
+          }
+        }
+      }
+    },
+    metaData: true,
+    nationalityCountryCode: true,
+    residenceCountryCode: true,
+    genderData: true,
+    joinedAt: true,
+  }
+}>

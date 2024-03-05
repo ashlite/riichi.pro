@@ -5,6 +5,7 @@
   import {getToastStore, Avatar, storePopup} from '@skeletonlabs/skeleton'
   //mylib 
   import type { iMemberPicker } from "interface/club";
+  import PlayerAvatar from "./playerAvatar.svelte";
   //svelte
   import { createEventDispatcher } from "svelte";
 
@@ -85,7 +86,7 @@
         <li class="my-1">
           <button class="btn hover:variant-soft-primary w-full gap-4" on:click={() => selectMember(member)}>
             <div class="w-full flex flex-row gap-4 items-center">
-              <Avatar src={member.userData.avatarUrl ?? ''} initials={member.userData.fullName} width="w-12" />
+              <PlayerAvatar playerAvatarUrl={member.userData.avatarUrl} playerName={member.userData.fullName} playerId={member.userData.id} width="w-12" />
               <div class="flex flex-col items-start">
                 <p class="font-bold text-primary-500">
                   {member.userData.fullName}

@@ -6,6 +6,8 @@
   import { Paginator } from "@skeletonlabs/skeleton"
   //Icon
   import Icon from "@iconify/svelte"
+  //mylib
+  import PlayerAvatar from "ui/playerAvatar.svelte";
 
   export let data
   const today = new Date()
