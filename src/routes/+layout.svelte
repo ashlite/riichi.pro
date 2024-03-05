@@ -16,6 +16,7 @@
   import TopNav from 'ui/navigation/top.svelte'
   import Footer from 'ui/navigation/footer.svelte'
   import Drawer from 'ui/drawer/drawer.svelte'
+  import Analytics from "ui/analytics.svelte";
   
   export let data
   setLoginUser()
@@ -46,9 +47,7 @@
   <title>Janshi Pro</title>
 </svelte:head>
 
-<!-- <ToastAlert />
-<Modal />
-<TopNavbar loginState={data.loginState} user={data.user}/> -->
+<Analytics />
 <Toast />
 <Drawer />
 <Modal />
