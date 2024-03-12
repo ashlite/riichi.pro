@@ -80,6 +80,12 @@
                     Official
                   </a>
                 {/if}
+                {#if $user.roleId >= 103}
+                  <a href="/app/developer/dashboard" class="btn w-40 variant-filled-primary">
+                    <span class="mr-2 h3"><Icon icon="mingcute:code-line" /></span>
+                    Developer
+                  </a>
+                {/if}
                 <form method="post" action="/logout">
                   <button type="submit" class="btn w-40 variant-filled-primary">
                     <span class="mr-2 h3"><Icon icon="mingcute:exit-line" /></span>

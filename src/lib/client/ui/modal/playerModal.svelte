@@ -49,7 +49,10 @@ function gotoClub(slug: string) {
     <header class="card-header">
       <div class="flex flex-row items-center gap-4">
         <PlayerAvatar noLink playerAvatarUrl={playerData.avatarUrl} playerName={playerData.fullName} playerId={playerData.id} width="w-20" />
-        <h1 class="h1 truncate">{playerData.fullName}</h1>
+        <div class="flex flex-col">
+          <h1 class="h1 truncate">{playerData.fullName}</h1>
+          <h4 class="h4 truncate text-primary-500">{playerData.id}</h4>
+        </div>
       </div>
     </header>
     <div class="grid grid-cols-2 my-4">
