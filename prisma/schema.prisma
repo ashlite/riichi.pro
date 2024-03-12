@@ -141,6 +141,7 @@ model Club {
   updatedAt       DateTime @updatedAt @map("updated_at")
   clubStatusId    Int      @map("club_status_id")
   upkeep          Int      @default(0)
+  officialNotes   String?   @map("official_notes")
 
   memberList      ClubMember[]
   transactionList TransactionCC[]
