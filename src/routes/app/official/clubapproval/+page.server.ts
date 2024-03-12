@@ -13,7 +13,9 @@ export async function load() {
         include: {
           userData: {
             select: {
-              fullName: true
+              fullName: true,
+              id: true,
+              avatarUrl: true,
             }
           }
         }

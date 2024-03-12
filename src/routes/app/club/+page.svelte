@@ -12,7 +12,7 @@
 
   let totalMain = 0
   data.listClub.forEach(club => {
-    if (club.roleData.id < 304) totalMain++
+    if (club.roleData.id < 304 && [501, 502, 504, 506, 599].includes(club.clubData.clubStatusId) ) totalMain++
   })
 </script>
 
@@ -20,10 +20,10 @@
   <div class="flex flex-row justify-between flex-wrap">
     <h1 class="font-bold text-5xl text-primary">Your Club</h1>
     {#if totalMain == 0 && data.listClub.length < $loginUser.rtData.clubLimit}
-      <button class="btn variant-filled-success">
+      <a class="btn variant-filled-success" href="/app/createclub">
         <span class="h3 mr-2"><Icon icon="mingcute:add-line" /></span>
         Create Club
-      </button>
+      </a>
     {:else}
       <button class="btn variant-filled-success" disabled>
         <span class="h3 mr-2"><Icon icon="mingcute:add-line" /></span>
@@ -47,18 +47,14 @@
               <div>{club.roleData.name}</div>
             </section>
           </div>
-          {#if club.clubData.clubStatusId == 501}
-            <button class="btn variant-filled" disabled>
-              PENDING
+          {#if club.roleData.id == 306}
+            <button class="btn variant-warning">
+              Cancel Applying
             </button>
-          {:else if club.clubData.clubStatusId == 502}
+          {:else}
             <a href={`/app/club/${club.clubData.slug}/dashboard`} class="btn variant-filled-success">
               ENTER
             </a>
-          {:else}
-            <button class="btn variant-filled-error" disabled>
-              INACTIVE
-            </button>
           {/if}
         </div>
       </div>

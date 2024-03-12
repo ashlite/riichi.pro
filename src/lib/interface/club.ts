@@ -38,3 +38,8 @@ export interface iMemberAction {
   action: 'rejectPending' | 'approvePending' | 'quit' | 'kick' | 'applyMain' | 'approveMain' | 'rejectMain' | 'becomeAdmin' | 'kickAdmin' | 'transferOwnership'
   targetId: number
 }
+
+export interface iClubOfficialAction {
+  actionId: number
+  notes: string | null
+}
