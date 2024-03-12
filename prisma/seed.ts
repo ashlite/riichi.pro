@@ -107,13 +107,28 @@ async function main() {
       group: 'club_status'
     },{
       id: 503,
-      name: 'Inactive Temporary',
-      notes: 'club inactive, cannot record a match and cannot accept new member',
+      name: 'Disbanded',
+      notes: 'from 502, club disbanded/close by owner',
       group: 'club_status'
     },{
       id: 504,
-      name: 'Inactive Permanent',
-      notes: 'club inactive, cannot record a match and cannot accept new member',
+      name: 'Banned Temporary',
+      notes: 'from 502, club cannot record a match and cannot accept new member and cannot do activity, can appeal',
+      group: 'club_status'
+    }, {
+      id: 505,
+      name: 'Banned Permanent',
+      notes: 'from 501, 502, 504, 506, club cannot record a match and cannot accept new member, cannot appeal',
+      group: 'club_status'
+    }, {
+      id: 506,
+      name: 'Rejected',
+      notes: 'from 501, rejected club in creation, can appeal',
+      group: 'club_status'
+    }, {
+      id: 599,
+      name: 'Appeal',
+      notes: 'From 504 or 506, appeal to become 502',
       group: 'club_status'
     }]
   })
