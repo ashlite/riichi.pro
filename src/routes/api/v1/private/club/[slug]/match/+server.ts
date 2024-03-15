@@ -346,10 +346,11 @@ export async function POST({locals, params, request}) {
         }
       })
 
+      const inputDate = new Date(payload.matchAt)
       //Record match data
       await tx.match.create({
         data: {
-          matchAt: new Date(payload.matchAt),
+          matchAt: inputDate,
           typeId: payload.matchRuleId,
           deposit: payload.deposit,
           clubId: submitterData.clubId,
