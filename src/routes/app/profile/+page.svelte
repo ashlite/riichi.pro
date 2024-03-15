@@ -84,7 +84,7 @@
           <span>Name*</span>
           <input class="input p-2" type="text" placeholder="Input" bind:value={profile.fullName} required />
         </label>
-        <label class="label w-1/2 flex flex-col">
+        <label class="label w-1/2 flex flex-col" for="datepicker">
           <span>Date of birth*</span>
           <DatePicker bind:selectedDate={profile.dob} maxDay={0} />
         </label>

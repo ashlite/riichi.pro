@@ -372,7 +372,7 @@ export async function POST({locals, params, request}) {
       })
 
       //update user and upsert uma standing
-      for (const [i, clubMemberId] of payload.participantIdList.entries()) {
+      for (const [, clubMemberId] of payload.participantIdList.entries()) {
         await db.user.update(updatePlayerDataInput[clubMemberId])
         await db.clubUmaStanding.upsert(upsertUmaStandingInput[clubMemberId])
       }
