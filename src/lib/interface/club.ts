@@ -35,7 +35,7 @@ export type iListClub = Prisma.ClubGetPayload<{
 }>
 
 export interface iMemberAction {
-  action: 'rejectPending' | 'approvePending' | 'quit' | 'kick' | 'applyMain' | 'approveMain' | 'rejectMain' | 'becomeAdmin' | 'kickAdmin' | 'transferOwnership'
+  action: 'rejectPending' | 'approvePending' | 'quit' | 'kick' | 'applyMain' | 'approveMain' | 'rejectMain' | 'becomeAdmin' | 'kickAdmin' | 'transferOwnership' | 'cancelJoin'
   targetId: number
 }
 

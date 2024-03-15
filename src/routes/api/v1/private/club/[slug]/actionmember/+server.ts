@@ -27,14 +27,11 @@ export async function POST({request, locals, params}) {
 
     if (['rejectPending', 'approvePending', 'approveMain', 'rejectMain'].includes(payload.action) && userMember.roleId <= 302 || (userMember.roleId == 302 && userMember.canApproveMember)) {
       switch(payload.action) {
-        case 'rejectPending': 
-          await db.clubMember.update({
+        case 'rejectPending':
+          await db.clubMember.delete({
             where: {
               id: payload.targetId,
-              roleId: 306
-            },
-            data: {
-              roleId: 399
+              roleId: 306,
             }
           })
           break
@@ -257,6 +254,13 @@ export async function POST({request, locals, params}) {
         }
       }
       response.header.ok = true
+    } else if (['cancelJoin'].includes(payload.action) && userMember.roleId == 306) {
+      await db.clubMember.delete({
+        where: {
+          id: userMember.id,
+          roleId: 306
+        }
+      })
     } else {
       response.header.ok = false
       response.header.error = 'Permission error for selected operation'
