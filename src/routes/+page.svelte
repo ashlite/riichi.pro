@@ -9,7 +9,7 @@
 </script>
 
 <div class="h-screen relative overflow-hidden">
-  <img src={bgImage} use:filter={'#Emerald'} class="absolute w-full h-full -z-10 object-cover"/>
+  <img src={bgImage} use:filter={'#Emerald'} class="absolute w-full h-full -z-10 object-cover" alt="main background"/>
   <!-- <div class="hero-overlay bg-opacity-70"></div> -->
   <div class="card w-4/5 md:w-3/5 p-4 variant-glass-surface absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
     <header>

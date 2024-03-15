@@ -16,7 +16,7 @@ export interface iParticipant {
 }
 
 export interface iMatchInput {
-  matchAt: Date
+  matchAt: number
   type: number
   matchRuleId: number
   playerUniqueCode: string

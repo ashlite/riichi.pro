@@ -3,27 +3,46 @@
   import { Avatar } from '@skeletonlabs/skeleton';
   //mylib
   import { getLoginUser } from "store/user.js";
+  import type { iMemberAction } from "interface/club";
+  import type { iGlobalResponse } from "interface/utils.js";
   //Icon
   import Icon from '@iconify/svelte'
   import { goto } from '$app/navigation'
+  //svelte
+  import { invalidateAll } from '$app/navigation'
 
   export let data
   const loginUser = getLoginUser()
 
   let totalMain = 0
   data.listClub.forEach(club => {
-    if (club.roleData.id < 304) totalMain++
+    if (club.roleData.id < 304 && [501, 502, 504, 506, 599].includes(club.clubData.statusData.id) ) totalMain++
   })
+
+  async function cancelJoin(slug: string) {
+    const payload: iMemberAction = {
+      action: 'cancelJoin',
+      targetId: 0
+    }
+    const response = await fetch(`/api/v1/private/club/${slug}/actionmember`, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    })
+    const result = await response.json() as iGlobalResponse
+    if (result.header.ok) {
+      invalidateAll()
+    }
+  }
 </script>
 
 <div class="mt-8 w-4/5 mx-auto">
   <div class="flex flex-row justify-between flex-wrap">
     <h1 class="font-bold text-5xl text-primary">Your Club</h1>
     {#if totalMain == 0 && data.listClub.length < $loginUser.rtData.clubLimit}
-      <button class="btn variant-filled-success">
+      <a class="btn variant-filled-success" href="/app/createclub">
         <span class="h3 mr-2"><Icon icon="mingcute:add-line" /></span>
         Create Club
-      </button>
+      </a>
     {:else}
       <button class="btn variant-filled-success" disabled>
         <span class="h3 mr-2"><Icon icon="mingcute:add-line" /></span>
@@ -43,22 +62,19 @@
           </figure>
           <div class="grow">
             <header class="h2 font-bold text-ellipsis">({club.clubData.countryISO2}) {club.clubData.name}</header>
-            <section>
-              <div>{club.roleData.name}</div>
+            <section class="flex flex-row gap-4">
+              <div>Status: <span class="font-bold">{club.clubData.statusData.name}</span></div>
+              <div>Member: <span class="font-bold">{club.roleData.name}</span></div>
             </section>
           </div>
-          {#if club.clubData.clubStatusId == 501}
-            <button class="btn variant-filled" disabled>
-              PENDING
+          {#if club.roleData.id == 306}
+            <button class="btn variant-warning" on:click={() => cancelJoin(club.clubData.slug)}>
+              Cancel Applying
             </button>
-          {:else if club.clubData.clubStatusId == 502}
+          {:else}
             <a href={`/app/club/${club.clubData.slug}/dashboard`} class="btn variant-filled-success">
               ENTER
             </a>
-          {:else}
-            <button class="btn variant-filled-error" disabled>
-              INACTIVE
-            </button>
           {/if}
         </div>
       </div>
@@ -67,7 +83,7 @@
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <!-- svelte-ignore a11y-no-static-element-interactions -->
         <div class="card p-4 flex flex-row gap-4" on:click={() => {
-          if(club.clubData.clubStatusId == 502) goto(`/app/club/${club.clubData.slug}/dashboard`)
+          if(club.roleData.id != 306) goto(`/app/club/${club.clubData.slug}/dashboard`)
         }}>
           <figure>
             <Avatar src={club.clubData.emblemFile ?? ''} rounded="rounded-lg" width="w-24" initials={club.clubData.name} />
@@ -75,22 +91,8 @@
           <div class="grow">
             <header class="h2 font-bold text-ellipsis">({club.clubData.countryISO2}) {club.clubData.name}</header>
             <section>
-              <div>{club.roleData.name}</div>
-              <div>Status: 
-                {#if club.clubData.clubStatusId == 501}
-                  <span class="text-surface-600-300-token">
-                    PENDING
-                  </span>
-                {:else if club.clubData.clubStatusId == 502}
-                  <span class="text-success-600-300-token font-bold">
-                    ACTIVE
-                  </span>
-                {:else}
-                  <span class="text-error-600-300-token">
-                    INACTIVE
-                  </span>
-                {/if}
-              </div>
+              <div>Status: <span class="font-bold">{club.clubData.statusData.name}</span></div>
+              <div>Member: <span class="font-bold">{club.roleData.name}</span></div>
             </section>
           </div>
         </div>

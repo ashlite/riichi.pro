@@ -16,7 +16,7 @@ export async function load({locals}) {
           emblemFile: true,
           countryISO2: true,
           slug: true,
-          clubStatusId: true,
+          statusData: true,
         }
       },
       roleData: {

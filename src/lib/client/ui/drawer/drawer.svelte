@@ -36,7 +36,10 @@
           <Navitem href="/app/profile">Profile</Navitem>
           <Navitem href="/app/club">My Club</Navitem>
           {#if $user.roleId >= 102}
-          <Navitem href="/app/official/dashboard">Official</Navitem>
+            <Navitem href="/app/official/dashboard">Official</Navitem>
+          {/if}
+          {#if $user.roleId >= 103}
+            <Navitem href="/app/developer/dashboard">Developer</Navitem>
           {/if}
         {/if}
         {#if !$user}
