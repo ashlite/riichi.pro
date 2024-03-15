@@ -13,7 +13,8 @@
   
   export let data
   const toast = getToastStore()
-  const matchData = { matchAt: new Date, deposit: 0, type: 1, matchRuleId: 0,  playerUniqueCode: '', note: undefined, participantList:[], participantIdList:[] } as iMatchInput
+  const matchData = { matchAt: 0, deposit: 0, type: 1, matchRuleId: 0,  playerUniqueCode: '', note: undefined, participantList:[], participantIdList:[] } as iMatchInput
+  let matchDate = new Date()
   let scoreList: number[] = []
   let totalNovice = 0
   let totalAmateur = 0
@@ -68,6 +69,7 @@
   async function submitMatch() {
     processing = true
     matchData.matchRuleId = data.listMatchType[selectedRule].id
+    matchData.matchAt = matchDate.getTime()
 
     const response = await fetch(`/api/v1/private/club/${data.userMemberData.clubData.slug}/match`, {
       method: 'POST',
@@ -107,7 +109,7 @@
   <div class="grid grid-cols-3 gap-4 items-center">
     <label for="matchdate" class="label flex flex-col">
       <span>Match Date?</span>
-      <DatePicker bind:selectedDate={matchData.matchAt} maxDay={0} />
+      <DatePicker bind:selectedDate={matchDate} maxDay={0} />
     </label>
     <label class="">
       <span>DEPOSIT</span>

@@ -349,7 +349,7 @@ export async function POST({locals, params, request}) {
       //Record match data
       await tx.match.create({
         data: {
-          matchAt: payload.matchAt,
+          matchAt: new Date(payload.matchAt),
           typeId: payload.matchRuleId,
           deposit: payload.deposit,
           clubId: submitterData.clubId,
