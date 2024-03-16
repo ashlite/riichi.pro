@@ -26,7 +26,7 @@ function changeScore(e: Event) {
     </div>
     <div>
       <h2 class="h2">{data.fullName}</h2>
-      <h3 class="h3 text-secondary-600-300-token">{index == 0 ? 'East' : index == 1 ? 'South' : index == 2 ? 'North' : 'West'} - {data.playerRtName}</h3>
+      <h3 class="h3 text-secondary-600-300-token">{index == 0 ? 'East' : index == 1 ? 'South' : index == 2 ? 'West' : 'North'} - {data.playerRtName}</h3>
     </div>
   </header>
   <section class="p-4">
