@@ -34,7 +34,7 @@ export async function PATCH({request, locals, params}) {
       },
       data: {
         name: payload.name,
-        slug: payload.slug,
+        slug: payload.slug.toLowerCase(),
       }
     })
 

@@ -6,7 +6,7 @@
   import {getToastStore, Avatar, ProgressRadial} from '@skeletonlabs/skeleton'
   //svelte
   import { env } from '$env/dynamic/public'
-  import { invalidateAll } from "$app/navigation";
+  import { invalidateAll, goto } from "$app/navigation";
   //icon
   import Icon from '@iconify/svelte'
   //Prisma
@@ -113,7 +113,7 @@
     } else {
       const payload: Prisma.ClubUpdateInput = {
         name: newName,
-        slug: newSlug
+        slug: newSlug.toLowerCase()
       }
       const response = await fetch(`/api/v1/private/club/${data.clubInfo.slug}/name`, {
         method: 'PATCH',
@@ -122,10 +122,10 @@
       // const result: iGlobalResponse = await response.json()
       if (response.ok) {
         toast.trigger({
-          message: 'Info Updated',
+          message: 'Name and slug Updated',
           background: 'variant-filled-success'
         })
-        invalidateAll()
+        goto(`/app/club/${payload.slug}/changeinfo`)
       } else {
         toast.trigger({
           message: response.statusText,
