@@ -6,7 +6,7 @@ export async function load({ locals, params }) {
     //check user and throw if needed
     const clubData = await db.club.findFirstOrThrow({
       where: {
-        slug: params.slug
+        slug: params.slug.toLowerCase()
       }, 
       include: {
         clubSetting: true,
