@@ -7,6 +7,10 @@
   //svelte
   import { env } from '$env/dynamic/public'
   import { invalidateAll } from "$app/navigation";
+  //icon
+  import Icon from '@iconify/svelte'
+  //Prisma
+  import { Prisma } from "@prisma/client";
 
   export let data
   const baseEmblemUrl = env.PUBLIC_TEBI_CLUB_EMBLEM
@@ -15,6 +19,8 @@
   let emblemInput: HTMLInputElement
   let coverInput: HTMLInputElement
   let processing = false
+  let newName = data.clubInfo.name
+  let newSlug = data.clubInfo.slug
 
   async function updateInfo() {
     processing = true
@@ -90,6 +96,43 @@
       })
     }
     processing = false
+  }
+
+  async function updateName() {
+    processing = true
+    let checker = 0
+    if(newName.length > 1) checker++
+    if(newSlug.length >= 4) checker++
+    if(newSlug.match(/^[a-z0-9]+(?:-[a-z0-9]+)*$/g)) checker++
+    
+    if (checker != 3) {
+      toast.trigger({
+        message: 'Wrong name and slug format, please check again.',
+        background: 'variant-filled-error'
+      })
+    } else {
+      const payload: Prisma.ClubUpdateInput = {
+        name: newName,
+        slug: newSlug
+      }
+      const response = await fetch(`/api/v1/private/club/${data.clubInfo.slug}/name`, {
+        method: 'PATCH',
+        body: JSON.stringify(data.clubInfo)
+      })
+      // const result: iGlobalResponse = await response.json()
+      if (response.ok) {
+        toast.trigger({
+          message: 'Info Updated',
+          background: 'variant-filled-success'
+        })
+        invalidateAll()
+      } else {
+        toast.trigger({
+          message: response.statusText,
+          background: 'variant-filled-error'
+        })
+      }
+    }
   }
 </script>
 
@@ -186,4 +229,41 @@
       {/if}
     </div>
   </form>
+  <!-- only pending and rejected club can change names and slug-->
+  {#if [501,506].includes(data.clubInfo.clubStatusId)}
+    <aside class="alert variant-filled-surface">
+      <div class="h3 font-bold"><Icon icon="mingcute:information-line" /></div>
+      <form on:submit|preventDefault={updateName}>
+        <div class="alert-message">
+          <h3 class="h3 font-bold">Update club name and slug</h3>
+          <div class="flex flex-row gap-4 items-end">
+            <div>
+              <label class="label">
+                <span>New Name</span>
+                <input class="input p-2 text-surface-900-50-token" type="text" bind:value={newName} required />
+              </label>
+            </div>
+            <div>
+              <label class="label">
+                <span>New Slug</span>
+                <input class="input p-2 text-surface-900-50-token" type="text" bind:value={newSlug} required minlength={4} />
+              </label>
+            </div>
+            <div class="alert-actions">
+              <button type="submit" class="btn variant-filled-success">Submit</button>
+            </div>
+          </div>
+          <div>Once the club approve, club name and slug need admin permission to be changed. Please use appropriate word for name and slug. Slug will be convert to lowercase.</div>
+        </div>
+      </form>
+    </aside>
+  {:else}
+    <aside class="alert variant-filled-warning">
+      <div class="h3 font-bold"><Icon icon="mingcute:information-line" /></div>
+      <div class="alert-message">
+        <h3 class="h3 font-bold">Info</h3>
+        <p>Club name and slug can't be changed if the club approve, to request for changing club name, please contact admin.</p>
+      </div>
+    </aside>
+  {/if}
 </div>
