@@ -43,3 +43,7 @@ export interface iClubOfficialAction {
   actionId: number
   notes: string | null
 }
+
+export interface iClubAction {
+  actionId: number
+}
