@@ -68,6 +68,7 @@ export async function load({ locals, params }) {
     }
     
   } catch (e) {
+    console.log(e)
     error(404, 'Club not found.');
   }
 }
