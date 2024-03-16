@@ -27,7 +27,7 @@ export async function PATCH({request, locals, params}) {
         clubId: true
       }
     })
-
+    
     await db.club.update({
       where: {
         id: userMember.clubId
@@ -37,6 +37,8 @@ export async function PATCH({request, locals, params}) {
         slug: payload.slug.toLowerCase(),
       }
     })
+
+    response.header.ok = true
 
   } catch (e) {
     response.header.ok = false

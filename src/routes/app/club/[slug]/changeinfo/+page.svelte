@@ -117,8 +117,9 @@
       }
       const response = await fetch(`/api/v1/private/club/${data.clubInfo.slug}/name`, {
         method: 'PATCH',
-        body: JSON.stringify(data.clubInfo)
+        body: JSON.stringify(payload)
       })
+      console.log(response)
       // const result: iGlobalResponse = await response.json()
       if (response.ok) {
         toast.trigger({
@@ -133,6 +134,7 @@
         })
       }
     }
+    processing = false
   }
 </script>
 
@@ -249,9 +251,13 @@
                 <input class="input p-2 text-surface-900-50-token" type="text" bind:value={newSlug} required minlength={4} />
               </label>
             </div>
-            <div class="alert-actions">
-              <button type="submit" class="btn variant-filled-success">Submit</button>
-            </div>
+            {#if processing}
+              <ProgressRadial width="w-8" />
+            {:else}
+              <div class="alert-actions">
+                <button type="submit" class="btn variant-filled-success">Submit</button>
+              </div>
+            {/if}
           </div>
           <div>Once the club approve, club name and slug need admin permission to be changed. Please use appropriate word for name and slug. Slug will be convert to lowercase.</div>
         </div>
