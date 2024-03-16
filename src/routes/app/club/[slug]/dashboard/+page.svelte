@@ -4,7 +4,7 @@
 	//mylib
   import { countryNameFromCode } from "client-service/country";
   import { dateFormater } from "client-service/tools";
-  import type { iMemberAction } from "interface/club";
+  import type { iMemberAction, iClubAction } from "interface/club";
   import Image from 'ui/image.svelte'
   //skeleton
   import { getToastStore, getModalStore } from '@skeletonlabs/skeleton'
@@ -64,6 +64,28 @@
       } else {
         toast.trigger({
           message: 'Failed to quit club, please contact admin',
+          background: 'variant-filled-error'
+        })
+      }
+    }
+  }
+
+  async function appealClub(){
+    if (data.userMemberData && data.userMemberData.roleId == 301) {
+      const payload: iClubAction = {actionId: 599}
+      const response = await fetch(`/api/v1/private/club/${data.userMemberData.clubData.slug}/actionclub`, {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      })
+      if (response.ok) {
+        invalidateAll()
+        toast.trigger({
+          message: `Appeal for ${data.userMemberData.clubData.name} recorded`,
+          background: 'variant-filled-success'
+        })
+      } else {
+        toast.trigger({
+          message: 'Failed to appeal your club, please contact admin',
           background: 'variant-filled-error'
         })
       }
@@ -199,6 +221,18 @@
   {#if data.userMemberData.roleId == 304}
     <button class="btn variant-filled-primary" on:click={applyMain}>
       Apply Main Member
+    </button>
+  {/if}
+  {#if data.userMemberData.roleId == 301 && [504, 506].includes(data.userMemberData.clubData.clubStatusId)}
+    <button class="btn variant-filled-error" on:click={() => modal.trigger({
+      type: 'confirm',
+      title: 'Appeal your club',
+      body: `Please double check your club to compliant to rules and notes from admin. There is a limit to how many a club can appeal.`,
+      response: (res) => {
+        if (res) appealClub()
+      },
+    })}>
+      Quit Club
     </button>
   {/if}
 </div>
