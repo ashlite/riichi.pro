@@ -79,7 +79,7 @@
             <div class="flex flex-row gap-4">
               <div><span class="font-bold">Position: </span>{participant.position + 1}</div>
               <div><span class="font-bold">Score: </span>{participant.score}</div>
-              <div><span class="font-bold">Uma: </span>{participant.gainUma}</div>
+              <div><span class="font-bold">Net: </span>{participant.gainUma}</div>
               <div><span class="font-bold">Chombo: </span>{participant.chombo}</div>
             </div>
           </div>
