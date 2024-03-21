@@ -100,8 +100,11 @@ export async function POST({locals, params, request}) {
     //check submitter data
     if (submitterData.roleId > 302 || (submitterData.roleId == 302 && !submitterData.canSubmitMatch)) {
       throw 'You have no permission to submit a match for this club'
+    } else if (!submitterData.clubData.clubSetting) {
+      throw 'Club Setting not set, please set uma, chombo, and yakuman point'
+    } else if (submitterData.clubData.clubStatusId != 502) {
+      throw 'Club is not active, cannot record a match'
     }
-    if (!submitterData.clubData.clubSetting) throw 'CLub Setting not set, please set uma, chombo, and yakuman point'
 
     //remap ranktitle and player data to hashmap instead of an array for easier reading
     rtList.forEach(element => {rtData[element.id] = element})

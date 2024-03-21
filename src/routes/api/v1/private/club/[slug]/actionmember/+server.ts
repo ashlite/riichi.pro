@@ -19,13 +19,14 @@ export async function POST({request, locals, params}) {
       include: {
         clubData: {
           select: {
+            clubStatusId: true,
             maxAdmin: true
           }
         }
       }
     })
 
-    if (['rejectPending', 'approvePending', 'approveMain', 'rejectMain'].includes(payload.action) && userMember.roleId <= 302 || (userMember.roleId == 302 && userMember.canApproveMember)) {
+    if (['rejectPending', 'approvePending', 'approveMain', 'rejectMain'].includes(payload.action) && userMember.roleId <= 302 || (userMember.roleId == 302 && userMember.canApproveMember && userMember.clubData.clubStatusId == 502)) {
       switch(payload.action) {
         case 'rejectPending':
           await db.clubMember.delete({
@@ -96,7 +97,7 @@ export async function POST({request, locals, params}) {
           break
       }
       response.header.ok = true
-    } else if (['transferOwnership'].includes(payload.action) && userMember.roleId == 301 ) {
+    } else if (['transferOwnership'].includes(payload.action) && userMember.roleId == 301 && userMember.clubData.clubStatusId == 502 ) {
       await db.$transaction([
         //transfer to new Owner
         db.clubMember.update({
@@ -122,7 +123,7 @@ export async function POST({request, locals, params}) {
       ])
       
       response.header.ok = true
-    } else if (['becomeAdmin', 'kickAdmin', 'kick'].includes(payload.action) && userMember.roleId <= 302 || (userMember.roleId == 302 && userMember.canEditAccess)) {
+    } else if (['becomeAdmin', 'kickAdmin', 'kick'].includes(payload.action) && userMember.roleId <= 302 || (userMember.roleId == 302 && userMember.canEditAccess && userMember.clubData.clubStatusId == 502)) {
       switch(payload.action) {
         case 'becomeAdmin': {
           await db.$transaction(async (tx) => {
