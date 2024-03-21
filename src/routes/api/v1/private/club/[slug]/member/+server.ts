@@ -158,6 +158,8 @@ export async function POST({locals, params}) {
       })
     ])
 
+    //check for club status
+    if (clubData.clubStatusId != 502) error(403, 'Not active club')
     //check user rtdata limit is not 
     if (userData.clubList.length >= userData.rtData.clubLimit) error(403, 'Club limit achieved')
     //check duplicate join
