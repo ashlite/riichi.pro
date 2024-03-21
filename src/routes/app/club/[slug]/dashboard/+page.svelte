@@ -69,27 +69,6 @@
     }
   }
 
-  async function appealClub(){
-    if (data.userMemberData && data.userMemberData.roleId == 301) {
-      const payload: iClubAction = {actionId: 599}
-      const response = await fetch(`/api/v1/private/club/${data.userMemberData.clubData.slug}/actionclub`, {
-        method: 'POST',
-        body: JSON.stringify(payload)
-      })
-      if (response.ok) {
-        invalidateAll()
-        toast.trigger({
-          message: `Appeal for ${data.userMemberData.clubData.name} recorded`,
-          background: 'variant-filled-success'
-        })
-      } else {
-        toast.trigger({
-          message: 'Failed to appeal your club, please contact admin',
-          background: 'variant-filled-error'
-        })
-      }
-    }
-  }
 </script>
 
 <div class="w-full">
@@ -128,19 +107,7 @@
             Apply Main Member
           </button>
         {/if}
-        {#if data.userMemberData.roleId == 301 && [504, 506].includes(data.userMemberData.clubData.clubStatusId)}
-          <button class="btn variant-filled-primary" on:click={() => modal.trigger({
-            type: 'confirm',
-            title: 'Appeal your club',
-            body: `Please double check your club to compliant to rules and notes from admin. There is a limit to how many a club can appeal.`,
-            response: (res) => {
-              if (res) appealClub()
-            },
-          })}>
-            <span class="h3 mr-2"><Icon icon="mingcute:balance-line" /></span>
-            Appeal Club
-          </button>
-        {/if}
+        
       </div>
     </div>
   </div>
@@ -171,6 +138,18 @@
   </p>
   
   <h2 class="h2 font-bold text-primary-500 mt-8">Meta</h2>
+  <div>
+    <p class="font-bold">
+      Club Status :
+      {#if [501, 599].includes(clubData.clubStatusId)}
+        <span class="badge variant-filled-warning">{clubData.statusData.name}</span>
+      {:else if clubData.clubStatusId == 502}
+        <span class="badge variant-filled-success">{clubData.statusData.name}</span>
+      {:else}
+        <span class="badge variant-filled-error">{clubData.statusData.name}</span>
+      {/if}
+    </p>
+  </div>
   <p>
     <span class="font-bold">Total Member / Main :</span>
     <span>{clubData.totalMember} / {clubData.totalMainMember}</span>
