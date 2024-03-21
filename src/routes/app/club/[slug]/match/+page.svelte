@@ -137,12 +137,14 @@
     <div class="">
       {#if processing}
         <button class="btn w-full variant-ghost" disabled>Processing</button>
-      {:else if matchData.participantIdList.length >= 4 && totalScore == data.listMatchType[selectedRule].totalScore}
-        <button class="btn w-full variant-filled-success" on:click={submitMatch}>Submit Match</button>
+      {:else if data.userMemberData.clubData.clubStatusId != 502}
+        <button class="btn w-full variant-filled-success" disabled>Non-active club</button>
       {:else if matchData.participantIdList.length < 4}
         <button class="btn w-full variant-filled-success" disabled>{`${matchData.participantIdList.length}/4 players`}</button>  
       {:else if totalScore != data.listMatchType[selectedRule].totalScore}
         <button class="btn w-full variant-filled-success" disabled>total score must 120.000</button>
+      {:else}
+        <button class="btn w-full variant-filled-success" on:click={submitMatch}>Submit Match</button>
       {/if}
     </div>
   </div>
