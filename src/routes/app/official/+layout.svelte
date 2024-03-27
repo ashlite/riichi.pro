@@ -9,7 +9,7 @@
 
 <div class="grid grid-cols-12 mt-8 mx-8 gap-8">
   <div class="col-span-3">
-    <ul class="card p-4 w-full flex flex-col gap-2">
+    <ul class="card p-4 w-full variant-filled flex flex-col gap-2">
       <Navitem href="/app/official/dashboard" menu>
         Dashboard
       </Navitem>

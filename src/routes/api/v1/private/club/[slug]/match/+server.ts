@@ -345,7 +345,7 @@ export async function POST({locals, params, request}) {
           ccBefore: submitterData.clubData.currentCC,
           ccMove: useCC,
           ccAfter: submitterData.clubData.currentCC - useCC,
-          type: 651,           
+          typeId: 651
         }
       })
 

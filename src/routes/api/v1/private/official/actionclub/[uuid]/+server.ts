@@ -11,25 +11,37 @@ export async function POST({locals, params, request}) {
       const payload: iClubOfficialAction = await request.json()
       
       if (payload.actionId == 502) {
+        const updateData: Prisma.ClubUpdateInput = {
+          statusData: {
+            connect: {
+              id: 502
+            }
+          }
+        }
+
+        if (payload.notes == "501") {
+          // add cc if from pending
+          updateData.currentCC = 100,
+          updateData.transactionList = {
+            create: {
+              userId: locals.user.id,
+              ccBefore: 0,
+              ccMove: 100,
+              ccAfter: 100,
+              typeId: 601,
+            }
+          }
+        }
+
         //approving club
         await db.club.update({
           where: {
             id: params.uuid,
-            clubStatusId: 501
-          },
-          data: {
-            clubStatusId: 502,
-            currentCC: 100,
-            transactionList: {
-              create: {
-                userId: locals.user.id,
-                ccBefore: 0,
-                ccMove: 100,
-                ccAfter: 100,
-                type:601,
-              }
+            clubStatusId: {
+              in: [501, 599]
             }
-          }
+          },
+          data: updateData
         })
       } else if (payload.actionId == 504) {
         //ban temporary

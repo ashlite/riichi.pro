@@ -55,6 +55,7 @@ async function clubPost(actionId: number, clubUuid: string, notes: string | null
         <th>Club</th>
         <th>Contact</th>
         <th>Owner</th>
+        <th>Status</th>
         <th>Action</th>
       </tr>
     </thead>
@@ -75,6 +76,13 @@ async function clubPost(actionId: number, clubUuid: string, notes: string | null
           </td>
           <td>
             <PlayerAvatar playerAvatarUrl={club.memberList[0].userData.avatarUrl} playerId={club.memberList[0].userData.id} playerName={club.memberList[0].userData.fullName} width="w-20" />
+          </td>
+          <td>
+            {#if club.clubStatusId == 501}
+              <div class="badge variant-filled-secondary">PENDING</div>
+            {:else if club.clubStatusId == 599}
+              <div class="badge variant-filled-warning">APPEAL</div>
+            {/if}
           </td>
           <td>
             <button class="btn variant-filled-success" on:click={() => {
@@ -100,7 +108,7 @@ async function clubPost(actionId: number, clubUuid: string, notes: string | null
                 value: 'inappropriate name',
                 valueAttr: { type: 'text', minlength: 3, required: true, class: 'input p-2' },
                 response: (r) => {
-                  clubPost(506, club.id, r)
+                  clubPost(506, club.id, club.clubStatusId.toString())
                 },
               })
             }}>
