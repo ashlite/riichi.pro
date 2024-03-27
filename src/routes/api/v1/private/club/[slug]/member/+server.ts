@@ -4,7 +4,7 @@ import { json } from "@sveltejs/kit";
 import { db } from "server-service/db.js";
 import { error } from "@sveltejs/kit";
 
-export async function GET({locals, params, url}) {
+export async function GET({params, url}) {
   const response = {header:{}, data:{}} as iGlobalResponse
   const { slug } = params
 
@@ -92,9 +92,8 @@ export async function GET({locals, params, url}) {
   return json(response)
 }
 
-export async function PATCH({locals, params, request}) {
+export async function PATCH({request}) {
   const response = {header:{}, data:{}} as iGlobalResponse
-  const { slug } = params
 
   try {
 
@@ -159,6 +158,8 @@ export async function POST({locals, params}) {
       })
     ])
 
+    //check for club status
+    if (clubData.clubStatusId != 502) error(403, 'Not active club')
     //check user rtdata limit is not 
     if (userData.clubList.length >= userData.rtData.clubLimit) error(403, 'Club limit achieved')
     //check duplicate join
@@ -167,7 +168,7 @@ export async function POST({locals, params}) {
     })
 
     //check if auto approve or not
-    if (clubData.clubSetting!.autoApproveMember) {
+    if (clubData.clubSetting?.autoApproveMember) {
       await db.clubMember.create({
         data: {
           userId: userData.id,

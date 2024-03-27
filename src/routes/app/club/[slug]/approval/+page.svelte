@@ -8,6 +8,8 @@
   //svelte  
   import { invalidateAll } from "$app/navigation";
 	import PlayerAvatar from "ui/playerAvatar.svelte";
+  //icon
+  import Icon from '@iconify/svelte'
 
   export let data
   const toast = getToastStore()
@@ -68,20 +70,27 @@
             {/if}
           </td>
           <td>
-            {#if member.roleId == 306}
-              <button class="btn variant-filled-success" on:click={() => applyAction(member.id, 'approvePending')} >
-                Approve
-              </button>
-              <button class="btn variant-filled-error" on:click={() => applyAction(member.id, "approvePending")} >
-                Reject
-              </button>
-            {:else if member.roleId == 305}
-              <button class="btn variant-filled-success" on:click={() => applyAction(member.id, 'approveMain')} >
-                Approve
-              </button>
-              <button class="btn variant-filled-error" on:click={() => applyAction(member.id, 'rejectMain')} >
-                Reject
-              </button>
+            {#if data.userMemberData.clubData.clubStatusId == 502}
+              {#if member.roleId == 306}
+                <button class="btn variant-filled-success" on:click={() => applyAction(member.id, 'approvePending')} >
+                  <span class="h4"><Icon icon="mingcute:check-line" /></span>
+                  Approve
+                </button>
+                <button class="btn variant-filled-error" on:click={() => applyAction(member.id, "approvePending")} >
+                  <span class="h4"><Icon icon="mingcute:close-line" /></span>
+                  Reject
+                </button>
+              {:else if member.roleId == 305}
+                <button class="btn variant-filled-success" on:click={() => applyAction(member.id, 'approveMain')} >
+                  <span class="h4"><Icon icon="mingcute:check-line" /></span>
+                  Approve
+                </button>
+                <button class="btn variant-filled-error" on:click={() => applyAction(member.id, 'rejectMain')} >
+                  <span class="h4"><Icon icon="mingcute:close-line" /></span>
+                  Reject
+                </button>
+              {/if}
+              
             {/if}
           </td>
         </tr>

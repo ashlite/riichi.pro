@@ -8,7 +8,6 @@
   import Image from 'ui/image.svelte'
   //skeleton
   import { getToastStore, getModalStore } from '@skeletonlabs/skeleton'
-
   //svelte
   import {env} from '$env/dynamic/public'
 	import { invalidateAll } from "$app/navigation";
@@ -70,27 +69,6 @@
     }
   }
 
-  async function appealClub(){
-    if (data.userMemberData && data.userMemberData.roleId == 301) {
-      const payload: iClubAction = {actionId: 599}
-      const response = await fetch(`/api/v1/private/club/${data.userMemberData.clubData.slug}/actionclub`, {
-        method: 'POST',
-        body: JSON.stringify(payload)
-      })
-      if (response.ok) {
-        invalidateAll()
-        toast.trigger({
-          message: `Appeal for ${data.userMemberData.clubData.name} recorded`,
-          background: 'variant-filled-success'
-        })
-      } else {
-        toast.trigger({
-          message: 'Failed to appeal your club, please contact admin',
-          background: 'variant-filled-error'
-        })
-      }
-    }
-  }
 </script>
 
 <div class="w-full">
@@ -99,11 +77,39 @@
       <Image src={baseCoverUrl + clubData.coverFile} objectCover maxH={60} errorSrc="https://placehold.co/2000x400?text=Failed+to+load" />
     </div>  
   {/if}
-  <div class="flex flex-row gap-4">
+  <div class="flex flex-col lg:flex-row gap-4">
     <div class="w-40 border-4 border-white shadow-xl rounded-lg">
       <Image src={baseEmblemUrl + clubData.emblemFile} objectContain errorSrc="https://placehold.co/400x400?text=No+Img+400x400+px"/>
     </div>
-    <h1 class="h1 font-bold pt-4">{clubData.name}</h1>
+    <div>
+      <h1 class="h1 font-bold my-4">{clubData.name}</h1>
+      <div class="flex flex-row mb-8 gap-4 flex-wrap">
+        <a class="btn variant-filled-primary" href={`/club/${clubData.slug}`}>
+          <span class="h3 mr-2"><Icon icon="mingcute:calendar-day-line" /></span>
+          Check Page
+        </a>
+        {#if data.userMemberData.roleId != 301}
+          <button class="btn variant-filled-primary" on:click={() => modal.trigger({
+            type: 'confirm',
+            title: 'Confirmation',
+            body: `Are you sure you want to quit from club ${clubData.name}?`,
+            response: (res) => {
+              if (res) exitClub()
+            },
+          })}>
+            <span class="h3 mr-2"><Icon icon="mingcute:exit-line" /></span>
+            Quit Club
+          </button>
+        {/if}
+        {#if data.userMemberData.roleId == 304}
+          <button class="btn variant-filled-primary" on:click={applyMain}>
+            <span class="h3 mr-2"><Icon icon="mingcute:idcard-line" /></span>
+            Apply Main Member
+          </button>
+        {/if}
+        
+      </div>
+    </div>
   </div>
 </div>
 <div class="card p-4 variant-filled shadow-xl mt-8">
@@ -118,18 +124,32 @@
   </p>
   <p>
     <span class="font-bold">Email :</span>
-    <span>{clubData.emailContact}</span>
+    <span>{clubData.emailContact ?? ''}</span>
   </p>
   <p>
     <span class="font-bold">Phone :</span>
-    <span>{clubData.phoneContact}</span>
+    <span>{clubData.phoneContact ?? ''}</span>
   </p>
   <p>
     <span class="font-bold">Website :</span>
-    <a href={clubData.website} data-sveltekit-preload-data="tap" target="_blank" class="underline">{clubData.website}</a>
+    {#if clubData.website}
+      <a href={clubData.website} data-sveltekit-preload-data="tap" target="_blank" class="underline">{clubData.website}</a>
+    {/if}
   </p>
   
   <h2 class="h2 font-bold text-primary-500 mt-8">Meta</h2>
+  <div>
+    <p class="font-bold">
+      Club Status :
+      {#if [501, 599].includes(clubData.clubStatusId)}
+        <span class="badge variant-filled-warning">{clubData.statusData.name}</span>
+      {:else if clubData.clubStatusId == 502}
+        <span class="badge variant-filled-success">{clubData.statusData.name}</span>
+      {:else}
+        <span class="badge variant-filled-error">{clubData.statusData.name}</span>
+      {/if}
+    </p>
+  </div>
   <p>
     <span class="font-bold">Total Member / Main :</span>
     <span>{clubData.totalMember} / {clubData.totalMainMember}</span>
@@ -145,11 +165,11 @@
 </div>
 <div class="card p-4 variant-filled shadow-xl my-4">
   <header>
-    <h2 class="h2 font-bold text-secondary-500">Settings</h2>
+    <h2 class="h2 font-bold text-primary-500">Settings</h2>
   </header>
   <div class="card-body">
     <div class="flex flex-col gap-4 gap-y-1">
-      <h2 class="font-bold flex flex-row items-center gap-2">
+      <!-- <h2 class="font-bold flex flex-row items-center gap-2">
         Accept Autotable
         {#if clubData.clubSetting?.acceptAutotable}
           <span class="h3 text-success-500">
@@ -160,7 +180,7 @@
             <Icon icon="mingcute:square-line" />
           </span>
         {/if}
-      </h2>
+      </h2> -->
       <h2 class="font-bold flex flex-row items-center gap-2">
         Auto Approve
         {#if clubData.clubSetting?.autoApproveMember}
@@ -203,36 +223,4 @@
     </div>
   </div>
 </div>
-<div class="h2 w-full text-left border-b-2 border-primary-500 mb-2">ACTION</div>
-<div class="flex flex-row mb-8 gap-4">
-  <a class="btn variant-filled-secondary" href={`/club/${clubData.slug}`}>Check Page</a>
-  {#if data.userMemberData.roleId != 301}
-    <button class="btn variant-filled-error" on:click={() => modal.trigger({
-      type: 'confirm',
-      title: 'Confirmation',
-      body: `Are you sure you want to quit from club ${clubData.name}?`,
-      response: (res) => {
-        if (res) exitClub()
-      },
-    })}>
-      Quit Club
-    </button>
-  {/if}
-  {#if data.userMemberData.roleId == 304}
-    <button class="btn variant-filled-primary" on:click={applyMain}>
-      Apply Main Member
-    </button>
-  {/if}
-  {#if data.userMemberData.roleId == 301 && [504, 506].includes(data.userMemberData.clubData.clubStatusId)}
-    <button class="btn variant-filled-error" on:click={() => modal.trigger({
-      type: 'confirm',
-      title: 'Appeal your club',
-      body: `Please double check your club to compliant to rules and notes from admin. There is a limit to how many a club can appeal.`,
-      response: (res) => {
-        if (res) appealClub()
-      },
-    })}>
-      Quit Club
-    </button>
-  {/if}
-</div>
+

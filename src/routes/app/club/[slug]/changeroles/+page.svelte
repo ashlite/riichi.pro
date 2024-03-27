@@ -136,29 +136,31 @@
             <td class="text-center">
               <input type="checkbox" class="checkbox" bind:checked={member.canApproveMember} disabled={member.roleId == 303 ? true : false} />
             </td>
-            <td class="text-center"><input type="checkbox" class="checkbox" bind:checked={member.canEditClubInfo} disabled={member.roleId == 303 ? true : false}/></td>
-            <td class="text-center"><input type="checkbox" class="checkbox" bind:checked={member.canEditClubSetting} disabled={member.roleId == 303 ? true : false}/></td>
-            <td class="text-center"><input type="checkbox" class="checkbox" bind:checked={member.canSubmitMatch} disabled={member.roleId == 303 ? true : false}/></td>
-            <td class="text-center"><input type="checkbox" class="checkbox" bind:checked={member.canEditAccess} disabled={member.roleId == 303 ? true : false}/></td>
-            <td class="text-center"><input type="checkbox" class="checkbox" bind:checked={member.canSubmitTournament} disabled={member.roleId == 303 ? true : false}/></td>
-            <td class="text-center"><input type="checkbox" class="checkbox" bind:checked={member.canBuyCC} disabled={member.roleId == 303 ? true : false}/></td>
+            <td class="text-center"><input type="checkbox" class="checkbox" bind:checked={member.canEditClubInfo}/></td>
+            <td class="text-center"><input type="checkbox" class="checkbox" bind:checked={member.canEditClubSetting}/></td>
+            <td class="text-center"><input type="checkbox" class="checkbox" bind:checked={member.canSubmitMatch}/></td>
+            <td class="text-center"><input type="checkbox" class="checkbox" bind:checked={member.canEditAccess}/></td>
+            <td class="text-center"><input type="checkbox" class="checkbox" bind:checked={member.canSubmitTournament}/></td>
+            <td class="text-center"><input type="checkbox" class="checkbox" bind:checked={member.canBuyCC}/></td>
             <td class="flex flex-col gap-2">
-              <button class="btn variant-filled-success btn-sm" on:click={() => updateAccess(index)}>
-                Save Access
-              </button>
-              {#if member.roleData.id == 302}
-                <button class="btn btn-sm variant-filled" on:click={() => applyAction(member.id, 'kickAdmin')}>
-                  Revoke Admin
+              {#if data.userMemberData.clubData.clubStatusId == 502}
+                <button class="btn variant-filled-success btn-sm" on:click={() => updateAccess(index)}>
+                  Save Access
                 </button>
-                {#if data.userMemberData.roleId == 301}
-                  <button class="btn btn-sm variant-filled" on:click={() => applyAction(member.id, 'transferOwnership')}>
-                    Transfer Ownership
+                {#if member.roleData.id == 302}
+                  <button class="btn btn-sm variant-filled" on:click={() => applyAction(member.id, 'kickAdmin')}>
+                    Revoke Admin
+                  </button>
+                  {#if data.userMemberData.roleId == 301}
+                    <button class="btn btn-sm variant-filled" on:click={() => applyAction(member.id, 'transferOwnership')}>
+                      Transfer Ownership
+                    </button>
+                  {/if}
+                {:else if member.roleData.id == 303}
+                  <button class="btn btn-sm variant-filled" on:click={() => applyAction(member.id, 'becomeAdmin')}>
+                    Set as Admin
                   </button>
                 {/if}
-              {:else if member.roleData.id == 303}
-                <button class="btn btn-sm variant-filled" on:click={() => applyAction(member.id, 'becomeAdmin')}>
-                  Set as Admin
-                </button>
               {/if}
             </td>
           </tr>

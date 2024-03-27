@@ -11,11 +11,11 @@
 
 {#if menu}
   {#if $page.url.pathname.startsWith(href)}
-    <a href={href} class="text-primary-600-300-token" on:click={drawerData.close}>
+    <a href={href} class="text-primary-300-600-token" on:click={drawerData.close}>
       <slot/>
     </a>
   {:else}
-    <a href={href} class="hover:text-primary-600-300-token" on:click={drawerData.close}>
+    <a href={href} class="hover:text-primary-300-600-token" on:click={drawerData.close}>
       <slot/>
     </a>
   {/if}

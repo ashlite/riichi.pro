@@ -63,7 +63,15 @@
           <div class="grow">
             <header class="h2 font-bold text-ellipsis">({club.clubData.countryISO2}) {club.clubData.name}</header>
             <section class="flex flex-row gap-4">
-              <div>Status: <span class="font-bold">{club.clubData.statusData.name}</span></div>
+              <div>Status:
+                {#if [501, 599].includes(club.clubData.statusData.id)}
+                  <span class="badge variant-filled-warning">{club.clubData.statusData.name}</span>
+                {:else if club.clubData.statusData.id == 502}
+                  <span class="badge variant-filled-success">{club.clubData.statusData.name}</span>
+                {:else}
+                  <span class="badge variant-filled-error">{club.clubData.statusData.name}</span>
+                {/if} 
+              </div>
               <div>Member: <span class="font-bold">{club.roleData.name}</span></div>
             </section>
           </div>

@@ -12,7 +12,7 @@ export async function load({params, parent}) {
   const listMember = await db.clubMember.findMany({
     where: {
       roleId: {
-        in: [301, 302, 303]
+        in: [301, 302]
       },
       clubData: {
         slug: slug

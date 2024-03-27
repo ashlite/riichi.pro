@@ -4,9 +4,11 @@
   //svelte
   import { invalidateAll } from '$app/navigation'
   //mylib
-  import { countryNameFromCode, countryPhoneFromCode, arrCountries } from "client-service/country";
+  import { arrCountries } from "client-service/country";
   import type { iUpdateProfile } from 'interface/user';
   import DatePicker from 'ui/datePicker.svelte';
+  import { dateFormater } from 'client-service/tools.js';
+  import PlayerAvatar from 'ui/playerAvatar.svelte'
   //Icon
   import Icon from '@iconify/svelte'
 
@@ -48,7 +50,7 @@
   }
 </script>
 
-<div class="mt-8 w-4/5 mx-auto">
+<div class="mt-8 w-11/12 lg:w-4/5 mx-auto">
   <!-- <div class="divider my-0"></div> -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start mb-4">
     {#if isProcessing}
@@ -60,7 +62,6 @@
         <h1 class="h1 font-bold text-primary-600-300-token">User Profile</h1>   
         <div class="flex flex-col">
           <div class="text-secondary-700-200-token">
-            UUID: 
             <span class="font-bold">{profile.id}</span>
             <span><button class="btn-icon btn-icon-sm variant-filled-secondary" type="button" use:clipboard={profile.id} on:click={() => {
               toast.trigger({
@@ -71,15 +72,19 @@
               <Icon icon="mingcute:copy-2-line"/>
             </button></span>
           </div>
-          <div class="text-secondary-700-200-token">
+          <!-- <div class="text-secondary-700-200-token">
             Email: 
             <span class="font-bold">{profile.email}</span>
-          </div>
-          <div class="text-secondary-700-200-token">
-            Joined at: 
-            <span class="font-bold">{profile.joinedAt}</span>
+          </div> -->
+          <div class="">
+            Member since: 
+            <span class="font-bold">{dateFormater(profile.joinedAt, 'datetime')}</span>
           </div>
         </div>
+        <label class="label">
+          <span>Email</span>
+          <input class="input p-2" type="text" placeholder="Input" value={profile.email} disabled />
+        </label>
         <label class="label">
           <span>Name*</span>
           <input class="input p-2" type="text" placeholder="Input" bind:value={profile.fullName} required />
@@ -125,12 +130,12 @@
         <label class="label">
           <span>Phone*</span>
           <div class="flex flex-row gap-4">
-            <select class="select w-2/5" bind:value={profile.phoneCountry} required>
+            <select class="select w-1/2" bind:value={profile.phoneCountry} required>
               {#each arrCountries as country}
                 <option value={country.code}>{country.name} ({'+'+country.phone})</option>            
               {/each}
             </select>
-            <input class="input p-2" type="number" placeholder="Input" bind:value={profile.phone} required />
+            <input class="input p-2 w-1/2" type="number" placeholder="Input" bind:value={profile.phone} required />
           </div>
         </label>
         <div class="flex flex-row-reverse my-4">
@@ -142,7 +147,17 @@
       </form>
     {/if}
     <div class="">
-      <h1 class="h1 font-bold text-primary-600-300-token">Player Game Metadata</h1>
+      <!-- <h1 class="h1 font-bold text-primary-600-300-token">Update Photo Profile</h1>
+      <div class="flex flex-row my-4 gap-4 justify-start items-center">
+        <div class="">
+          <PlayerAvatar width="w-40" playerAvatarUrl={profile.avatarUrl}
+          playerId={profile.id} playerName={profile.fullName} noLink />
+        </div>
+        <div class="">
+          <button class="btn variant-filled text-wrap">Update Photo Profile</button>
+        </div>
+      </div> -->
+      <h1 class="h1 font-bold text-primary-600-300-token">Player Metadata</h1>
       <div class="grid grid-cols-2 text-lg gap-2">
         <div class="text-primary-600-300-token text-right">Current Rank Tier:</div>
         <div class="">{profile.rtData.name}</div>

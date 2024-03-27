@@ -32,6 +32,7 @@ export async function load({ locals, params, url }: LayoutServerLoadEvent) {
         clubData: {
           include: {
             clubSetting: true,
+            statusData: true,
           }
         }
       }

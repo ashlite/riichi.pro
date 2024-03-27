@@ -154,6 +154,11 @@ async function main() {
       notes: 'for cc from depositing / payment',
       group: 'trans_cc_type'
     },{
+      id: 605,
+      name: 'Beta Bonus',
+      notes: 'CC for testing',
+      group: 'trans_cc_type'
+    },{
       id: 651,
       name: 'Input Match',
       notes: 'cc usage from inputing match',
@@ -215,7 +220,6 @@ async function main() {
       totalScore: 120000
     }]
   })
-
   const resultRt = await prisma.rankTittle.createMany({
     data: [{
       groupRefId: 201,

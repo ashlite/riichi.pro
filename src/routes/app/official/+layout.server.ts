@@ -5,7 +5,9 @@ export async function load({url}) {
 
   const totalPendingClub = await db.club.count({
     where: {
-      clubStatusId: 501
+      clubStatusId: {
+        in: [501, 599]
+      }
     }
   })
   if (url.pathname == '/app/official') redirect(303,'/app/official/dashboard')

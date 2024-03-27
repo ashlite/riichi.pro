@@ -3,7 +3,9 @@ import { db } from 'server-service/db.js'
 export async function load() {
   const listApproval = await db.club.findMany({
     where: {
-      clubStatusId: 501
+      clubStatusId: {
+        in: [501, 599]
+      }
     },
     include: {
       memberList: {

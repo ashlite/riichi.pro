@@ -3,7 +3,7 @@ import type { Prisma } from '@prisma/client'
 const prisma = new PrismaClient()
 
 async function main() {
-  const clubId = '1a129426-0f4f-41b7-99e8-3c35b343a49e'
+  const clubId = 'f1089749-8afd-4ab4-9510-18738fb969e7'
   const userInput: Prisma.UserCreateInput[] = [{
     id: 'test1',
     fullName: 'test 1',

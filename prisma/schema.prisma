@@ -26,6 +26,7 @@ model RefHelper {
   genderList     User[]             @relation(name: "gender")
   clubStatusList Club[]
   seatDataList   MatchParticipant[]
+  transCCList    TransactionCC[]
 
   @@map("reference_helper")
 }
@@ -141,7 +142,7 @@ model Club {
   updatedAt       DateTime @updatedAt @map("updated_at")
   clubStatusId    Int      @map("club_status_id")
   upkeep          Int      @default(0)
-  officialNotes   String?   @map("official_notes")
+  officialNotes   String?  @map("official_notes")
 
   memberList      ClubMember[]
   transactionList TransactionCC[]
@@ -232,11 +233,12 @@ model TransactionCC {
   ccMove    Int      @map("cc_move")
   ccAfter   Int      @map("cc_after")
   createdAt DateTime @default(now()) @map("created_at")
-  type      Int
+  typeId    Int      @map("type_id")
   note      String?
 
-  clubData Club @relation(fields: [clubId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userData User @relation(fields: [userId], references: [id], onUpdate: Cascade)
+  clubData Club      @relation(fields: [clubId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userData User      @relation(fields: [userId], references: [id], onUpdate: Cascade)
+  typeRef  RefHelper @relation(fields: [typeId], references: [id], onUpdate: Cascade)
 
   @@map("transaction_cc")
 }

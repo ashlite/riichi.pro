@@ -31,7 +31,7 @@ export async function POST({locals, params}) {
               ccBefore: 0,
               ccMove: 100,
               ccAfter: 100,
-              type:601,
+              typeId: 601,
             }
           }
         }
