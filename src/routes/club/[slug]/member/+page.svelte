@@ -41,24 +41,26 @@
   </div>
   <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 flex-row flex-wrap gap-4">
     {#each data.listMemberFull as member}
-      <div class="card flex flex-col w-full items-center p-2 bg-gradient-to-br from-secondary-700 to-secondary-400">
-        <header class="card-header">
-          <PlayerAvatar width="w-28" playerAvatarUrl={member.userData.avatarUrl} playerName={member.userData.fullName} playerId={member.userData.id} />
-        </header>
-        <h4 class="h4 truncate">{member.userData.fullName}</h4>
-        <p class="font-bold">{member.userData.rtData.name} - {member.userData.currentRP}</p>
-        <div>
-          {#if member.roleData.id == 301}
-            <span class="badge variant-filled-primary">{member.roleData.name}</span>
-            {:else if member.roleData.id == 302}
-            <span class="badge variant-filled-secondary">{member.roleData.name}</span>
-          {:else if member.roleData.id == 303}
-            <span class="badge variant-filled-tertiary">{member.roleData.name}</span>
-          {:else}
+      {#key member}
+        <div class="card flex flex-col w-full items-center p-2 bg-gradient-to-br from-secondary-700 to-secondary-400">
+          <header class="card-header">
+              <PlayerAvatar width="w-28" playerAvatarUrl={member.userData.avatarUrl} playerName={member.userData.fullName} playerId={member.userData.id} />
+            </header>
+            <h4 class="h4 truncate">{member.userData.fullName}</h4>
+            <p class="font-bold">{member.userData.rtData.name} - {member.userData.currentRP}</p>
+            <div>
+              {#if member.roleData.id == 301}
+              <span class="badge variant-filled-primary">{member.roleData.name}</span>
+              {:else if member.roleData.id == 302}
+              <span class="badge variant-filled-secondary">{member.roleData.name}</span>
+            {:else if member.roleData.id == 303}
+              <span class="badge variant-filled-tertiary">{member.roleData.name}</span>
+            {:else}
             <span class="badge variant-filled">{member.roleData.name}</span>
-          {/if}
+            {/if}
+          </div>
         </div>
-      </div>
+      {/key}
     {/each}
   </div>
 </div>
