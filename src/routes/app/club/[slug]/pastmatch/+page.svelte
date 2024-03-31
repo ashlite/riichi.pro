@@ -60,7 +60,7 @@
       <header class="card-header h3 font-bold text-primary-50">{match.id}</header>
       <div class="flex flex-row gap-4 mx-4">
         <div><span class="font-bold">Create At: </span>{dateFormater(match.createdAt, 'date')}</div>
-        <div><span class="font-bold">Match At: </span>{dateFormater(match.createdAt, 'date')}</div>
+        <div><span class="font-bold">Match At: </span>{dateFormater(match.matchAt, 'date')}</div>
         <div><span class="font-bold">Cost: </span>{match.costCC} CC</div>
         <div><span class="font-bold">Deposit: </span>{match.deposit}</div>
         <div><span class="font-bold">Submitter: </span>{match.creatorMemberData?.userData.fullName}</div>

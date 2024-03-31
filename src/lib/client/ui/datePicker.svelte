@@ -71,7 +71,7 @@
       } else {
         selectedDate = tempSelectedDate
         buttonText = dateFormater(selectedDate, 'date')
-        selectedDate = selectedDate
+        // selectedDate = selectedDate
         dispatch('dateSubmit')
         if (document.activeElement instanceof HTMLElement) {
           document.activeElement.blur();
