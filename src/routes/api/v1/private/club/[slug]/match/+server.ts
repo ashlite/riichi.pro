@@ -332,20 +332,12 @@ export async function POST({locals, params, request}) {
       //submit transaction history to clubs
       await tx.transactionCC.create({
         data: {
-          clubData: {
-            connect: {
-              id: submitterData.clubId
-            }
-          },
-          userData: {
-            connect: {
-              id: submitterData.userId
-            }
-          },
           ccBefore: submitterData.clubData.currentCC,
           ccMove: useCC,
           ccAfter: submitterData.clubData.currentCC - useCC,
-          typeId: 651
+          typeId: 651,
+          clubId: submitterData.clubId,
+          userId: submitterData.userId
         }
       })
 
