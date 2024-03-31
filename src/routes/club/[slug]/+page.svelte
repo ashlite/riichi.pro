@@ -18,7 +18,6 @@
   const baseCoverUrl = env.PUBLIC_TEBI_CLUB_COVER
   const toast = getToastStore()
   const modal = getModalStore()
-  console.log(data.userMemberData)
 
   async function joinClub() {
     const response = await fetch(`/api/v1/private/club/${data.clubData.slug}/member`, {

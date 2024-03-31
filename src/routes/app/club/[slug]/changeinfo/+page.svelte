@@ -119,7 +119,6 @@
         method: 'PATCH',
         body: JSON.stringify(payload)
       })
-      console.log(response)
       // const result: iGlobalResponse = await response.json()
       if (response.ok) {
         toast.trigger({
