@@ -19,7 +19,6 @@ onMount(async () => {
   const response = await fetch(`/api/v1/player/${$modalStore[0].meta.playerId}`)
   if (response.ok) {
     playerData = await response.json()
-    console.log(playerData)
     processing = false
   } else {
     toastStore.trigger({

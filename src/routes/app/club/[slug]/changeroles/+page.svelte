@@ -48,7 +48,7 @@
       type: 'access'
     }
 
-    const response = await fetch(`/api/v1/club/${data.userMemberData.clubData.slug}/member`, {
+    const response = await fetch(`/api/v1/private/club/${data.userMemberData.clubData.slug}/member`, {
       method: 'PATCH',
       body: JSON.stringify(payload)
     })
