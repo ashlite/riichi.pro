@@ -113,7 +113,7 @@
     </label>
     <label class="">
       <span>DEPOSIT</span>
-      <input step="100" class="input p-3 variant-filled" type="number" />
+      <input step="100" class="input p-3 variant-filled" type="number" bind:value={matchData.deposit} />
     </label>
     <div class="font-bold flex flex-col">
       Total Score: 
